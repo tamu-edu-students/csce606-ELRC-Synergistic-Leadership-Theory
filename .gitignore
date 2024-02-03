@@ -12,8 +12,8 @@
 !/.env*.erb
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
+**/log/*
+**/tmp/*
 !/log/.keep
 !/tmp/.keep
 
@@ -23,7 +23,7 @@
 !/tmp/pids/.keep
 
 # Ignore storage (uploaded files in development and any SQLite databases).
-/storage/*
+**/storage/*
 !/storage/.keep
 /tmp/storage/*
 !/tmp/storage/
