@@ -8,7 +8,7 @@ navigate to project
 
 navigate to ./rails_root
 
-run "docker compose up" to start db and see logs 
+run "docker compose up db" to start db and see logs (optional, run just "docker compose up" to run both rails development environment and database as docker containers)
 
 run bundle install 
 
