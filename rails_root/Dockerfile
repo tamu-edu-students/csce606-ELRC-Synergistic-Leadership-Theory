@@ -7,11 +7,11 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 # Rails app lives here
 WORKDIR /rails
 
-# Set production environment
-ENV RAILS_ENV="production" \
+# Set  environment
+ENV RAILS_ENV="development" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="production"
 
 
 # Throw-away build stage to reduce size of final image
@@ -58,5 +58,7 @@ USER rails:rails
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
+ENV PORT 3000
+ENV HOSTNAME localhost
 EXPOSE 3000
-CMD ["./bin/rails", "server"]
+CMD ["./bin/rails", "server", "-b", "0.0.0.0"]

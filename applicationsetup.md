@@ -4,11 +4,11 @@ install stable docker-desktop version: https://docs.docker.com/desktop/release-n
 
 start docker desktop
 
-navigate to project repo root dir.
+navigate to project
+
+navigate to ./rails_root
 
 run "docker compose up" to start db and see logs 
-
-in another terminal, navigate to ./rails_root
 
 run bundle install 
 
