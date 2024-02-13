@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @survey_profile %>
+
+<div>
+  <%= link_to "Edit this survey profile", edit_survey_profile_path(@survey_profile) %> |
+  <%= link_to "Back to survey profiles", survey_profiles_path %>
+
+  <%= button_to "Destroy this survey profile", @survey_profile, method: :delete %>
+</div>
