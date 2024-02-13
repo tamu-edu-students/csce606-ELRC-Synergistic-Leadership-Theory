@@ -1,4 +1,7 @@
-(Last Edited: 11:59 pm CST | February 2, 2024)
+(Last Edited: 10:28 pm CST | February 12, 2024)
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/62f4dd4fb092b4211973/maintainability)](https://codeclimate.com/repos/65caed0abc0d27237b1794c9/maintainability)
+
 # 1. Team Roles
 
 ## A cool team name (this is the most important one!!!)
