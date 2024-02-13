@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :survey_responses
+  resources :survey_profiles
   resources :posts
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
