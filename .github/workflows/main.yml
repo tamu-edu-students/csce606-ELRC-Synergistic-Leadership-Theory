@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        path: './rails_root'
+
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 3.3.0
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+
+    - name: Run RSpec and Cucumber tests
+      run: |
+        bundle exec rspec
+        bundle exec cucumber
+
+    - name: Generate SimpleCov report
+      run: |
+        COVERAGE=true bundle exec rspec
+        COVERAGE=true bundle exec cucumber
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: coverage
+
+    - name: Upload coverage report to CodeClimate
+      uses: paambaati/codeclimate-action@v2.2.4
+      env:
+        CC_TEST_REPORTER_ID: c65072aca2cabde6c5f61913e0a45910a273d78e1a309c785a64de223b1c21af
+      with:
+        coverageLocations: rails_root/coverage/.resultset.json:simplecov
