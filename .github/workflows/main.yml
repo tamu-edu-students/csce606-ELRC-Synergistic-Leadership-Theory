@@ -9,16 +9,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./rails_root
 
     steps:
     - uses: actions/checkout@v2
-      with: 
-        path: './rails_root'
 
     - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.3.0
+        bundler-cache: true
 
     - name: Install dependencies
       run: |
