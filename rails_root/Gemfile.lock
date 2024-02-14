@@ -334,6 +334,7 @@ DEPENDENCIES
   rspec-rails
   selenium-webdriver
   simplecov
+  simplecov_json_formatter
   sprockets-rails
   sqlite3 (~> 1.4)
   stimulus-rails
