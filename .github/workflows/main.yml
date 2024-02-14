@@ -55,4 +55,4 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: c65072aca2cabde6c5f61913e0a45910a273d78e1a309c785a64de223b1c21af
       with:
-        coverageLocations: ${{ github.workspace }}/coverage/coverage.json:simplecov
+        coverageLocations: ${{ github.workspace }}/rails_root/coverage/coverage.json:simplecov
