@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Run simplecov before any tests to capture all test coverage
 require 'simplecov'
 require 'simplecov_json_formatter'

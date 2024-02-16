@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class SurveyProfilesController < ApplicationController
-  before_action :set_survey_profile, only: %i[ show edit update destroy ]
+  before_action :set_survey_profile, only: %i[show edit update destroy]
 
   # GET /survey_profiles or /survey_profiles.json
   def index
@@ -7,8 +9,7 @@ class SurveyProfilesController < ApplicationController
   end
 
   # GET /survey_profiles/1 or /survey_profiles/1.json
-  def show
-  end
+  def show; end
 
   # GET /survey_profiles/new
   def new
@@ -16,33 +17,74 @@ class SurveyProfilesController < ApplicationController
   end
 
   # GET /survey_profiles/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /survey_profiles or /survey_profiles.json
   def create
-    @survey_profile = SurveyProfile.new(survey_profile_params)
+    # If any of the survey_profile_params values are nil, then the form is invalid
+    if survey_profile_params.values.any? { |value| value.nil? || value.empty? }
+      respond_to do |format|
+        format.html do
+          redirect_to new_survey_profile_url, notice: 'invalid form', status: :unprocessable_entity
+        end
+        format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
+      end
 
-    respond_to do |format|
-      if @survey_profile.save
-        format.html { redirect_to survey_profile_url(@survey_profile), notice: "Survey profile was successfully created." }
-        format.json { render :show, status: :created, location: @survey_profile }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @survey_profile.errors, status: :unprocessable_entity }
+    # if user_id is not unique, then the form is invalid
+    elsif SurveyProfile.find_by(user_id: survey_profile_params[:user_id])
+      respond_to do |format|
+        format.html do
+          redirect_to new_survey_profile_url, notice: 'user_id is not unique', status: :unprocessable_entity
+        end
+        format.json { render json: { error: 'user_id is not unique' }, status: :unprocessable_entity }
+      end
+
+    else
+      @survey_profile = SurveyProfile.new(survey_profile_params)
+
+      respond_to do |format|
+        if @survey_profile.save
+          format.html do
+            redirect_to survey_profile_url(@survey_profile), notice: 'Survey profile was successfully created.'
+          end
+          format.json { render :show, status: :created, location: @survey_profile }
+
+        end
       end
     end
   end
 
   # PATCH/PUT /survey_profiles/1 or /survey_profiles/1.json
   def update
-    respond_to do |format|
-      if @survey_profile.update(survey_profile_params)
-        format.html { redirect_to survey_profile_url(@survey_profile), notice: "Survey profile was successfully updated." }
-        format.json { render :show, status: :ok, location: @survey_profile }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @survey_profile.errors, status: :unprocessable_entity }
+    # if anything in survey_profile_params is nil, then the form is invalid
+
+    if survey_profile_params.values.any?(&:nil?)
+      respond_to do |format|
+        format.html do
+          redirect_to edit_survey_profile_url(@survey_profile), notice: 'invalid form', status: :unprocessable_entity
+        end
+        format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
+      end
+
+      # check if trying access a non-existing user_id
+    elsif SurveyProfile.find_by(user_id: survey_profile_params[:user_id]).nil?
+      respond_to do |format|
+        format.html do
+          redirect_to edit_survey_profile_url(@survey_profile), notice: 'user_id does not exist',
+                                                                status: :unprocessable_entity
+        end
+        format.json { render json: { error: 'user_id does not exist' }, status: :unprocessable_entity }
+      end
+
+    else
+      respond_to do |format|
+        if @survey_profile.update(survey_profile_params)
+          format.html do
+            redirect_to survey_profile_url(@survey_profile), notice: 'Survey profile was successfully updated.'
+          end
+          format.json { render :show, status: :ok, location: @survey_profile }
+
+        end
       end
     end
   end
@@ -52,19 +94,20 @@ class SurveyProfilesController < ApplicationController
     @survey_profile.destroy!
 
     respond_to do |format|
-      format.html { redirect_to survey_profiles_url, notice: "Survey profile was successfully destroyed." }
+      format.html { redirect_to survey_profiles_url, notice: 'Survey profile was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_survey_profile
-      @survey_profile = SurveyProfile.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def survey_profile_params
-      params.require(:survey_profile).permit(:user_id, :first_name, :last_name, :campus_name, :district_name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_survey_profile
+    @survey_profile = SurveyProfile.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def survey_profile_params
+    params.require(:survey_profile).permit(:user_id, :first_name, :last_name, :campus_name, :district_name)
+  end
 end
