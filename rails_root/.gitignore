@@ -36,3 +36,6 @@
 
 # Ignore simplecov code coverage results
 coverage/*
+
+# Ignore the temps from the static analyzer
+sorbet
