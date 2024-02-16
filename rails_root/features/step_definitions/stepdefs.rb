@@ -67,3 +67,14 @@ Then('the model was created') do
   expect(SurveyProfile.last.user_id).to eq(10)
   expect(SurveyResponse.last.user_id).to eq(10)
 end
+
+# Data Submission Steps
+Then('the analysis results displays the correct values') do
+  @attributes.each_value do |value|
+    expect(page).to have_content(value)
+  end
+end
+
+Then('the analysis results displays my leadership style') do
+  expect(page).to have_content('Your leadership type is:')
+end
