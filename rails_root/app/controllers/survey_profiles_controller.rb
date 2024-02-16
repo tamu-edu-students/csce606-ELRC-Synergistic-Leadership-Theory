@@ -22,7 +22,7 @@ class SurveyProfilesController < ApplicationController
   # POST /survey_profiles or /survey_profiles.json
   def create
     # If any of the survey_profile_params values are nil, then the form is invalid
-    if survey_profile_params.values.any?(&:nil?)
+    if survey_profile_params.values.any? { |value| value.nil? || value.empty? }
       respond_to do |format|
         format.html do
           redirect_to new_survey_profile_url, notice: 'invalid form', status: :unprocessable_entity
