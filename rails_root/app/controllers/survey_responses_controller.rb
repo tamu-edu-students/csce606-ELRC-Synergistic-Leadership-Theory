@@ -21,7 +21,7 @@ class SurveyResponsesController < ApplicationController
 
   # POST /survey_responses or /survey_responses.json
   def create
-    if survey_response_params.values.any?(&:nil?)
+    if survey_response_params.values.any? { |value| value.nil? || value.empty? }
       respond_to do |format|
         format.html do
           redirect_to new_survey_response_url, notice: 'invalid form', status: :unprocessable_entity

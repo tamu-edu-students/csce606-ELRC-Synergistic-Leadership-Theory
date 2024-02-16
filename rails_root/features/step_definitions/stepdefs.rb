@@ -22,7 +22,7 @@ When('I try to submit the form') do
 end
 
 Then('I do not get redirected to the analysis presentation page') do
-  expect(page).not_to have_content('Survey response was successfully created')
+  expect(page).to have_current_path(survey_responses_path)
 end
 
 Then('I do get redirected to the analysis presentation page') do
@@ -43,10 +43,8 @@ Given('I have a set of invalid attributes') do
 end
 
 When('I try to create model instances') do
-  p @survey_profiles_attributes
-  p @survey_responses_attributes
-  SurveyProfile.create(@survey_profiles_attributes)
-  SurveyResponse.create(@survey_responses_attributes)
+  post survey_profiles_url, survey_profile: @survey_profiles_attributes
+  post survey_responses_url, survey_response: @survey_profiles_attributes
 end
 
 Given('I have a set of valid attributes') do
@@ -61,13 +59,11 @@ Given('I have a set of valid attributes') do
 end
 
 Then('the model was not created') do
-  expect(SurveyProfile.last.user_id).not_to be_nil
-  expect(SurveyResponse.last.user_id).not_to be_nil
+  expect(SurveyProfile.last).to be_nil
+  expect(SurveyResponse.last).to be_nil
 end
 
 Then('the model was created') do
-  p SurveyProfile.last
-  p SurveyResponse.last
   expect(SurveyProfile.last.user_id).to eq(10)
   expect(SurveyResponse.last.user_id).to eq(10)
 end
