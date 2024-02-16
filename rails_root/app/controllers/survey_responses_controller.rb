@@ -21,8 +21,6 @@ class SurveyResponsesController < ApplicationController
 
   # POST /survey_responses or /survey_responses.json
   def create
-    p "HEREERERERERERERERERE\n\n\n\n\n"
-    p survey_response_params
     if survey_response_params.values.any? { |value| value.nil? || value.empty? }
       respond_to do |format|
         format.html do
