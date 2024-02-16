@@ -26,13 +26,13 @@
           <th>Agree</th>
           <th>Strongly Agree</th>
         </tr>
-        <% section[:questions].each do |question| %>
+        <% section[:questions].each_with_index do |question, i| %>
           <tr>
             <td><%= form.label question %></td>
-            <td><%= form.radio_button question, 1 %></td>
-            <td><%= form.radio_button question, 2 %></td>
-            <td><%= form.radio_button question, 3 %></td>
-            <td><%= form.radio_button question, 4 %></td>
+
+            <% 4.times do |i| %>
+            <td><%= form.radio_button question, i, {checked: (i == survey_response[question]) ? 'checked': ''} %></td>
+            <% end %>
           </tr>
         <% end %>
       </table>
