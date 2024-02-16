@@ -31,15 +31,14 @@ RSpec.describe '/survey_profiles', type: :request do
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
-
-    # {
-    #   user_id: 1,
-    #   first_name: nil,
-    #   last_name: nil,
-    #   campus_name: nil,
-    #   district_name: nil
-    # }
+    # if any field is nil
+    {
+      user_id: 1,
+      first_name: 'John',
+      last_name: 'Doe',
+      campus_name: 'Campus',
+      district_name: nil
+    }
   end
 
   describe 'GET /index' do
@@ -104,14 +103,24 @@ RSpec.describe '/survey_profiles', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        # skip('Add a hash of attributes valid for your model')
+        {
+          user_id: 1,
+          first_name: 'Johnson Micheal',
+          last_name: 'Doe',
+          campus_name: 'TAMU',
+          district_name: 'College Station'
+        }
       end
 
       it 'updates the requested survey_profile' do
         survey_profile = SurveyProfile.create! valid_attributes
         patch survey_profile_url(survey_profile), params: { survey_profile: new_attributes }
         survey_profile.reload
-        skip('Add assertions for updated state')
+        # skip('Add assertions for updated state')
+        expect(survey_profile.first_name).to eq('Johnson Micheal')
+        expect(survey_profile.campus_name).to eq('TAMU')
+        expect(survey_profile.district_name).to eq('College Station')
       end
 
       it 'redirects to the survey_profile' do
@@ -126,6 +135,12 @@ RSpec.describe '/survey_profiles', type: :request do
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
         survey_profile = SurveyProfile.create! valid_attributes
         patch survey_profile_url(survey_profile), params: { survey_profile: invalid_attributes }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'tries to update non-existing profile' do
+        survey_profile = SurveyProfile.create! valid_attributes
+        patch survey_profile_url(survey_profile), params: { survey_profile: { user_id: 1000 } }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
