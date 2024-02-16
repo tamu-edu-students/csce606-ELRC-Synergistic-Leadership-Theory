@@ -14,50 +14,29 @@
     <%= form.number_field :user_id %>
   </div>
   <div>
-    <h2>Part 1: Leadership Behavior - Interpersonal</h2>
-    <p>To what extent do you agree the following behaviors reflect your personal leadership behaviors?</p>
-    <ol>
-      <%# IMPORTANT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %>
-      <%# FORM INPUTS NEED TO BE TURNED INTO RADIO OPTIONS %>
-      <li>
-        <%= form.label :leads_by_example, style: "display: block" %>
-        <%= form.number_field :leads_by_example %>
-      </li>
-      <li>
-        <%= form.label :ability_to_juggle, style: "display: block" %>
-        <%= form.number_field :ability_to_juggle %>
-      </li>
-      <li>
-        <%= form.label :communicator, style: "display: block" %>
-        <%= form.number_field :communicator %>
-      </li>
-    </ol>
-  </div>
-  <div>
-    <h2>Part 2: Leadership Behavior - Interpersonal</h2>
-    <p>To what extent do you agree the following behaviors reflect your personal leadership behaviors?</p>
-    <ol>
-      <li>
-        <%= form.label :lifelong_learner, style: "display: block" %>
-        <%= form.number_field :lifelong_learner %>
-      </li>
-      <li>
-        <%= form.label :high_expectations, style: "display: block" %>
-        <%= form.number_field :high_expectations %>
-      </li>
-      <li>
-        <%= form.label :cooperative, style: "display: block" %>
-        <%= form.number_field :cooperative %>
-      </li>
-      <li>
-        <%= form.label :empathetic, style: "display: block" %>
-        <%= form.number_field :empathetic %>
-      </li>
-      <li>
-        <%= form.label :people_oriented, style: "display: block" %>
-        <%= form.number_field :people_oriented %>
-      </li>
-    </ol>
+    <% survey_sections.each do |section| %>
+      <h2><%= section[:title] %></h2>
+      <p><%= section[:prompt] %></p>
+
+      <table>
+        <tr>
+          <th></th>
+          <th>Strongly Disagree</th>
+          <th>Disagree</th>
+          <th>Agree</th>
+          <th>Strongly Agree</th>
+        </tr>
+        <% section[:questions].each do |question| %>
+          <tr>
+            <td><%= form.label question %></td>
+            <td><%= form.radio_button question, 1 %></td>
+            <td><%= form.radio_button question, 2 %></td>
+            <td><%= form.radio_button question, 3 %></td>
+            <td><%= form.radio_button question, 4 %></td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
   </div>
   <div>
     <%= form.submit %>
