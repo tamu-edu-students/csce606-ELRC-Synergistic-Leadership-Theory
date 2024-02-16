@@ -72,3 +72,8 @@ end
 group :production do
   gem 'pg' # for heroku deployment
 end
+
+# Static analyzer and type checker
+gem 'sorbet', :group => :development
+gem 'sorbet-runtime'
+gem 'tapioca', :group => :development, require: false
