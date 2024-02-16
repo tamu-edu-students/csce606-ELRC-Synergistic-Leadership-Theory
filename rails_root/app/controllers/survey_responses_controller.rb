@@ -14,10 +14,36 @@ class SurveyResponsesController < ApplicationController
   # GET /survey_responses/new
   def new
     @survey_response = SurveyResponse.new
+    @survey_sections = [
+      {
+        :title => "Part 1: Leadership Behavior - Management",
+        :prompt => "To what extent do you agree the following behaviors reflect your personal leadership behaviors?",
+        :questions => [:leads_by_example, :ability_to_juggle, :communicator]
+      },
+      {
+        :title => "Part 2: Leadership Behavior - Interpersonal",
+        :prompt => "To what extent do you agree the following behaviors reflect your personal leadership behaviors?",
+        :questions => [:lifelong_learner, :high_expectations, :cooperative, :empathetic, :people_oriented]
+      }
+    ]
   end
 
   # GET /survey_responses/1/edit
-  def edit; end
+  def edit
+    # FIXME: DRY
+    @survey_sections = [
+      {
+        :title => "Part 1: Leadership Behavior - Management",
+        :prompt => "To what extent do you agree the following behaviors reflect your personal leadership behaviors?",
+        :questions => [:leads_by_example, :ability_to_juggle, :communicator]
+      },
+      {
+        :title => "Part 2: Leadership Behavior - Interpersonal",
+        :prompt => "To what extent do you agree the following behaviors reflect your personal leadership behaviors?",
+        :questions => [:lifelong_learner, :high_expectations, :cooperative, :empathetic, :people_oriented]
+      }
+    ]
+  end
 
   # POST /survey_responses or /survey_responses.json
   def create
