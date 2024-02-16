@@ -1,10 +1,91 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @survey_response %>
+<style>
+#response {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 40%;
+}
 
-<div>
-  <%= link_to "Edit this survey response", edit_survey_response_path(@survey_response) %> |
-  <%= link_to "Back to survey responses", survey_responses_path %>
+#response td, #customers th {
+  border: 0.5px solid #ddd;
+  padding: 8px;
+}
 
-  <%= button_to "Destroy this survey response", @survey_response, method: :delete %>
-</div>
+#response tr:nth-child(even){background-color: #f2f2f2;}
+
+#response tr:hover {background-color: #ddd;}
+
+#response th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
+
+</head>
+
+<center>
+<h1>Your leadership type is:</h1>
+<%= image_tag("https://upload.wikimedia.org/wikipedia/commons/7/70/Tetrahedron.gif", style: "width:400px;" ) %>
+<h2 style="margin-left:20%; margin-right:20%;"> This tetrahedron represents the alignment of the four factors based on your leadership behaviors to align the four factors.</h2>
+<p style="margin-left:20%; margin-right:20%; text-align:justify;">The purpose of this qualitative study was to apply the Synergistic Leadership Theory (SLT) to the leadership experiences of five female superintendents leading successful school districts. The SLT is an interactive theory, which includes female experiences, but it applies to men and women. It provides a framework for leaders to align four factors that impact successful leadership: (a) attitudes, values, and beliefs; (b) leadership behaviors; (c) organizational structure; and (d) external forces. Four research questions guided my study: (a) What are the leadership behaviors of the superintendents? (b) Is the organizational structure of each district aligned with the superintendent’s leadership behaviors? (c) How do the leadership behaviors of the superintendent impact the relations between the district and the external forces? (d) Are the attitudes, values, and beliefs of the superintendent aligned to the attitudes, values, and beliefs of the school board member and the administrative team member</p><h3>Your Response</h3>
+<% @survey_response = SurveyResponse.find(params[:id])%>
+<table id="response">
+  <thead>
+  </thead>
+  <tbody>
+    <tr style="background-color: #500000; color: white; ">
+      <td>Part 1: Leadership Behavior - Interpersonal</td>
+      <td>response</td>
+    </tr>
+    <tr >
+      <td>1. Leads by example</td>
+      <td><%=@survey_response.leads_by_example%></td>
+    </tr>
+    <tr>
+      <td>2. Ability to juggle</td>
+      <td><%=@survey_response.ability_to_juggle%></td>
+    </tr>
+    <tr>
+      <td>3. Communicator</td>
+      <td><%=@survey_response.communicator%></td>
+    </tr>
+    <tr style="background-color: #500000; color: white;">
+      <td>Part 2: Leadership Behavior - Interpersonal</td>
+      <td>response</td>
+    </tr>
+    <tr>
+      <td>1. Lifelong learner</td>
+      <td><%=@survey_response.lifelong_learner%></td>
+    </tr>
+    <tr>
+      <td>2. High expectations</td>
+      <td><%=@survey_response.high_expectations%></td>
+    </tr>
+    <tr>
+      <td>3. Cooperative</td>
+      <td><%=@survey_response.cooperative%></td>
+    </tr>
+    <tr>
+      <td>4. Empathetic</td>
+      <td><%=@survey_response.empathetic%></td>
+    </tr>
+    <tr>
+      <td>5. People oriented</td>
+      <td><%=@survey_response.people_oriented%></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+  <div>
+    <%= link_to "Edit this survey response", edit_survey_response_path(@survey_response) %> |
+    <%= link_to "Back to survey responses", survey_responses_path %>
+
+    <%= button_to "Destroy this survey response", @survey_response, method: :delete %>
+  </div>
+</center>
