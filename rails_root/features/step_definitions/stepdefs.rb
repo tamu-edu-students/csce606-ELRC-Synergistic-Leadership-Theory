@@ -1,22 +1,25 @@
 # Analysis Result Presentation Steps
 Given('I have completed the survey with invalid inputs') do
+  @user_id = nil
   @attributes = {}
   SurveyResponse.column_names.each do |name|
-    @attributes[name] = nil if name != 'id' && name != 'created_at' && name != 'updated_at'
+    @attributes[name] = nil if not ['id', 'created_at', 'updated_at', 'user_id'].include? name
   end
 end
 
 Given('I have completed the survey with valid inputs') do
+  @user_id = 1
   @attributes = {}
   SurveyResponse.column_names.each do |name|
-    @attributes[name] = 1 if name != 'id' && name != 'created_at' && name != 'updated_at'
+    @attributes[name] = nil if not ['id', 'created_at', 'updated_at', 'user_id'].include? name
   end
 end
 
 When('I try to submit the form') do
   visit new_survey_response_path
+  fill_in "survey_response_user_id", with: @user_id
   @attributes.each do |key, value|
-    fill_in 'survey_response_' + key.to_s, with: value
+    choose "survey_response_#{key.to_s}_0"
   end
   click_button 'commit'
 end
