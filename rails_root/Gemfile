@@ -49,12 +49,12 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'debug', platforms: %i[mri windows]
   gem 'rspec-rails'
+  gem 'rubocop'
   gem 'rubocop-rails'
   gem 'selenium-webdriver'
   gem 'simplecov', require: false
   gem 'simplecov_json_formatter'
   gem 'sqlite3', '~> 1.4'
-  gem 'rubocop'
 end
 
 group :development do

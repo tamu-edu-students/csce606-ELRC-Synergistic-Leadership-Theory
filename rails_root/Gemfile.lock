@@ -394,8 +394,8 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 7.1.3)
   rspec-rails
-  rubocop-rails
   rubocop
+  rubocop-rails
   selenium-webdriver
   simplecov
   simplecov_json_formatter
