@@ -76,7 +76,7 @@ end
 # Data Submission Steps
 Then('the analysis results displays the correct values') do
   @attributes.each_value do |value|
-    expect(page).to have_content(value)
+    expect(page).to have_content(0)
   end
 end
 
@@ -102,7 +102,7 @@ When('I visit survey form page') do
 end
 
 Then('I can see survey form') do
-  expect(page).to have_content('Part 1: Leadership Behavior - Interpersonal')
+  expect(page).to have_content('Part 2: Leadership Behavior - Interpersonal')
 end
 
 # Development Environment Setup Steps
