@@ -30,7 +30,7 @@ jobs:
       if: '!cancelled()'
       run: |
         bundle exec rspec
-        
+
     - name: Run Cucumber tests
       if: '!cancelled()'
       run: |
@@ -48,6 +48,27 @@ jobs:
     #   with:
     #     name: coverage
     #     path: coverage
+
+    - name: Rubocop Report
+      if: '!cancelled()'
+      run: |
+        echo "rubocop_offenses=$(rubocop | tail -n1 | awk '{print $4}')" >> "$GITHUB_ENV"
+
+    - name: Rubocop Badge Color
+      if: '!cancelled()'
+      run: |
+        echo "rubocop_badge_color=$([[ ${{env.rubocop_offenses}} -gt 0 ]] && echo 'red' || echo 'green')" >> "$GITHUB_ENV"
+
+    - name: Rubocop Badge
+      if: '!cancelled()'
+      uses: schneegans/dynamic-badges-action@v1.7.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: c7b2d5e19079e12445b300407e383294
+        filename: badge.json
+        label: 'Rubocop'
+        message: "${{ env.rubocop_offenses }} offenses"
+        color: ${{ env.rubocop_badge_color }}
 
     - name: Upload coverage report to CodeClimate
       if: '!cancelled()'

@@ -54,6 +54,7 @@ group :development, :test do
   gem 'simplecov', require: false
   gem 'simplecov_json_formatter'
   gem 'sqlite3', '~> 1.4'
+  gem 'rubocop'
 end
 
 group :development do
