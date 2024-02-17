@@ -1,7 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe "Abouts", type: :request do
-  describe "GET /index" do
-    pending "add some examples (or delete) #{__FILE__}"
+RSpec.describe 'Abouts', type: :request do
+  describe 'GET /index' do
+    it 'returns http success' do
+      get '/about'
+      expect(response).to have_http_status(:success)
+    end
   end
 end
