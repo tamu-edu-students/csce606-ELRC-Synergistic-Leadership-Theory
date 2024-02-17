@@ -139,6 +139,10 @@
 .bg-black { background-color: #000; }
 
 /* Tamu Themes */
+html {
+    overflow-y: scroll;
+}
+
 body {
     font-family: Open Sans, Arial, sans-serif;
     font-size: 14px;
