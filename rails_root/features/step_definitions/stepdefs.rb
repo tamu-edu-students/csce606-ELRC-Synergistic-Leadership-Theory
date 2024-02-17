@@ -78,3 +78,24 @@ end
 Then('the analysis results displays my leadership style') do
   expect(page).to have_content('Your leadership type is:')
 end
+
+# Initial UI Design Steps
+Given('I am on the site') do
+  visit root_path
+end
+
+When('I visit survey profile page') do
+  visit new_survey_profile_path
+end
+
+Then('I can see profile form') do
+  expect(page).to have_content('The questionaire has a total of 96 questions split into 4 parts:')
+end
+
+When('I visit survey form page') do
+  visit new_survey_response_path
+end
+
+Then('I can see survey form') do
+  expect(page).to have_content('Part 1: Leadership Behavior - Interpersonal')
+end
