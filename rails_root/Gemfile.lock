@@ -398,7 +398,6 @@ DEPENDENCIES
   rubocop-rails
   selenium-webdriver
   simplecov
-  simplecov_json_formatter
   sorbet
   sorbet-runtime
   sprockets-rails
