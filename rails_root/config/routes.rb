@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root 'home#index'
 
+  get 'home/index'
   get 'about', to: 'about#index'
 
   resources :survey_responses

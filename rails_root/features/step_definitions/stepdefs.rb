@@ -124,7 +124,7 @@ end
 
 # Theory Exploration Steps
 When('I visit about page') do
-  visit about_index_path
+  visit about_path
 end
 
 Then('I can read about theory information') do
