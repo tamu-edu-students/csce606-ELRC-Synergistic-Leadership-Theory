@@ -99,6 +99,21 @@ RSpec.describe '/survey_profiles', type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
+
+    context 'with non-unique user_id' do
+      it 'does not create a new SurveyProfile' do
+        SurveyProfile.create! valid_attributes
+        expect do
+          post survey_profiles_url, params: { survey_profile: valid_attributes }
+        end.to change(SurveyProfile, :count).by(0)
+      end
+
+      it "renders a response with 422 status (i.e. to display the 'new' template)" do
+        SurveyProfile.create! valid_attributes
+        post survey_profiles_url, params: { survey_profile: valid_attributes }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
   end
 
   describe 'PATCH /update' do
