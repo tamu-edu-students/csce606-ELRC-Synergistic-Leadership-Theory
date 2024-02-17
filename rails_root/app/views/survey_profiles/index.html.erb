@@ -1,14 +1,30 @@
 <p style="color: green"><%= notice %></p>
-
 <h1>Survey profiles</h1>
-
-<div id="survey_profiles">
-  <% @survey_profiles.each do |survey_profile| %>
-    <%= render survey_profile %>
-    <p>
-      <%= link_to "Show this survey profile", survey_profile %>
-    </p>
-  <% end %>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Campus Name</th>
+        <th>District Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @survey_profiles.each do |survey_profile| %>
+        <tr>
+          <td><%= survey_profile.user_id %></td>
+          <td><%= survey_profile.first_name %></td>
+          <td><%= survey_profile.last_name %></td>
+          <td><%= survey_profile.campus_name %></td>
+          <td><%= survey_profile.district_name %></td>
+          <td><%= link_to "Show", survey_profile %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
 <%= link_to "New survey profile", new_survey_profile_path %>
