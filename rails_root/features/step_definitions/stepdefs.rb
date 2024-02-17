@@ -75,7 +75,7 @@ end
 
 # Data Submission Steps
 Then('the analysis results displays the correct values') do
-  @attributes.each_value do |value|
+  @attributes.each_value do |_value|
     expect(page).to have_content(0)
   end
 end
@@ -124,7 +124,7 @@ end
 
 # Theory Exploration Steps
 When('I visit about page') do
-  visit about_path
+  visit about_index_path
 end
 
 Then('I can read about theory information') do
