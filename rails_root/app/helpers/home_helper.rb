@@ -11,8 +11,7 @@ module HomeHelper
       'Good afternoon!'
     when 18..23, 0..4
       'Good evening!'
-    else
-      'Hello!'
+
     end
   end
 end
