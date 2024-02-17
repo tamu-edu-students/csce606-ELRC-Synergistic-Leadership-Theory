@@ -116,3 +116,12 @@ end
 Then('I should receive a successful connection') do
   expect(@connection_success).to be_truthy
 end
+
+# Theory Exploration Steps
+When('I visit about page') do
+  visit about_path
+end
+
+Then('I can read about theory information') do
+  expect(page).to have_content('The Four Factors and the Tetrahedron')
+end
