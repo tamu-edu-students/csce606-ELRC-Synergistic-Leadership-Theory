@@ -4,6 +4,12 @@
 ![rubocop](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/barnden/c7b2d5e19079e12445b300407e383294/raw/badge.json)
 
 Links
+- Deployed Application
+  - https://elrc-app-dfcfc7cd862b.herokuapp.com/
+
+- Code Climate Reports
+  - https://codeclimate.com/repos/65caed0abc0d27237b1794c9/maintainability
+
 - GitHub
   - https://github.com/tamu-edu-students/csce606-ELRC-Synergistic-Leadership-Theory	
 
