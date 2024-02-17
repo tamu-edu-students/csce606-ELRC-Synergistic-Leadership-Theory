@@ -12,6 +12,7 @@
 
 # seed data for the survey_profiles table
 
+# rubocop:disable Layout/LineLength
 SurveyProfile.create!([
                         { user_id: 1, first_name: 'John', last_name: 'Doe', campus_name: 'Campus 1',
                           district_name: 'District 1' },
@@ -31,6 +32,7 @@ SurveyResponse.create!([
                          { user_id: 3, leads_by_example: 3, ability_to_juggle: 3, communicator: 3, lifelong_learner: 3, high_expectations: 3,
                            cooperative: 3, empathetic: 3, people_oriented: 3 }
                        ])
+# rubocop:enable Layout/LineLength
 
 # Path: csce606-ELRC-Synergistic-Leadership-Theory/rails_root/db/schema.rb
 # This file is auto-generated from the current state of the database. Instead

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Helper methods for the survey responses controller
 module SurveyResponsesHelper
   # method to calculate the average score of a survey response
   def average_score(survey_response)

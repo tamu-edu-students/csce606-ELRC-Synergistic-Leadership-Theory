@@ -49,6 +49,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'debug', platforms: %i[mri windows]
   gem 'rspec-rails'
+  gem 'rubocop-rails'
   gem 'selenium-webdriver'
   gem 'simplecov', require: false
   gem 'simplecov_json_formatter'
@@ -76,6 +77,6 @@ group :production do
 end
 
 # Use static analyzer and type checker
-gem 'sorbet', :group => :development
+gem 'sorbet', group: :development
 gem 'sorbet-runtime'
-gem 'tapioca', :group => :development, require: false
+gem 'tapioca', group: :development, require: false

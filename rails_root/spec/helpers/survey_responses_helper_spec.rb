@@ -12,6 +12,7 @@ require 'rails_helper'
 #     end
 #   end
 # end
+
 RSpec.describe SurveyResponsesHelper, type: :helper do
   let(:survey_response) do
     SurveyResponse.create!(

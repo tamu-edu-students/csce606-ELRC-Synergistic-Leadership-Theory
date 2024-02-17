@@ -39,8 +39,8 @@ unless ARGV.any? { |a| a =~ /^gems/ } # Don't load anything when running the gem
 
       task :statsetup do
         require 'rails/code_statistics'
-        ::STATS_DIRECTORIES << ['Cucumber features', 'features'] if File.exist?('features')
-        ::CodeStatistics::TEST_TYPES << 'Cucumber features' if File.exist?('features')
+        STATS_DIRECTORIES << ['Cucumber features', 'features'] if File.exist?('features')
+        CodeStatistics::TEST_TYPES << 'Cucumber features' if File.exist?('features')
       end
     end
 
@@ -55,6 +55,7 @@ unless ARGV.any? { |a| a =~ /^gems/ } # Don't load anything when running the gem
 
     # In case we don't have the generic Rails test:prepare hook, append a no-op task that we can depend upon.
     task 'test:prepare' do
+      # no-op
     end
 
     task stats: 'cucumber:statsetup'

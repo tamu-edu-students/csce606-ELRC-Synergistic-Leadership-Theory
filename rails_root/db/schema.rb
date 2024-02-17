@@ -12,8 +12,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1]
-  .define(version: 20_240_213_012_651) do
+# rubocop:disable Metrics/BlockLength
+ActiveRecord::Schema[7.1].define(version: 20_240_217_001_343) do
   create_table 'posts', force: :cascade do |t|
     t.string 'title'
     t.text 'body'
@@ -44,6 +44,7 @@ ActiveRecord::Schema[7.1]
     t.integer 'people_oriented'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
-    t.index ['user_id'], name: 'index_survey_responses_on_user_id', unique: true
+    t.index ['user_id'], name: 'index_survey_responses_on_user_id'
   end
 end
+# rubocop:enable Metrics/BlockLength
