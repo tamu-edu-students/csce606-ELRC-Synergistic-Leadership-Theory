@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,38 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1]
-  .define(version: 20_240_213_012_651) do
-  create_table 'posts', force: :cascade do |t|
-    t.string 'title'
-    t.text 'body'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
+ActiveRecord::Schema[7.1].define(version: 2024_02_17_001343) do
+  create_table "posts", force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table 'survey_profiles', force: :cascade do |t|
-    t.integer 'user_id'
-    t.string 'first_name'
-    t.string 'last_name'
-    t.string 'campus_name'
-    t.string 'district_name'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.index ['user_id'], name: 'index_survey_profiles_on_user_id', unique: true
+  create_table "survey_profiles", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "campus_name"
+    t.string "district_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_survey_profiles_on_user_id", unique: true
   end
 
-  create_table 'survey_responses', force: :cascade do |t|
-    t.integer 'user_id'
-    t.integer 'leads_by_example'
-    t.integer 'ability_to_juggle'
-    t.integer 'communicator'
-    t.integer 'lifelong_learner'
-    t.integer 'high_expectations'
-    t.integer 'cooperative'
-    t.integer 'empathetic'
-    t.integer 'people_oriented'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.index ['user_id'], name: 'index_survey_responses_on_user_id', unique: true
+  create_table "survey_responses", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "leads_by_example"
+    t.integer "ability_to_juggle"
+    t.integer "communicator"
+    t.integer "lifelong_learner"
+    t.integer "high_expectations"
+    t.integer "cooperative"
+    t.integer "empathetic"
+    t.integer "people_oriented"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_survey_responses_on_user_id"
   end
+
 end
