@@ -49,7 +49,7 @@ end
 
 When('I try to create model instances') do
   post survey_profiles_url, survey_profile: @survey_profiles_attributes
-  post survey_responses_url, survey_response: @survey_profiles_attributes
+  post survey_responses_url, survey_response: @survey_responses_attributes
 end
 
 Given('I have a set of valid attributes') do
