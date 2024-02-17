@@ -72,3 +72,61 @@ Then('the model was created') do
   expect(SurveyProfile.last.user_id).to eq(10)
   expect(SurveyResponse.last.user_id).to eq(10)
 end
+
+# Data Submission Steps
+Then('the analysis results displays the correct values') do
+  @attributes.each_value do |value|
+    expect(page).to have_content(value)
+  end
+end
+
+Then('the analysis results displays my leadership style') do
+  expect(page).to have_content('Your leadership type is:')
+end
+
+# Initial UI Design Steps
+Given('I am on the site') do
+  visit root_path
+end
+
+When('I visit survey profile page') do
+  visit new_survey_profile_path
+end
+
+Then('I can see profile form') do
+  expect(page).to have_content('The questionaire has a total of 96 questions split into 4 parts:')
+end
+
+When('I visit survey form page') do
+  visit new_survey_response_path
+end
+
+Then('I can see survey form') do
+  expect(page).to have_content('Part 1: Leadership Behavior - Interpersonal')
+end
+
+# Development Environment Setup Steps
+Given('the application is running') do
+  visit root_path
+end
+
+When('I attempt to connect to the database') do
+  ActiveRecord::Base.connection
+  @connection_success = true
+rescue StandardError => e
+  @connection_success = false
+  @error_message = e.error_message
+end
+
+Then('I should receive a successful connection') do
+  expect(@connection_success).to be_truthy
+end
+
+# Theory Exploration Steps
+When('I visit about page') do
+  visit about_path
+end
+
+Then('I can read about theory information') do
+  expect(page).to have_content('The Four Factors and the Tetrahedron')
+end
