@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Controller for survey responses
 class SurveyResponsesController < ApplicationController
   before_action :set_survey_response, only: %i[show edit update destroy]
 
@@ -16,14 +17,14 @@ class SurveyResponsesController < ApplicationController
     @survey_response = SurveyResponse.new
     @survey_sections = [
       {
-        :title => "Part 1: Leadership Behavior - Management",
-        :prompt => "To what extent do you agree the following behaviors reflect your personal leadership behaviors?",
-        :questions => [:leads_by_example, :ability_to_juggle, :communicator]
+        title: 'Part 1: Leadership Behavior - Management',
+        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
+        questions: %i[leads_by_example ability_to_juggle communicator]
       },
       {
-        :title => "Part 2: Leadership Behavior - Interpersonal",
-        :prompt => "To what extent do you agree the following behaviors reflect your personal leadership behaviors?",
-        :questions => [:lifelong_learner, :high_expectations, :cooperative, :empathetic, :people_oriented]
+        title: 'Part 2: Leadership Behavior - Interpersonal',
+        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
+        questions: %i[lifelong_learner high_expectations cooperative empathetic people_oriented]
       }
     ]
   end
@@ -33,14 +34,14 @@ class SurveyResponsesController < ApplicationController
     # FIXME: DRY
     @survey_sections = [
       {
-        :title => "Part 1: Leadership Behavior - Management",
-        :prompt => "To what extent do you agree the following behaviors reflect your personal leadership behaviors?",
-        :questions => [:leads_by_example, :ability_to_juggle, :communicator]
+        title: 'Part 1: Leadership Behavior - Management',
+        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
+        questions: %i[leads_by_example ability_to_juggle communicator]
       },
       {
-        :title => "Part 2: Leadership Behavior - Interpersonal",
-        :prompt => "To what extent do you agree the following behaviors reflect your personal leadership behaviors?",
-        :questions => [:lifelong_learner, :high_expectations, :cooperative, :empathetic, :people_oriented]
+        title: 'Part 2: Leadership Behavior - Interpersonal',
+        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
+        questions: %i[lifelong_learner high_expectations cooperative empathetic people_oriented]
       }
     ]
   end

@@ -1,15 +1,18 @@
+# frozen_string_literal: true
+
+# Helper methods for the home controller
 module HomeHelper
   def greeting_message
     current_hour = Time.zone.now.hour
     case current_hour
     when 5..11
-      "Good morning!"
+      'Good morning!'
     when 12..17
-      "Good afternoon!"
+      'Good afternoon!'
     when 18..23, 0..4
-      "Good evening!"
+      'Good evening!'
     else
-      "Hello!"
+      'Hello!'
     end
   end
 end

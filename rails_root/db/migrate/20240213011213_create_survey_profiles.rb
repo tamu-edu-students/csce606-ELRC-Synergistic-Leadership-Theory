@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/Documentation
+
 class CreateSurveyProfiles < ActiveRecord::Migration[7.1]
   def change
     create_table :survey_profiles do |t|
@@ -14,3 +16,4 @@ class CreateSurveyProfiles < ActiveRecord::Migration[7.1]
     add_index :survey_profiles, :user_id, unique: true
   end
 end
+# rubocop:enable Style/Documentation

@@ -12,6 +12,7 @@ require 'rails_helper'
 #     end
 #   end
 # end
+
 RSpec.describe SurveyProfilesHelper, type: :helper do
   let(:survey_profile) do
     SurveyProfile.create!(

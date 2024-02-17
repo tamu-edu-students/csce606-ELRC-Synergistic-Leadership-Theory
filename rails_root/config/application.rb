@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/Documentation
 require_relative 'boot'
 
 require 'rails/all'
@@ -27,3 +28,5 @@ module RailsRoot
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
+
+# rubocop:enable Style/Documentation

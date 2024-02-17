@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Controller for the survey_profiles resource
 class SurveyProfilesController < ApplicationController
   before_action :set_survey_profile, only: %i[show edit update destroy]
 

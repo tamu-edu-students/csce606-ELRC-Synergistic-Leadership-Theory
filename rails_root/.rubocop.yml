@@ -1,0 +1,21 @@
+
+# ignore migration files
+
+AllCops:
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'bin/**/*'
+  NewCops: enable
+  
+Metrics/MethodLength:
+  Max: 50
+
+Metrics/BlockLength:
+  Max: 40
+
+Layout/LineLength:
+  Max: 400
+
+Metrics/AbcSize:
+  Max: 40

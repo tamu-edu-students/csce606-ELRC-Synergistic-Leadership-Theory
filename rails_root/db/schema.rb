@@ -45,3 +45,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_001343) do
   end
 
 end
+# rubocop:enable Metrics/BlockLength
