@@ -1,20 +1,17 @@
-<header>
-  <div>
-    <div>
-      <span></span>
-      <a href="https://elrc.tamu.edu/">
-        <img src="https://elrc.tamu.edu/wp-content/uploads/2022/10/Maroon-Horizontal.png" width="998" height="234" alt="Education Leadership Research Center" id="logo" data-height-percentage="54" data-actual-width="941" data-actual-height="220.625">
-      </a>
-    </div>
-    <div>
-      <nav>
-        <ul>
-          <li><a href="https://elrc.tamu.edu/" aria-current="page">Home</a></li>
-          <li><a href="http://elrc.tamu.edu/professional-development">About</a></li>
-          <li><a href="https://elrc.tamu.edu/our-work/">Survey</a></li>
-          <li><a href="https://elrc.tamu.edu/journals/">Profile</a></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
+<header id="main-header" class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+  <%= link_to "School of Education & Human Development", root_path, class: "d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none" %>
+  <ul class="nav">
+    <li class="nav-item">
+      <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}", aria: { current: "page" } %>
+    </li>
+    <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+    <li class="nav-item"><a href="#" class="nav-link">Test</a></li>
+    <li class="nav-item"><a href="#" class="nav-link">Profile</a></li>
+    <li class="nav-item">
+      <%= link_to "(survey_profiles)", survey_profiles_path, class: "nav-link #{'active' if current_page?(survey_profiles_path)}" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "(survey_responses)", survey_responses_path, class: "nav-link #{'active' if current_page?(survey_responses_path)}" %>
+    </li>
+  </ul>
 </header>
