@@ -2,7 +2,6 @@
 # ignore migration files
 
 AllCops:
-  DisabledByDefault: false
   Exclude:
     - 'db/**/*'
     - 'config/**/*'

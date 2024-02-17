@@ -3,8 +3,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/62f4dd4fb092b4211973/maintainability)](https://codeclimate.com/repos/65caed0abc0d27237b1794c9/maintainability)
 ![rubocop](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/barnden/c7b2d5e19079e12445b300407e383294/raw/badge.json)
 
-**All project files in rails_root**
-
 Links
 - Deployed Application
   - https://elrc-app-dfcfc7cd862b.herokuapp.com/
