@@ -41,42 +41,12 @@
       <td>Part 1: Leadership Behavior - Interpersonal</td>
       <td>response</td>
     </tr>
-    <tr >
-      <td>1. Leads by example</td>
-      <td><%=@survey_response.leads_by_example%></td>
-    </tr>
+    <% @survey_response.answers.map do |answer| %>
     <tr>
-      <td>2. Ability to juggle</td>
-      <td><%=@survey_response.ability_to_juggle%></td>
+      <td><%= answer.question.text %></td>
+      <td><%= answer.choice %></td>
     </tr>
-    <tr>
-      <td>3. Communicator</td>
-      <td><%=@survey_response.communicator%></td>
-    </tr>
-    <tr style="background-color: #500000; color: white;">
-      <td>Part 2: Leadership Behavior - Interpersonal</td>
-      <td>response</td>
-    </tr>
-    <tr>
-      <td>1. Lifelong learner</td>
-      <td><%=@survey_response.lifelong_learner%></td>
-    </tr>
-    <tr>
-      <td>2. High expectations</td>
-      <td><%=@survey_response.high_expectations%></td>
-    </tr>
-    <tr>
-      <td>3. Cooperative</td>
-      <td><%=@survey_response.cooperative%></td>
-    </tr>
-    <tr>
-      <td>4. Empathetic</td>
-      <td><%=@survey_response.empathetic%></td>
-    </tr>
-    <tr>
-      <td>5. People oriented</td>
-      <td><%=@survey_response.people_oriented%></td>
-    </tr>
+    <% end %>
   </tbody>
 </table>
 
