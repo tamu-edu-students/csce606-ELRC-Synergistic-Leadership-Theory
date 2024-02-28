@@ -6,13 +6,15 @@
   <table class="table">
     <thead>
       <tr>
-        <th>User ID</th>
+        <th>ID</th>
+        <th>Name</th>
       </tr>
     </thead>
     <tbody>
       <% @survey_responses.each do |response| %>
         <tr>
           <td><%= response.profile.user_id %></td>
+          <td><%= response.profile.last_name %>, <%= response.profile.first_name %></td>
           <% response.answers.map do |answer| %>
             <td><%= answer.choice %></td>
           <% end %>

@@ -56,7 +56,27 @@ class SurveyResponsesController < ApplicationController
       end
 
     else
-      @survey_response = SurveyResponse.new(survey_response_params)
+      # FIXME: DRY
+      begin
+        profile = SurveyProfile.where(user_id: survey_response_params[:user_id]).first!
+        survey_response_params.delete(:user_id)
+      rescue ActiveRecord::RecordNotFound
+        respond_to do |format|
+          format.html do
+            redirect_to new_survey_response_url, notice: 'invalid user id', status: :unprocessable_entity
+          end
+
+          format.json { render json: { error: 'invalid user id' }, status: :unprocessable_entity }
+        end
+
+        return
+      end
+      @survey_response = SurveyResponse.new(profile: profile)
+
+      survey_response_params.each do |question_id, choice|
+        question = SurveyQuestion.where(id: question_id).first!
+        SurveyAnswer.create(choice: choice, question: question, response: @survey_response)
+      end
 
       respond_to do |format|
         if @survey_response.save
@@ -81,9 +101,13 @@ class SurveyResponsesController < ApplicationController
       end
     else
       respond_to do |format|
-        print "BEGIN RESPONSE\n"
-        print survey_response_params
-        print "\nEND\n"
+        survey_response_params.each do |question_id, choice|
+          # FIXME: Ensure that these exist
+          question = SurveyQuestion.where(id: question_id).first
+          answer = SurveyAnswer.where(question: question, response: @survey_response).first
+
+          answer.update(choice: choice)
+        end
         # if @survey_response.update(survey_response_params)
         #   format.html do
         #     redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
@@ -114,6 +138,6 @@ class SurveyResponsesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def survey_response_params
-    params.require(:survey_response).permit(SurveyQuestion.id)
+    params.require(:survey_response).permit! # FIXME: Figure out how to use strong params with new model
   end
 end

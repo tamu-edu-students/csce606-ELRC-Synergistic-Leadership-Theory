@@ -31,7 +31,11 @@
 <h1>Your leadership type is:</h1>
 <%= image_tag("https://upload.wikimedia.org/wikipedia/commons/7/70/Tetrahedron.gif", style: "width:400px;" ) %>
 <h2 style="margin-left:20%; margin-right:20%;"> This tetrahedron represents the alignment of the four factors based on your leadership behaviors to align the four factors.</h2>
-<p style="margin-left:20%; margin-right:20%; text-align:justify;">The purpose of this qualitative study was to apply the Synergistic Leadership Theory (SLT) to the leadership experiences of five female superintendents leading successful school districts. The SLT is an interactive theory, which includes female experiences, but it applies to men and women. It provides a framework for leaders to align four factors that impact successful leadership: (a) attitudes, values, and beliefs; (b) leadership behaviors; (c) organizational structure; and (d) external forces. Four research questions guided my study: (a) What are the leadership behaviors of the superintendents? (b) Is the organizational structure of each district aligned with the superintendent’s leadership behaviors? (c) How do the leadership behaviors of the superintendent impact the relations between the district and the external forces? (d) Are the attitudes, values, and beliefs of the superintendent aligned to the attitudes, values, and beliefs of the school board member and the administrative team member</p><h3>Your Response</h3>
+<p style="margin-left:20%; margin-right:20%; text-align:justify;">
+  The purpose of this qualitative study was to apply the Synergistic Leadership Theory (SLT) to the leadership experiences of five female superintendents leading successful school districts. The SLT is an interactive theory, which includes female experiences, but it applies to men and women. It provides a framework for leaders to align four factors that impact successful leadership: (a) attitudes, values, and beliefs; (b) leadership behaviors; (c) organizational structure; and (d) external forces. Four research questions guided my study: (a) What are the leadership behaviors of the superintendents? (b) Is the organizational structure of each district aligned with the superintendent’s leadership behaviors? (c) How do the leadership behaviors of the superintendent impact the relations between the district and the external forces? (d) Are the attitudes, values, and beliefs of the superintendent aligned to the attitudes, values, and beliefs of the school board member and the administrative team member
+</p>
+
+<h3>Your Response</h3>
 <% @survey_response = SurveyResponse.find(params[:id])%>
 <table id="response">
   <thead>
@@ -39,11 +43,17 @@
   <tbody>
     <tr style="background-color: #500000; color: white; ">
       <td>Part 1: Leadership Behavior - Interpersonal</td>
-      <td>response</td>
+      <td>Response</td>
     </tr>
     <% @survey_response.answers.map do |answer| %>
     <tr>
-      <td><%= answer.question.text %></td>
+      <td>
+        <details>
+          <summary><%= answer.question.text %></summary>
+
+          <%= answer.question.explanation %>
+        </details>
+      </td>
       <td><%= answer.choice %></td>
     </tr>
     <% end %>
