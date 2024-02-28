@@ -24,14 +24,16 @@ SurveyProfile.create!([
 
 # seed data for the survey_responses table
 
-SurveyResponse.create!([
-                         { user_id: 1, leads_by_example: 5, ability_to_juggle: 5, communicator: 5, lifelong_learner: 5, high_expectations: 5,
-                           cooperative: 5, empathetic: 5, people_oriented: 5 },
-                         { user_id: 2, leads_by_example: 4, ability_to_juggle: 4, communicator: 4, lifelong_learner: 4, high_expectations: 4,
-                           cooperative: 4, empathetic: 4, people_oriented: 4 },
-                         { user_id: 3, leads_by_example: 3, ability_to_juggle: 3, communicator: 3, lifelong_learner: 3, high_expectations: 3,
-                           cooperative: 3, empathetic: 3, people_oriented: 3 }
-                       ])
+SurveyProfile.all.each do |survey_profile|
+  SurveyResponse.create!(profile: survey_profile, share_code: "debug#{survey_profile.user_id}")
+end
+
+question = SurveyQuestion.create!(text: "Leads by Example", explanation: "This is a placeholder.", section: 0)
+
+SurveyResponse.all.each_with_index do |response, idx|
+  SurveyAnswer.create!(choice: idx, question: question, response: response)
+end
+
 # rubocop:enable Layout/LineLength
 
 # Path: csce606-ELRC-Synergistic-Leadership-Theory/rails_root/db/schema.rb

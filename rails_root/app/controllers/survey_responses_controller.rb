@@ -15,16 +15,15 @@ class SurveyResponsesController < ApplicationController
   # GET /survey_responses/new
   def new
     @survey_response = SurveyResponse.new
-    @survey_sections = [
+    @questions = SurveyQuestion
+    @sections = [
       {
         title: 'Part 1: Leadership Behavior - Management',
         prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
-        questions: %i[leads_by_example ability_to_juggle communicator]
       },
       {
         title: 'Part 2: Leadership Behavior - Interpersonal',
         prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
-        questions: %i[lifelong_learner high_expectations cooperative empathetic people_oriented]
       }
     ]
   end
@@ -32,16 +31,15 @@ class SurveyResponsesController < ApplicationController
   # GET /survey_responses/1/edit
   def edit
     # FIXME: DRY
-    @survey_sections = [
+    @questions = SurveyQuestion
+    @sections = [
       {
         title: 'Part 1: Leadership Behavior - Management',
         prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
-        questions: %i[leads_by_example ability_to_juggle communicator]
       },
       {
         title: 'Part 2: Leadership Behavior - Interpersonal',
         prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
-        questions: %i[lifelong_learner high_expectations cooperative empathetic people_oriented]
       }
     ]
   end
@@ -83,13 +81,16 @@ class SurveyResponsesController < ApplicationController
       end
     else
       respond_to do |format|
-        if @survey_response.update(survey_response_params)
-          format.html do
-            redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
-          end
-          format.json { render :show, status: :ok, location: @survey_response }
+        print "BEGIN RESPONSE\n"
+        print survey_response_params
+        print "\nEND\n"
+        # if @survey_response.update(survey_response_params)
+        #   format.html do
+        #     redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
+        #   end
+        #   format.json { render :show, status: :ok, location: @survey_response }
 
-        end
+        # end
       end
     end
   end
@@ -113,7 +114,6 @@ class SurveyResponsesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def survey_response_params
-    params.require(:survey_response).permit(:user_id, :leads_by_example, :ability_to_juggle, :communicator,
-                                            :lifelong_learner, :high_expectations, :cooperative, :empathetic, :people_oriented)
+    params.require(:survey_response).permit(SurveyQuestion.id)
   end
 end
