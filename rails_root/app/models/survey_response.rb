@@ -6,6 +6,12 @@ class SurveyResponse < ApplicationRecord
         class_name: "SurveyAnswer",
         dependent: :delete_all
 
+    validates_associated :answers
+
+    has_many :questions,
+        class_name: "SurveyQuestion",
+        through: :answers
+
     belongs_to :profile,
         class_name: "SurveyProfile"
 end
