@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class SurveyQuestionsController < ApplicationController
-  before_action :set_survey_question, only: %i[ show edit update destroy ]
+  before_action :set_survey_question, only: %i[show edit update destroy]
 
   # GET /survey_questions or /survey_questions.json
   def index
@@ -7,8 +9,7 @@ class SurveyQuestionsController < ApplicationController
   end
 
   # GET /survey_questions/1 or /survey_questions/1.json
-  def show
-  end
+  def show; end
 
   # GET /survey_questions/new
   def new
@@ -16,8 +17,7 @@ class SurveyQuestionsController < ApplicationController
   end
 
   # GET /survey_questions/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /survey_questions or /survey_questions.json
   def create
@@ -25,7 +25,7 @@ class SurveyQuestionsController < ApplicationController
 
     respond_to do |format|
       if @survey_question.save
-        format.html { redirect_to survey_question_url(@survey_question), notice: "Survey question was successfully created." }
+        format.html { redirect_to survey_question_url(@survey_question), notice: 'Survey question was successfully created.' }
         format.json { render :show, status: :created, location: @survey_question }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class SurveyQuestionsController < ApplicationController
   def update
     respond_to do |format|
       if @survey_question.update(survey_question_params)
-        format.html { redirect_to survey_question_url(@survey_question), notice: "Survey question was successfully updated." }
+        format.html { redirect_to survey_question_url(@survey_question), notice: 'Survey question was successfully updated.' }
         format.json { render :show, status: :ok, location: @survey_question }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,19 +52,20 @@ class SurveyQuestionsController < ApplicationController
     @survey_question.destroy!
 
     respond_to do |format|
-      format.html { redirect_to survey_questions_url, notice: "Survey question was successfully destroyed." }
+      format.html { redirect_to survey_questions_url, notice: 'Survey question was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_survey_question
-      @survey_question = SurveyQuestion.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def survey_question_params
-      params.require(:survey_question).permit(:text, :explanation, :section)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_survey_question
+    @survey_question = SurveyQuestion.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def survey_question_params
+    params.require(:survey_question).permit(:text, :explanation, :section)
+  end
 end

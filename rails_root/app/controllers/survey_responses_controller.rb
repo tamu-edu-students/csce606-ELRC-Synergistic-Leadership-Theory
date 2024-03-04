@@ -20,8 +20,7 @@ class SurveyResponsesController < ApplicationController
   end
 
   # GET /survey_responses/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /survey_responses or /survey_responses.json
   def create
@@ -38,14 +37,15 @@ class SurveyResponsesController < ApplicationController
         # FIXME: Validation
         profile = get_user_profile_from_params(survey_response_params)
       rescue ActiveRecord::RecordNotFound
-        return respond_with_error "invalid user_id"
+        return respond_with_error 'invalid user_id'
       end
-      @survey_response = SurveyResponse.new(profile: profile)
-
+      @survey_response = SurveyResponse.new(profile:)
       survey_response_params.each do |question_id, choice|
+        next if question_id == 'user_id'
+
         # FIXME: Validation
         question = SurveyQuestion.where(id: question_id).first!
-        SurveyAnswer.create(choice: choice, question: question, response: @survey_response)
+        SurveyAnswer.create(choice:, question:, response: @survey_response)
       end
 
       respond_to do |format|
@@ -62,28 +62,28 @@ class SurveyResponsesController < ApplicationController
 
   # PATCH/PUT /survey_responses/1 or /survey_responses/1.json
   def update
-    if survey_response_params.values.any?(&:nil?)
-      return respond_with_error "invalid form"
-    end
+    return respond_with_error 'invalid form' if survey_response_params.values.any?(&:nil?)
 
     begin
       # FIXME: Validation
       get_user_profile_from_params(survey_response_params)
     rescue ActiveRecord::RecordNotFound
-      return respond_with_error "invalid user id"
+      return respond_with_error 'invalid user id'
     end
 
     respond_to do |format|
       survey_response_params.each do |question_id, choice|
+        next if question_id == 'user_id'
+
         begin
           # FIXME: Validation
           question = SurveyQuestion.where(id: question_id).first!
-          answer = SurveyAnswer.where(question: question, response: @survey_response).first!
+          answer = SurveyAnswer.where(question:, response: @survey_response).first!
         rescue ApplicationRecord::RecordNotFound
-          return respond_with_error "invalid question or answer"
+          return respond_with_error 'invalid question or answer'
         end
 
-        answer.update(choice: choice)
+        answer.update(choice:)
       end
 
       format.html do
@@ -115,28 +115,26 @@ class SurveyResponsesController < ApplicationController
     @sections = [
       {
         title: 'Part 1: Leadership Behavior - Management',
-        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
+        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
       },
       {
         title: 'Part 2: Leadership Behavior - Interpersonal',
-        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
+        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
       }
     ]
   end
 
   def get_user_profile_from_params(params)
-      profile = SurveyProfile.where(user_id: params[:user_id]).first!
-      params.delete(:user_id)
-
-      return profile
+    SurveyProfile.where(user_id: params[:user_id]).first!
+    # params.delete(:user_id)
   end
 
-  def respond_with_error(message, status=:unprocessable_entity)
+  def respond_with_error(message, status = :unprocessable_entity)
     respond_to do |format|
       format.html do
-        redirect_to new_survey_response_url, notice: message, status: status
+        redirect_to new_survey_response_url, notice: message, status:
       end
-      format.json { render json: { error: message }, status: status }
+      format.json { render json: { error: message }, status: }
     end
   end
 

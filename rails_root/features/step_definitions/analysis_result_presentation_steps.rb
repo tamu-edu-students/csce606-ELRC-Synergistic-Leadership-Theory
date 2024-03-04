@@ -13,6 +13,6 @@ Then('I do not get redirected to the analysis presentation page') do
 end
 
 Then('I do get redirected to the analysis presentation page') do
-  expect(page).to have_current_path(survey_response_url(SurveyResponse.last))
+  expect(page).to have_current_path(survey_response_path(SurveyResponse.last))
   expect(page).to have_content('Survey response was successfully created')
 end
