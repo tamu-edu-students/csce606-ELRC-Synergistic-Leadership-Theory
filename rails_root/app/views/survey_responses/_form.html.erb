@@ -11,10 +11,12 @@
   <% end %>
   <div>
     <%= form.label :user_id, style: "display: block" %>
-    <%= form.number_field :user_id %>
+    <% user_id = @survey_response.try(:profile).try(:user_id)%>
+    <%= form.number_field :user_id, :value => user_id %>
   </div>
   <div>
-    <% survey_sections.each do |section| %>
+    <% if @sections.present? %>
+    <% @sections.each_with_index do |section, idx| %>
       <h2><%= section[:title] %></h2>
       <p><%= section[:prompt] %></p>
 
@@ -26,16 +28,18 @@
           <th>Agree</th>
           <th>Strongly Agree</th>
         </tr>
-        <% section[:questions].each_with_index do |question, i| %>
+        <% @questions.where(section: idx).map do |question| %>
           <tr>
-            <td><%= form.label question %></td>
+            <td><%= form.label question.text %></td>
 
             <% 4.times do |i| %>
-            <td><%= form.radio_button question, i, {checked: (i == survey_response[question]) ? 'checked': ''} %></td>
+              <% choice = survey_response.answers.where(question: question).first.try(:choice) %>
+              <td><%= form.radio_button question.id, i, { checked: (i == choice) }%></td>
             <% end %>
           </tr>
         <% end %>
       </table>
+    <% end %>
     <% end %>
   </div>
   <div>

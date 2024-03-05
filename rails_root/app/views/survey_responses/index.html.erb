@@ -6,31 +6,19 @@
   <table class="table">
     <thead>
       <tr>
-        <th>User ID</th>
-        <th>Leads by Example</th>
-        <th>Ability to Juggle</th>
-        <th>Communicator</th>
-        <th>Lifelong Learner</th>
-        <th>High Expectations</th>
-        <th>Cooperative</th>
-        <th>Empathetic</th>
-        <th>People Oriented</th>
-        <th>Actions</th>
+        <th>ID</th>
+        <th>Name</th>
       </tr>
     </thead>
     <tbody>
-      <% @survey_responses.each do |survey_response| %>
+      <% @survey_responses.each do |response| %>
         <tr>
-          <td><%= survey_response.user_id %></td>
-          <td><%= survey_response.leads_by_example %></td>
-          <td><%= survey_response.ability_to_juggle %></td>
-          <td><%= survey_response.communicator %></td>
-          <td><%= survey_response.lifelong_learner %></td>
-          <td><%= survey_response.high_expectations %></td>
-          <td><%= survey_response.cooperative %></td>
-          <td><%= survey_response.empathetic %></td>
-          <td><%= survey_response.people_oriented %></td>
-          <td><%= link_to "Show", survey_response %></td>
+          <td><%= response.profile.user_id %></td>
+          <td><%= response.profile.last_name %>, <%= response.profile.first_name %></td>
+          <% response.answers.map do |answer| %>
+            <td><%= answer.choice %></td>
+          <% end %>
+          <td><%= link_to "Show", response %></td>
         </tr>
       <% end %>
     </tbody>

@@ -2,7 +2,8 @@
 
 # Controller for survey responses
 class SurveyResponsesController < ApplicationController
-  before_action :set_survey_response, only: %i[show edit update destroy]
+  before_action :set_survey_data, only: %i[show edit update destroy]
+  before_action :set_survey_sections, only: %i[show edit update new]
 
   # GET /survey_responses or /survey_responses.json
   def index
@@ -15,54 +16,52 @@ class SurveyResponsesController < ApplicationController
   # GET /survey_responses/new
   def new
     @survey_response = SurveyResponse.new
-    @survey_sections = [
-      {
-        title: 'Part 1: Leadership Behavior - Management',
-        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
-        questions: %i[leads_by_example ability_to_juggle communicator]
-      },
-      {
-        title: 'Part 2: Leadership Behavior - Interpersonal',
-        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
-        questions: %i[lifelong_learner high_expectations cooperative empathetic people_oriented]
-      }
-    ]
+    @questions = SurveyQuestion
   end
 
   # GET /survey_responses/1/edit
-  def edit
-    # FIXME: DRY
-    @survey_sections = [
-      {
-        title: 'Part 1: Leadership Behavior - Management',
-        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
-        questions: %i[leads_by_example ability_to_juggle communicator]
-      },
-      {
-        title: 'Part 2: Leadership Behavior - Interpersonal',
-        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?',
-        questions: %i[lifelong_learner high_expectations cooperative empathetic people_oriented]
-      }
-    ]
-  end
+  def edit; end
 
   # POST /survey_responses or /survey_responses.json
   def create
     # If any of the survey_response_params values are nil, then the form is invalid
-    if survey_response_params.values.any? { |value| value.nil? || value.empty? || survey_response_params.keys.length != SurveyResponse.column_names.length - 3 }
+    if survey_response_params.values.any? { |value| value.nil? || value.empty? }
       respond_to do |format|
         format.html do
           redirect_to new_survey_response_url, notice: 'invalid form', status: :unprocessable_entity
         end
         format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
       end
-
     else
-      @survey_response = SurveyResponse.new(survey_response_params)
+      begin
+        # FIXME: Validation
+        profile = get_user_profile_from_params(survey_response_params)
+        # puts "profile: #{profile.inspect}"
+      rescue ActiveRecord::RecordNotFound
+        return respond_with_error 'invalid user_id'
+      end
+      @survey_response = SurveyResponse.new(profile:)
+      # puts "survey_response: #{@survey_response.inspect}"
+
+      # puts "survey_response_params: #{survey_response_params.inspect}"
+      survey_response_params.each do |question_id, choice|
+        next if question_id == 'user_id'
+
+        # puts "question_id: #{question_id}, choice: #{choice}"
+
+        # print all the questions in the database
+        # puts "SurveyQuestion.all: #{SurveyQuestion.all.inspect}"
+
+        # FIXME: Validation
+        question = SurveyQuestion.where(id: question_id).first!
+        # puts "question: #{question.inspect}"
+        SurveyAnswer.create(choice:, question:, response: @survey_response)
+      end
 
       respond_to do |format|
         if @survey_response.save
           format.html do
+            puts 'survey response created successfully'
             redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
           end
           format.json { render :show, status: :created, location: @survey_response }
@@ -74,22 +73,33 @@ class SurveyResponsesController < ApplicationController
 
   # PATCH/PUT /survey_responses/1 or /survey_responses/1.json
   def update
-    if survey_response_params.values.any?(&:nil?)
-      respond_to do |format|
-        format.html do
-          redirect_to edit_survey_response_url(@survey_response), notice: 'invalid form', status: :unprocessable_entity
-        end
-        format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
-      end
-    else
-      respond_to do |format|
-        if @survey_response.update(survey_response_params)
-          format.html do
-            redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
-          end
-          format.json { render :show, status: :ok, location: @survey_response }
+    return respond_with_error 'invalid form' if survey_response_params.values.any?(&:nil?)
 
+    begin
+      # FIXME: Validation
+      get_user_profile_from_params(survey_response_params)
+    rescue ActiveRecord::RecordNotFound
+      return respond_with_error 'invalid user id'
+    end
+
+    respond_to do |format|
+      survey_response_params.each do |question_id, choice|
+        next if question_id == 'user_id'
+
+        begin
+          # FIXME: Validation
+          question = SurveyQuestion.where(id: question_id).first!
+          answer = SurveyAnswer.where(question:, response: @survey_response).first!
+        rescue ApplicationRecord::RecordNotFound
+          return respond_with_error 'invalid question or answer'
         end
+
+        answer.update(choice:)
+      end
+
+      format.html do
+        redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
+        format.json { render :show, status: :ok, location: @survey_response }
       end
     end
   end
@@ -107,13 +117,40 @@ class SurveyResponsesController < ApplicationController
   private
 
   # Use callbacks to share common setup or constraints between actions.
-  def set_survey_response
+  def set_survey_data
     @survey_response = SurveyResponse.find(params[:id])
+    @questions = @survey_response.questions
+  end
+
+  def set_survey_sections
+    @sections = [
+      {
+        title: 'Part 1: Leadership Behavior - Management',
+        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
+      },
+      {
+        title: 'Part 2: Leadership Behavior - Interpersonal',
+        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
+      }
+    ]
+  end
+
+  def get_user_profile_from_params(params)
+    SurveyProfile.where(user_id: params[:user_id]).first!
+    # params.delete(:user_id)
+  end
+
+  def respond_with_error(message, status = :unprocessable_entity)
+    respond_to do |format|
+      format.html do
+        redirect_to new_survey_response_url, notice: message, status:
+      end
+      format.json { render json: { error: message }, status: }
+    end
   end
 
   # Only allow a list of trusted parameters through.
   def survey_response_params
-    params.require(:survey_response).permit(:user_id, :leads_by_example, :ability_to_juggle, :communicator,
-                                            :lifelong_learner, :high_expectations, :cooperative, :empathetic, :people_oriented)
+    params.require(:survey_response).permit! # FIXME: Figure out how to use strong params with new model
   end
 end

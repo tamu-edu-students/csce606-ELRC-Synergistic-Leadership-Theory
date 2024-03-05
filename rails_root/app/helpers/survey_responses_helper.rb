@@ -4,10 +4,8 @@
 module SurveyResponsesHelper
   # method to calculate the average score of a survey response
   def average_score(survey_response)
-    score_fields = %i[leads_by_example ability_to_juggle communicator lifelong_learner high_expectations
-                      cooperative empathetic people_oriented]
-    scores = score_fields.map { |field| survey_response.send(field) }
-    scores.sum.to_f / scores.size
+    # returns the average score of the survey response
+    survey_response.answers.average(:choice).to_f
   end
 
   # method to format the date of a survey response
@@ -17,7 +15,7 @@ module SurveyResponsesHelper
 
   #  method to find the user of a survey response
   def user_of_response(survey_response)
-    # returns user_id of the survey response
-    survey_response.user_id
+    # returns profile_id of the survey response
+    survey_response.profile_id
   end
 end

@@ -10,12 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_17_001343) do
-  create_table "posts", force: :cascade do |t|
-    t.string "title"
-    t.text "body"
+ActiveRecord::Schema[7.1].define(version: 2024_02_28_022158) do
+  create_table "survey_answers", force: :cascade do |t|
+    t.integer "choice", null: false
+    t.integer "question_id", null: false
+    t.integer "response_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_survey_answers_on_question_id"
+    t.index ["response_id"], name: "index_survey_answers_on_response_id"
   end
 
   create_table "survey_profiles", force: :cascade do |t|
@@ -29,20 +32,23 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_001343) do
     t.index ["user_id"], name: "index_survey_profiles_on_user_id", unique: true
   end
 
-  create_table "survey_responses", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "leads_by_example"
-    t.integer "ability_to_juggle"
-    t.integer "communicator"
-    t.integer "lifelong_learner"
-    t.integer "high_expectations"
-    t.integer "cooperative"
-    t.integer "empathetic"
-    t.integer "people_oriented"
+  create_table "survey_questions", force: :cascade do |t|
+    t.text "text", null: false
+    t.text "explanation"
+    t.integer "section", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_survey_responses_on_user_id"
   end
 
+  create_table "survey_responses", force: :cascade do |t|
+    t.string "share_code"
+    t.integer "profile_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_survey_responses_on_profile_id"
+  end
+
+  add_foreign_key "survey_answers", "survey_questions", column: "question_id"
+  add_foreign_key "survey_answers", "survey_responses", column: "response_id"
+  add_foreign_key "survey_responses", "survey_profiles", column: "profile_id"
 end
-# rubocop:enable Metrics/BlockLength
