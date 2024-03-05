@@ -36,21 +36,32 @@ class SurveyResponsesController < ApplicationController
       begin
         # FIXME: Validation
         profile = get_user_profile_from_params(survey_response_params)
+        # puts "profile: #{profile.inspect}"
       rescue ActiveRecord::RecordNotFound
         return respond_with_error 'invalid user_id'
       end
       @survey_response = SurveyResponse.new(profile:)
+      # puts "survey_response: #{@survey_response.inspect}"
+
+      # puts "survey_response_params: #{survey_response_params.inspect}"
       survey_response_params.each do |question_id, choice|
         next if question_id == 'user_id'
 
+        # puts "question_id: #{question_id}, choice: #{choice}"
+
+        # print all the questions in the database
+        # puts "SurveyQuestion.all: #{SurveyQuestion.all.inspect}"
+
         # FIXME: Validation
         question = SurveyQuestion.where(id: question_id).first!
+        # puts "question: #{question.inspect}"
         SurveyAnswer.create(choice:, question:, response: @survey_response)
       end
 
       respond_to do |format|
         if @survey_response.save
           format.html do
+            puts 'survey response created successfully'
             redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
           end
           format.json { render :show, status: :created, location: @survey_response }

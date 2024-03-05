@@ -14,23 +14,44 @@ require 'rails_helper'
 # end
 
 RSpec.describe SurveyResponsesHelper, type: :helper do
+  # create other models necessary for testing survey_responses_helper
+
+  let(:survey_profile) do
+    SurveyProfile.create!(
+      user_id: 1,
+      first_name: 'John',
+      last_name: 'Doe',
+      campus_name: 'Main',
+      district_name: 'District'
+    )
+  end
+
   let(:survey_response) do
     SurveyResponse.create!(
-      user_id: 1,
-      leads_by_example: 1,
-      ability_to_juggle: 1,
-      communicator: 1,
-      lifelong_learner: 1,
-      high_expectations: 1,
-      cooperative: 1,
-      empathetic: 1,
-      people_oriented: 1
+      profile_id: survey_profile.id,
+      share_code: '123'
+    )
+  end
+
+  let(:survey_question) do
+    SurveyQuestion.create!(
+      text: 'Question',
+      section: 1
+    )
+  end
+
+  let(:survey_answer) do
+    SurveyAnswer.create!(
+      choice: 1,
+      question_id: survey_question.id,
+      response_id: survey_response.id
     )
   end
 
   describe '#average_score' do
     it 'returns the average score of a survey response' do
-      expect(helper.average_score(survey_response)).to eq(1.0)
+      # returns average score of the survey response answers
+      expect(helper.average_score(survey_response)).to eq(survey_response.answers.average(:choice).to_f)
     end
   end
 
@@ -44,7 +65,7 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
 
   describe '#user_of_response' do
     it 'returns the user of a survey response' do
-      expect(helper.user_of_response(survey_response)).to eq(survey_response.user_id)
+      expect(helper.user_of_response(survey_response)).to eq(survey_response.profile_id)
     end
   end
 end

@@ -15,6 +15,7 @@
     <%= form.number_field :user_id, :value => user_id %>
   </div>
   <div>
+    <% if @sections.present? %>
     <% @sections.each_with_index do |section, idx| %>
       <h2><%= section[:title] %></h2>
       <p><%= section[:prompt] %></p>
@@ -38,6 +39,7 @@
           </tr>
         <% end %>
       </table>
+    <% end %>
     <% end %>
   </div>
   <div>
