@@ -14,16 +14,17 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe '/survey_questions', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # SurveyQuestion. As you add validations to SurveyQuestion, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    { text: 'What is your name?', section: 1 }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    { text: '', section: 1 }
   end
 
   describe 'GET /index' do
@@ -88,14 +89,14 @@ RSpec.describe '/survey_questions', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        { text: 'What is your major?', section: 1 }
       end
 
       it 'updates the requested survey_question' do
         survey_question = SurveyQuestion.create! valid_attributes
         patch survey_question_url(survey_question), params: { survey_question: new_attributes }
         survey_question.reload
-        skip('Add assertions for updated state')
+        expect(survey_question.text).to eq('What is your major?')
       end
 
       it 'redirects to the survey_question' do
@@ -130,3 +131,4 @@ RSpec.describe '/survey_questions', type: :request do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

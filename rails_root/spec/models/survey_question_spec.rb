@@ -3,5 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe SurveyQuestion, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'validates the presence of text' do
+    question = SurveyQuestion.new
+    question.valid?
+    expect(question.errors[:text]).to include("can't be blank")
+  end
 end

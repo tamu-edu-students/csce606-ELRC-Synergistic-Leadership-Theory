@@ -3,5 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe SurveyAnswer, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'belongs to a question' do
+    survey_answer = SurveyAnswer.new
+    expect(survey_answer).to respond_to(:question)
+  end
+
+  it 'belongs to a response' do
+    survey_answer = SurveyAnswer.new
+    expect(survey_answer).to respond_to(:response)
+  end
 end

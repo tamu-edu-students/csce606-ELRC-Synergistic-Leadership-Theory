@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 # Controller for survey responses
 class SurveyResponsesController < ApplicationController
   before_action :set_survey_data, only: %i[show edit update destroy]
@@ -24,49 +25,55 @@ class SurveyResponsesController < ApplicationController
 
   # POST /survey_responses or /survey_responses.json
   def create
-    # If any of the survey_response_params values are nil, then the form is invalid
-    if survey_response_params.values.any? { |value| value.nil? || value.empty? }
-      respond_to do |format|
-        format.html do
-          redirect_to new_survey_response_url, notice: 'invalid form', status: :unprocessable_entity
-        end
-        format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
-      end
+    if invalid_form?
+      handle_invalid_form
     else
-      begin
-        # FIXME: Validation
-        profile = get_user_profile_from_params(survey_response_params)
-        # puts "profile: #{profile.inspect}"
-      rescue ActiveRecord::RecordNotFound
-        return respond_with_error 'invalid user_id'
+      create_survey_response
+    end
+  end
+
+  def invalid_form?
+    survey_response_params.values.any? { |value| value.nil? || value.empty? }
+  end
+
+  def handle_invalid_form
+    respond_to do |format|
+      format.html do
+        redirect_to new_survey_response_url, notice: 'invalid form', status: :unprocessable_entity
       end
-      @survey_response = SurveyResponse.new(profile:)
-      # puts "survey_response: #{@survey_response.inspect}"
+      format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
+    end
+  end
 
-      # puts "survey_response_params: #{survey_response_params.inspect}"
-      survey_response_params.each do |question_id, choice|
-        next if question_id == 'user_id'
+  def create_survey_response
+    begin
+      profile = get_user_profile_from_params(survey_response_params)
+    rescue ActiveRecord::RecordNotFound
+      return respond_with_error 'invalid user_id'
+    end
+    @survey_response = SurveyResponse.new(profile:)
 
-        # puts "question_id: #{question_id}, choice: #{choice}"
+    create_survey_answers
 
-        # print all the questions in the database
-        # puts "SurveyQuestion.all: #{SurveyQuestion.all.inspect}"
+    save_survey_response
+  end
 
-        # FIXME: Validation
-        question = SurveyQuestion.where(id: question_id).first!
-        # puts "question: #{question.inspect}"
-        SurveyAnswer.create(choice:, question:, response: @survey_response)
-      end
+  def create_survey_answers
+    survey_response_params.each do |question_id, choice|
+      next if question_id == 'user_id'
 
-      respond_to do |format|
-        if @survey_response.save
-          format.html do
-            puts 'survey response created successfully'
-            redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
-          end
-          format.json { render :show, status: :created, location: @survey_response }
+      question = SurveyQuestion.where(id: question_id).first!
+      SurveyAnswer.create(choice:, question:, response: @survey_response)
+    end
+  end
 
+  def save_survey_response
+    respond_to do |format|
+      if @survey_response.save
+        format.html do
+          redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
         end
+        format.json { render :show, status: :created, location: @survey_response }
       end
     end
   end
@@ -154,3 +161,5 @@ class SurveyResponsesController < ApplicationController
     params.require(:survey_response).permit! # FIXME: Figure out how to use strong params with new model
   end
 end
+
+# rubocop:enable Metrics/ClassLength

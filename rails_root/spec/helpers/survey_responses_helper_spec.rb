@@ -13,6 +13,8 @@ require 'rails_helper'
 #   end
 # end
 
+# rubocop:disable Metrics/BlockLength
+
 RSpec.describe SurveyResponsesHelper, type: :helper do
   # create other models necessary for testing survey_responses_helper
 
@@ -69,3 +71,5 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     end
   end
 end
+
+# rubocop:enable Metrics/BlockLength
