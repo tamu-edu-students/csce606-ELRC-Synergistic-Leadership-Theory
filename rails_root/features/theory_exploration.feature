@@ -5,3 +5,8 @@ Feature: Theory Exploration
         Given I am on the site
         When I visit about page
         Then I can read about theory information
+
+    Scenario: Verify tetrahedron rendering
+        Given I am on the site
+        When I visit about page
+        Then I can see the tetrahedron

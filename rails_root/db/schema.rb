@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_28_022158) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_06_203543) do
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -29,7 +29,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_28_022158) do
   end
 
   create_table "survey_profiles", force: :cascade do |t|
-    t.integer "user_id"
+    t.integer "user_id", null: false
     t.string "first_name"
     t.string "last_name"
     t.string "campus_name"
