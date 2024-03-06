@@ -1,20 +1,22 @@
-Feature: Establish Project Data Models
+Feature: Reworked Project Data Models
     Verify the correctness of the data models
 
     Scenario: Invalid model attributes
-        Given questions exist
-        And I have a set of invalid attributes
+        Given I have an invalid set of attributes for all models
         When I try to create model instances
         | model_name     |
+        | SurveyQuestion |
         | SurveyProfile  |
         | SurveyResponse |
-        Then the model was not created
+        | SurveyAnswer   |
+        Then the models were not created
 
     Scenario: Valid model attributes
-        Given questions exist
-        And I have a set of valid attributes
+        Given I have an valid set of attributes for all models
         When I try to create model instances
         | model_name     |
+        | SurveyQuestion |
         | SurveyProfile  |
         | SurveyResponse |
-        Then the model was created
+        | SurveyAnswer   |
+        Then the models were created

@@ -32,24 +32,26 @@ Given('questions exist') do
 end
 
 Given('I have a set of invalid attributes') do
-  @survey_profiles_attributes = {}
+  @model_attributes = {}
+  @model_attributes['SurveyProfile'] = {}
   SurveyProfile.column_names.each do |name|
-    @survey_profiles_attributes[name] = nil if name != 'id' && name != 'created_at' && name != 'updated_at'
+    @model_attributes['SurveyProfile'][name] = nil if name != 'id' && name != 'created_at' && name != 'updated_at'
   end
-  @survey_responses_attributes = {}
+
+  @model_attributes['SurveyResponse'] = {}
   SurveyResponse.column_names.each do |name|
-    @survey_responses_attributes[name] = nil if name != 'id' && name != 'created_at' && name != 'updated_at'
+    @model_attributes['SurveyResponse'][name] = nil if name != 'id' && name != 'created_at' && name != 'updated_at'
   end
 end
 
 Given('I have a set of valid attributes') do
-  @survey_profiles_attributes = {}
+  @model_attributes = {}
+
+  @model_attributes['SurveyProfile'] = {}
   SurveyProfile.column_names.each do |name|
-    @survey_profiles_attributes[name] = 10 if name != 'created_at' && name != 'updated_at'
+    @model_attributes['SurveyProfile'][name] = 10 if name != 'created_at' && name != 'updated_at'
   end
-  @survey_responses_attributes = {}
-  SurveyQuestion.all.each do |question|
-    @survey_responses_attributes[question.id.to_s] = 1
-  end
-  @survey_responses_attributes['user_id'] = 10
+
+  @model_attributes['SurveyResponse'] = {}
+  @model_attributes['SurveyResponse']['profile_id'] = 10
 end
