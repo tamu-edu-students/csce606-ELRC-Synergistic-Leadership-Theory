@@ -10,6 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+ActiveRecord::Schema[7.1].define(version: 2024_03_06_203543) do
+  create_table "posts", force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "survey_answers", force: :cascade do |t|
+    t.integer "choice", null: false
+    t.integer "question_id", null: false
+    t.integer "response_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_survey_answers_on_question_id"
+    t.index ["response_id"], name: "index_survey_answers_on_response_id"
 ActiveRecord::Schema[7.1].define(version: 20_240_306_203_543) do
   create_table 'posts', force: :cascade do |t|
     t.string 'title'
