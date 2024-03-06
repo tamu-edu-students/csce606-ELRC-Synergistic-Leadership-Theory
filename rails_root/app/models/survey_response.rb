@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# This is the model for the SurveyResponse
 class SurveyResponse < ApplicationRecord
   has_many :answers,
            foreign_key: :response_id,

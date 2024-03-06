@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# This is the controller for the SurveyQuestions
 class SurveyQuestionsController < ApplicationController
   before_action :set_survey_question, only: %i[show edit update destroy]
 

@@ -2,16 +2,13 @@
 
 require 'rails_helper'
 
-# Specs in this file have access to a helper object that includes
-# the SurveyQuestionsHelper. For example:
-#
-# describe SurveyQuestionsHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
 RSpec.describe SurveyQuestionsHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  # survey question helper functions
+  # returns the question text
+  describe '#question_text' do
+    it 'returns the question text' do
+      question = SurveyQuestion.new(text: 'What is your name?')
+      expect(helper.question_text(question)).to eq('What is your name?')
+    end
+  end
 end
