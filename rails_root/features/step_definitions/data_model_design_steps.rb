@@ -1,8 +1,19 @@
 # frozen_string_literal: true
 
-When('I try to create model instances') do
-  post survey_profiles_url, survey_profile: @survey_profiles_attributes
-  post survey_responses_url, survey_response: @survey_responses_attributes
+When('I try to create model instances') do |table|
+  table.hashes.each do |model|
+    @attributes = @model_attributes[model['model_name']]
+
+    if @attributes.values.any?(&:nil?)
+      expect do
+        model['model_name'].constantize.create!(@attributes)
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::NotNullViolation => e
+        raise "Expected exception: #{e.class.name}"
+      end.to raise_error(/Expected exception: (ActiveRecord::RecordInvalid|ActiveRecord::NotNullViolation)/)
+    else
+      model['model_name'].constantize.create!(@attributes)
+    end
+  end
 end
 
 Then('the model was not created') do
