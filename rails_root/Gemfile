@@ -51,10 +51,10 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop'
   gem 'rubocop-rails'
+  gem 'rubycritic', require: false
   gem 'selenium-webdriver'
   gem 'simplecov', require: false
   gem 'sqlite3', '~> 1.4'
-  gem 'rubycritic', require: false
 end
 
 group :development do
