@@ -55,3 +55,8 @@ Given('I have a set of valid attributes') do
   @model_attributes['SurveyResponse'] = {}
   @model_attributes['SurveyResponse']['profile_id'] = 10
 end
+
+Given('survey profiles exist') do
+  SurveyProfile.create!(user_id: 1)
+  SurveyProfile.create!(user_id: 2)
+end

@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
 # Controller for survey responses
+
+# rubocop:disable Metrics/ClassLength
 class SurveyResponsesController < ApplicationController
   before_action :set_survey_data, only: %i[show edit update destroy]
   before_action :set_survey_sections, only: %i[show edit update new]
 
   # GET /survey_responses or /survey_responses.json
   def index
-    @survey_responses = SurveyResponse.all
+    if params[:query].present?
+      @survey_responses = SurveyResponse.where(share_code: params[:query])
+      flash[:warning] = "No survey responses found for share code #{params[:query]}" if @survey_responses.empty?
+    else
+      @survey_responses = SurveyResponse.all
+    end
   end
 
   # GET /survey_responses/1 or /survey_responses/1.json
@@ -50,7 +57,8 @@ class SurveyResponsesController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       return respond_with_error 'invalid user_id'
     end
-    @survey_response = SurveyResponse.new(profile:)
+    # create new survey response with unique share code
+    @survey_response = SurveyResponse.new(profile:, share_code: SecureRandom.hex(3))
 
     create_survey_answers
 
@@ -161,3 +169,4 @@ class SurveyResponsesController < ApplicationController
     params.require(:survey_response).permit! # FIXME: Figure out how to use strong params with new model
   end
 end
+# rubocop:enable Metrics/ClassLength
