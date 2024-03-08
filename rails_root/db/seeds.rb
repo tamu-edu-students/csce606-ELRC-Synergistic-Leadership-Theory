@@ -10,6 +10,8 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+require 'json'
+
 # seed data for the survey_profiles table
 
 SurveyProfile.create!([
@@ -27,13 +29,17 @@ SurveyProfile.all.each do |survey_profile|
   SurveyResponse.create!(profile: survey_profile, share_code: "debug#{survey_profile.user_id}")
 end
 
-question = SurveyQuestion.create!(text: 'Leads by Example', explanation: 'This is a placeholder.', section: 0)
-SurveyQuestion.create!(text: 'Empowers Others', explanation: 'This is a placeholder.', section: 1)
-SurveyQuestion.create!(text: 'Builds Relationships', explanation: 'This is a placeholder.', section: 2)
-SurveyQuestion.create!(text: 'Communicates Effectively', explanation: 'This is a placeholder.', section: 3)
+
+file_path = Rails.root.join('db', 'seeds', 'questionnaire.json')
+data = JSON.parse(File.read(file_path))
+data.each do |item|
+  SurveyQuestion.create!(text: item['text'], explanation: item['explanation'], section: item['section'])
+end
+
 
 SurveyResponse.all.each_with_index do |response, idx|
-  SurveyAnswer.create!(choice: idx, question:, response:)
+  SurveyAnswer.create!(choice: idx, question: SurveyQuestion.first, response: response)
+
 end
 
 # Path: csce606-ELRC-Synergistic-Leadership-Theory/rails_root/db/schema.rb

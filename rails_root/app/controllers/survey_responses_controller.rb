@@ -144,8 +144,21 @@ class SurveyResponsesController < ApplicationController
         prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
       },
       {
-        title: 'Part 2: Leadership Behavior - Interpersonal',
+        title: 'Part 1: Leadership Behavior - Interpersonal',
         prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
+      },
+      {
+        title: 'Part 2. External Forces',
+        prompt: 'To what extent do you believe your board or immediate superior agrees to the importance of the following?'
+      },
+      {
+        title: 'Part 3. Organizational Structure',
+        prompt: 'To what extent do you agree the following characteristics apply to your organization?'
+      },
+      {
+        title: 'Part 4. Values, Attitudes, and Beliefs',
+        prompt: '#84-91. To what extent do you agree the following characteristics apply to you as the leader? #92-96. To what extent do you agree the following apply to your external community
+        (board, management, citizens)?'
       }
     ]
   end
