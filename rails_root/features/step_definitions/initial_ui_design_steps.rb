@@ -28,3 +28,24 @@ end
 Then('I can see {string}') do |string|
   expect(page).to have_content(string)
 end
+
+Given('the survey profiles exist:') do |table|
+  table.hashes.each do |profile|
+    SurveyProfile.create profile
+  end
+end
+
+Given('user {int} responses to question {string}') do |int, string|
+  question = SurveyQuestion.find_by(text: string)
+  profile = SurveyProfile.find_by(user_id: int)
+  response = SurveyResponse.find_or_create_by!(profile: profile, share_code: "debug#{profile.user_id}")
+  SurveyAnswer.create!(choice: 0, question: question, response: response)
+
+end
+
+When('I am on the survey responses page of user {int}') do |int|
+  profile = SurveyProfile.find_by(user_id: int)
+  response = SurveyResponse.find_or_create_by!(profile: profile, share_code: "debug#{profile.user_id}")
+  puts survey_response_path(response)
+  visit survey_response_path(response)
+end
