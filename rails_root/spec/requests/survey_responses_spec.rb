@@ -114,7 +114,14 @@ RSpec.describe '/survey_responses', type: :request do
     end
 
     context 'with invalid parameters' do
-      it 'does not create a new SurveyResponse' do
+      it 'does not create a new SurveyResponse - bad attributes' do
+        expect do
+          post survey_responses_url, params: { survey_response: invalid_attributes }
+        end.to_not change(SurveyResponse, :count)
+      end
+
+      it 'does not create a new SurveyResponse - bad user' do
+        invalid_attributes[:profile_id] = 100_000
         expect do
           post survey_responses_url, params: { survey_response: invalid_attributes }
         end.to_not change(SurveyResponse, :count)
