@@ -17,7 +17,13 @@ with open(file_path1, 'r') as file1, open(file_path2, 'r') as file2, open(file_p
         file3.write('\t\t\"text\": "'+line1[:-1]+'",\n')
         file3.write('\t\t\"explanation\": "'+line2[:-1]+'",\n')
         file3.write('\t\t\"section\": '+str(section)+'\n')
-        file3.write('\t},\n')
+        if q_count == 96:
+            file3.write('\t}\n')
+        else:
+            file3.write('\t},\n')
+        
+        q_count+=1
+
     
 
 with open(file_path3, 'a') as file:
