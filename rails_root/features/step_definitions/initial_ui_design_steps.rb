@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# frozen_string_literal: true
 
 Given(/the following questions exist/) do |survey_questions_table|
   survey_questions_table.hashes.each do |question|
@@ -20,7 +19,7 @@ Then('I can see profile form') do
 end
 
 Then('I can see survey sections') do
-  ['Part 1','Part 2','Part 3','Part 4'].each do |string| 
+  ['Part 1', 'Part 2', 'Part 3', 'Part 4'].each do |string|
     expect(page).to have_content(string)
   end
 end
@@ -38,14 +37,13 @@ end
 Given('user {int} responses to question {string}') do |int, string|
   question = SurveyQuestion.find_by(text: string)
   profile = SurveyProfile.find_by(user_id: int)
-  response = SurveyResponse.find_or_create_by!(profile: profile, share_code: "debug#{profile.user_id}")
-  SurveyAnswer.create!(choice: 0, question: question, response: response)
-
+  response = SurveyResponse.find_or_create_by!(profile:, share_code: "debug#{profile.user_id}")
+  SurveyAnswer.create!(choice: 0, question:, response:)
 end
 
 When('I am on the survey responses page of user {int}') do |int|
   profile = SurveyProfile.find_by(user_id: int)
-  response = SurveyResponse.find_or_create_by!(profile: profile, share_code: "debug#{profile.user_id}")
+  response = SurveyResponse.find_or_create_by!(profile:, share_code: "debug#{profile.user_id}")
   puts survey_response_path(response)
   visit survey_response_path(response)
 end
