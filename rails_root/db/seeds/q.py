@@ -1,7 +1,7 @@
 # Paths to the files you want to open
 file_path1 = 'questions'
 file_path2 = 'explanations'
-file_path3 = 'questionaire.json'
+file_path3 = 'questionnaire.json'
 with open(file_path3, 'w') as file:
     file.write("[\n")
 
