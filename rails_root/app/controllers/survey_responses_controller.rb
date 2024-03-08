@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 # Controller for survey responses
 class SurveyResponsesController < ApplicationController
   before_action :set_survey_data, only: %i[show edit update destroy]
@@ -78,37 +77,38 @@ class SurveyResponsesController < ApplicationController
     end
   end
 
+  # logic removed because it is not used in the application
   # PATCH/PUT /survey_responses/1 or /survey_responses/1.json
   def update
-    return respond_with_error 'invalid form' if survey_response_params.values.any?(&:nil?)
+    # return respond_with_error 'invalid form' if survey_response_params.values.any?(&:nil?)
 
-    begin
-      # FIXME: Validation
-      get_user_profile_from_params(survey_response_params)
-    rescue ActiveRecord::RecordNotFound
-      return respond_with_error 'invalid user id'
-    end
+    # begin
+    #   # FIXME: Validation
+    #   get_user_profile_from_params(survey_response_params)
+    # rescue ActiveRecord::RecordNotFound
+    #   return respond_with_error 'invalid user id'
+    # end
 
-    respond_to do |format|
-      survey_response_params.each do |question_id, choice|
-        next if question_id == 'user_id'
+    # respond_to do |format|
+    #   survey_response_params.each do |question_id, choice|
+    #     next if question_id == 'user_id'
 
-        begin
-          # FIXME: Validation
-          question = SurveyQuestion.where(id: question_id).first!
-          answer = SurveyAnswer.where(question:, response: @survey_response).first!
-        rescue ApplicationRecord::RecordNotFound
-          return respond_with_error 'invalid question or answer'
-        end
+    #     begin
+    #       # FIXME: Validation
+    #       question = SurveyQuestion.where(id: question_id).first!
+    #       answer = SurveyAnswer.where(question:, response: @survey_response).first!
+    #     rescue ApplicationRecord::RecordNotFound
+    #       return respond_with_error 'invalid question or answer'
+    #     end
 
-        answer.update(choice:)
-      end
+    #     answer.update(choice:)
+    #   end
 
-      format.html do
-        redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
-        format.json { render :show, status: :ok, location: @survey_response }
-      end
-    end
+    #   format.html do
+    #     redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
+    #     format.json { render :show, status: :ok, location: @survey_response }
+    #   end
+    # end
   end
 
   # DELETE /survey_responses/1 or /survey_responses/1.json
@@ -161,5 +161,3 @@ class SurveyResponsesController < ApplicationController
     params.require(:survey_response).permit! # FIXME: Figure out how to use strong params with new model
   end
 end
-
-# rubocop:enable Metrics/ClassLength
