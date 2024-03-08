@@ -10,6 +10,8 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+require 'json'
+
 # seed data for the survey_profiles table
 
 # rubocop:disable Layout/LineLength
@@ -28,10 +30,16 @@ SurveyProfile.all.each do |survey_profile|
   SurveyResponse.create!(profile: survey_profile, share_code: "debug#{survey_profile.user_id}")
 end
 
-question = SurveyQuestion.create!(text: "Leads by Example", explanation: "This is a placeholder.", section: 0)
+file_path = Rails.root.join('db', 'seeds', 'questionnaire.json')
+data = JSON.parse(File.read(file_path))
+data.each do |item|
+  SurveyQuestion.create!(text: item['text'], explanation: item['explanation'], section: item['section'])
+end
+
 
 SurveyResponse.all.each_with_index do |response, idx|
-  SurveyAnswer.create!(choice: idx, question: question, response: response)
+  SurveyAnswer.create!(choice: idx, question: SurveyQuestion.first, response: response)
+  # SurveyAnswer.create!(choice: idx, question: question2, response: response)
 end
 
 # rubocop:enable Layout/LineLength

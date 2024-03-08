@@ -9,4 +9,5 @@ Feature: Initial UI Design
     Scenario: Verify survey form page
         Given I am on the site
         When I visit survey form page
-        Then I can see survey form
+        Then I can see survey sections
+        And I can see survey questions
