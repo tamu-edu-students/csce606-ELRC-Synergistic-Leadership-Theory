@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given('I have an invalid set of attributes for all models') do
   @model_attributes = {}
 

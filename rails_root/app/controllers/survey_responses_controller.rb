@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # Controller for survey responses
+
+# rubocop:disable Metrics/ClassLength
 class SurveyResponsesController < ApplicationController
   before_action :set_survey_data, only: %i[show edit update destroy]
   before_action :set_survey_sections, only: %i[show edit update new]
@@ -167,3 +169,4 @@ class SurveyResponsesController < ApplicationController
     params.require(:survey_response).permit! # FIXME: Figure out how to use strong params with new model
   end
 end
+# rubocop:enable Metrics/ClassLength
