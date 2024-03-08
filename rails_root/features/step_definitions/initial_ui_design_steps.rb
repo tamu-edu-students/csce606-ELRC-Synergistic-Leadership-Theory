@@ -1,4 +1,11 @@
 # frozen_string_literal: true
+# frozen_string_literal: true
+
+Given(/the following questions exist/) do |survey_questions_table|
+  survey_questions_table.hashes.each do |question|
+    SurveyQuestion.create question
+  end
+end
 
 When('I visit survey profile page') do
   visit new_survey_profile_path
@@ -18,8 +25,6 @@ Then('I can see survey sections') do
   end
 end
 
-Then('I can see survey questions') do
-  ['Leads by example','Cooperative','Emphasis on collegiality','Utilizes system','Emphasis on professional growth'].each do |string| 
-    expect(page).to have_content(string)
-  end
+Then('I can see {string}') do |string|
+  expect(page).to have_content(string)
 end
