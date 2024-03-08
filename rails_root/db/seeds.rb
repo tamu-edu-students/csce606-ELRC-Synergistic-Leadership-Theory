@@ -14,7 +14,6 @@ require 'json'
 
 # seed data for the survey_profiles table
 
-# rubocop:disable Layout/LineLength
 SurveyProfile.create!([
                         { user_id: 5, first_name: 'John', last_name: 'Doe', campus_name: 'Campus 1',
                           district_name: 'District 1' },
@@ -30,6 +29,7 @@ SurveyProfile.all.each do |survey_profile|
   SurveyResponse.create!(profile: survey_profile, share_code: "debug#{survey_profile.user_id}")
 end
 
+
 file_path = Rails.root.join('db', 'seeds', 'questionnaire.json')
 data = JSON.parse(File.read(file_path))
 data.each do |item|
@@ -39,10 +39,8 @@ end
 
 SurveyResponse.all.each_with_index do |response, idx|
   SurveyAnswer.create!(choice: idx, question: SurveyQuestion.first, response: response)
-  # SurveyAnswer.create!(choice: idx, question: question2, response: response)
-end
 
-# rubocop:enable Layout/LineLength
+end
 
 # Path: csce606-ELRC-Synergistic-Leadership-Theory/rails_root/db/schema.rb
 # This file is auto-generated from the current state of the database. Instead
