@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_06_203543) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_09_005858) do
+  create_table "invitations", force: :cascade do |t|
+    t.integer "survey_response_id", null: false
+    t.integer "created_by_id", null: false
+    t.boolean "visited"
+    t.datetime "last_sent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_invitations_on_created_by_id"
+    t.index ["survey_response_id"], name: "index_invitations_on_survey_response_id"
+  end
+
   create_table "survey_answers", force: :cascade do |t|
     t.integer "choice", null: false
     t.integer "question_id", null: false
@@ -48,6 +59,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_203543) do
     t.index ["profile_id"], name: "index_survey_responses_on_profile_id"
   end
 
+  add_foreign_key "invitations", "survey_profiles", column: "created_by_id"
+  add_foreign_key "invitations", "survey_responses"
   add_foreign_key "survey_answers", "survey_questions", column: "question_id"
   add_foreign_key "survey_answers", "survey_responses", column: "response_id"
   add_foreign_key "survey_responses", "survey_profiles", column: "profile_id"

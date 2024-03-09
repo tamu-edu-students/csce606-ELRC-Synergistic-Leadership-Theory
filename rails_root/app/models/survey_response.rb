@@ -15,4 +15,6 @@ class SurveyResponse < ApplicationRecord
 
   belongs_to :profile,
              class_name: 'SurveyProfile'
+
+  has_many :invitations
 end
