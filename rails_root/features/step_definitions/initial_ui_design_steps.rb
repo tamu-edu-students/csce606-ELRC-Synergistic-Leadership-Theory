@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# frozen_string_literal: true
 
 Given(/the following questions exist/) do |survey_questions_table|
   survey_questions_table.hashes.each do |question|
@@ -20,7 +19,7 @@ Then('I can see profile form') do
 end
 
 Then('I can see survey sections') do
-  ['Part 1','Part 2','Part 3','Part 4'].each do |string| 
+  ['Part 1', 'Part 2', 'Part 3', 'Part 4'].each do |string|
     expect(page).to have_content(string)
   end
 end
