@@ -3,9 +3,5 @@
 <p>You were invited by <%= @invitation.created_by.first_name %> <%= @invitation.created_by.last_name %>.</p>
 
 <p>
-  <%= button_to "Take the Survey", survey_response_path(@invitation.survey_response) %>
+  <%= link_to "Take the Survey", survey_response_path(@invitation.survey_response), class: 'button-class' %>
 </p>
-
-<% if flash[:notice] %>
-  <p><%= flash[:notice] %></p>
-<% end %>

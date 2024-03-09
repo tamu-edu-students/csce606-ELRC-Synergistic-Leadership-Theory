@@ -11,5 +11,7 @@ class InvitationsController < ApplicationController
 
   def show
     @invitation = Invitation.find(params[:id])
+    @invitation.update(visited: true)
+    # TODO: (minseo) maybe set the visited timestamp here?
   end
 end
