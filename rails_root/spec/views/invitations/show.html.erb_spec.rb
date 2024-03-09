@@ -16,6 +16,6 @@ RSpec.describe 'invitations/show', type: :view do
   end
 
   it 'displays a button to take the survey' do
-    expect(rendered).to have_selector("form[action=\"/survey_responses/#{@invitation.survey_response.id}\"]")
+    expect(rendered).to have_link('Take the Survey', href: survey_response_path(@invitation.survey_response.id))
   end
 end

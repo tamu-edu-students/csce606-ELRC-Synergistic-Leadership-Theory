@@ -18,7 +18,9 @@ class SurveyResponsesController < ApplicationController
   end
 
   # GET /survey_responses/1 or /survey_responses/1.json
-  def show; end
+  def show
+    flash.keep(:warning)
+  end
 
   # GET /survey_responses/new
   def new

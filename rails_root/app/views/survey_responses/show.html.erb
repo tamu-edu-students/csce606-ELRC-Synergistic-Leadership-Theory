@@ -1,100 +1,92 @@
 <p style="color: green"><%= notice %></p>
-
 <style>
-#summary{
-  margin-left: 6%;
-  margin-right: 6%;
-  font-weight: bold;
-  font-size: 1.25em;
-  color: #500000
-}
-#response {
-  font-family: Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  
-  width: 100%;
-}
+  #summary{
+    margin-left: 6%;
+    margin-right: 6%;
+    font-weight: bold;
+    font-size: 1.25em;
+    color: #500000
+  }
+  #response {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
 
-#response td, #customers th {
-  border: 0.5px solid #ddd;
-  width: 90%;
-  padding: 8px;
-}
+    width: 100%;
+  }
 
-#response tr:nth-child(even){background-color: #f2f2f2;}
+  #response td, #customers th {
+    border: 0.5px solid #ddd;
+    width: 90%;
+    padding: 8px;
+  }
 
-#response tr:hover {background-color: #ddd;}
+  #response tr:nth-child(even){background-color: #f2f2f2;}
 
-#response th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #04AA6D;
-  color: white;
-}
+  #response tr:hover {background-color: #ddd;}
+
+  #response th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
+  }
 </style>
-
 <% title = ["Part 1. Leadership Behavior - Management", "Part 1. Leadership Behavior - Interpersonal", "Part 2. External Forces", "Part 3. Organizational Structure", "Part 4. Values, Attitudes, and Beliefs"]%>
-</head>
-
+<%# </head> %>
 <center>
-<h1>Your leadership type is:</h1>
-<%= image_tag("https://upload.wikimedia.org/wikipedia/commons/7/70/Tetrahedron.gif", style: "width:400px;" ) %>
-<h2 style="margin-left:20%; margin-right:20%;"> This tetrahedron represents the alignment of the four factors based on your leadership behaviors to align the four factors.</h2>
-<p style="margin-left:20%; margin-right:20%; text-align:justify;">
-  The purpose of this qualitative study was to apply the Synergistic Leadership Theory (SLT) to the leadership experiences of five female superintendents leading successful school districts. The SLT is an interactive theory, which includes female experiences, but it applies to men and women. It provides a framework for leaders to align four factors that impact successful leadership: (a) attitudes, values, and beliefs; (b) leadership behaviors; (c) organizational structure; and (d) external forces. Four research questions guided my study: (a) What are the leadership behaviors of the superintendents? (b) Is the organizational structure of each district aligned with the superintendent’s leadership behaviors? (c) How do the leadership behaviors of the superintendent impact the relations between the district and the external forces? (d) Are the attitudes, values, and beliefs of the superintendent aligned to the attitudes, values, and beliefs of the school board member and the administrative team member
-</p>
-
-
-<% @survey_response = SurveyResponse.find(params[:id])%>
-
-<table style="width: 40%;">
-  <tr>
-    <td style="text-align:center"><h2>Your Response</h2></td>
-  </tr>
-  <% 5.times do |i|%>
-  <tr>
-    <td>
-      <details>
-        <summary id ="summary"><%= title[i]%></summary>
-      <table id="response">
-        <tbody>
-          <tr style="background-color: #500000; color: white; ">
-            <td><%= title[i]%></td>
-            <td>Response</td>
-          </tr>
-      
-        <% @survey_response.answers.map do |answer| %>
-          <% if answer.question.section == i%>
-          <tr>
-            <td>
-              <details>
-                <summary><%= answer.question.text %></summary>
-          
-                <%= answer.question.explanation %>
-              </details>
-            </td>
-            <td><%= answer.choice %></td>
-          </tr>
-          <%end%>
-        <% end %>
-        </tbody>
-      </table>
-      </details>
-    </td> 
-  </tr>
-  <%end%>
-</table>
-
-
-
-
-<br>
-
+  <h1>Your leadership type is:</h1>
+  <%= image_tag("https://upload.wikimedia.org/wikipedia/commons/7/70/Tetrahedron.gif", style: "width:400px;" ) %>
+  <h2 style="margin-left:20%; margin-right:20%;"> This tetrahedron represents the alignment of the four factors based on your leadership behaviors to align the four factors.</h2>
+  <p style="margin-left:20%; margin-right:20%; text-align:justify;">
+    The purpose of this qualitative study was to apply the Synergistic Leadership Theory (SLT) to the leadership experiences of five female superintendents leading successful school districts. The SLT is an interactive theory, which includes female experiences, but it applies to men and women. It provides a framework for leaders to align four factors that impact successful leadership: (a) attitudes, values, and beliefs; (b) leadership behaviors; (c) organizational structure; and (d) external forces. Four research questions guided my study: (a) What are the leadership behaviors of the superintendents? (b) Is the organizational structure of each district aligned with the superintendent’s leadership behaviors? (c) How do the leadership behaviors of the superintendent impact the relations between the district and the external forces? (d) Are the attitudes, values, and beliefs of the superintendent aligned to the attitudes, values, and beliefs of the school board member and the administrative team member
+  </p>
+  <% @survey_response = SurveyResponse.find(params[:id])%>
+  <table style="width: 40%;">
+    <tr>
+      <td style="text-align:center">
+        <h2>Your Response</h2>
+      </td>
+    </tr>
+    <% 5.times do |i|%>
+      <tr>
+        <td>
+          <details>
+            <summary id ="summary"><%= title[i]%></summary>
+            <table id="response">
+              <tbody>
+                <tr style="background-color: #500000; color: white; ">
+                  <td><%= title[i]%></td>
+                  <td>Response</td>
+                </tr>
+                <% @survey_response.answers.map do |answer| %>
+                  <% if answer.question.section == i%>
+                    <tr>
+                      <td>
+                        <details>
+                          <summary><%= answer.question.text %></summary>
+                          <%= answer.question.explanation %>
+                        </details>
+                      </td>
+                      <td><%= answer.choice %></td>
+                    </tr>
+                  <%end%>
+                <% end %>
+              </tbody>
+            </table>
+          </details>
+        </td>
+      </tr>
+    <%end%>
+  </table>
+  <br>
+  <p>
+    <%= button_to "Create Invitation", invitations_path(survey_response_share_code: @survey_response.share_code), method: :post, id: "invitation-button" %>
+  </p>
   <div>
     <%= link_to "Edit this survey response", edit_survey_response_path(@survey_response) %> |
     <%= link_to "Back to survey responses", survey_responses_path %>
-
     <%= button_to "Destroy this survey response", @survey_response, method: :delete %>
   </div>
+
 </center>
