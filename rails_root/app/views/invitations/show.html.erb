@@ -1,0 +1,11 @@
+<h1>You've been invited to take a survey (...or have you?)</h1>
+
+<p>You were invited by <%= @invitation.created_by.first_name %> <%= @invitation.created_by.last_name %>.</p>
+
+<p>
+  <%= button_to "Take the Survey", survey_response_path(@invitation.survey_response) %>
+</p>
+
+<% if flash[:notice] %>
+  <p><%= flash[:notice] %></p>
+<% end %>
