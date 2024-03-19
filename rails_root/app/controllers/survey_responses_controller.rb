@@ -33,50 +33,14 @@ class SurveyResponsesController < ApplicationController
 
   # POST /survey_responses or /survey_responses.json
   def create
-    if invalid_form?
-      handle_invalid_form
-    else
-      create_survey_response
-    end
-  end
+    return respond_with_error 'invalid_form' if invalid_form?
 
-  def invalid_form?
-    survey_response_params.values.any? { |value| value.nil? || value.empty? }
-  end
-
-  def handle_invalid_form
-    respond_to do |format|
-      format.html do
-        redirect_to new_survey_response_url, notice: 'invalid form', status: :unprocessable_entity
-      end
-      format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
-    end
-  end
-
-  def create_survey_response
     begin
-      profile = get_user_profile_from_params(survey_response_params)
+      @survey_response = SurveyResponse.create_from_params survey_response_params
     rescue ActiveRecord::RecordNotFound
-      return respond_with_error 'invalid user_id'
+      return respond_with_error 'invalid survey response'
     end
-    # create new survey response with unique share code
-    @survey_response = SurveyResponse.new(profile:, share_code: SecureRandom.hex(3))
 
-    create_survey_answers
-
-    save_survey_response
-  end
-
-  def create_survey_answers
-    survey_response_params.each do |question_id, choice|
-      next if question_id == 'user_id'
-
-      question = SurveyQuestion.where(id: question_id).first!
-      SurveyAnswer.create(choice:, question:, response: @survey_response)
-    end
-  end
-
-  def save_survey_response
     respond_to do |format|
       if @survey_response.save
         format.html do
@@ -90,35 +54,20 @@ class SurveyResponsesController < ApplicationController
   # logic removed because it is not used in the application
   # PATCH/PUT /survey_responses/1 or /survey_responses/1.json
   def update
-    # return respond_with_error 'invalid form' if survey_response_params.values.any?(&:nil?)
+    return respond_with_error 'invalid form' if invalid_form?
 
-    # begin
-    #   # FIXME: Validation
-    #   get_user_profile_from_params(survey_response_params)
-    # rescue ActiveRecord::RecordNotFound
-    #   return respond_with_error 'invalid user id'
-    # end
+    begin
+      @survey_response.update_from_params survey_response_params
+    rescue ActiveRecord::RecordNotFound
+      return respond_with_error 'invalid user id'
+    end
 
-    # respond_to do |format|
-    #   survey_response_params.each do |question_id, choice|
-    #     next if question_id == 'user_id'
-
-    #     begin
-    #       # FIXME: Validation
-    #       question = SurveyQuestion.where(id: question_id).first!
-    #       answer = SurveyAnswer.where(question:, response: @survey_response).first!
-    #     rescue ApplicationRecord::RecordNotFound
-    #       return respond_with_error 'invalid question or answer'
-    #     end
-
-    #     answer.update(choice:)
-    #   end
-
-    #   format.html do
-    #     redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
-    #     format.json { render :show, status: :ok, location: @survey_response }
-    #   end
-    # end
+    respond_to do |format|
+      format.html do
+        redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
+        format.json { render :show, status: :ok, location: @survey_response }
+      end
+    end
   end
 
   # DELETE /survey_responses/1 or /survey_responses/1.json
@@ -135,7 +84,7 @@ class SurveyResponsesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_survey_data
-    @survey_response = SurveyResponse.find(params[:id])
+    @survey_response = SurveyResponse.find params[:id]
     @questions = @survey_response.questions
   end
 
@@ -164,14 +113,17 @@ class SurveyResponsesController < ApplicationController
       {
         title: 'Part 4. Values, Attitudes, and Beliefs',
         prompt: 'To what extent do you agree the following apply to your external community
-        (board, management, citizens)?'
+          (board, management, citizens)?'
       }
     ]
   end
 
+  def invalid_form?
+    survey_response_params.values.any? { |value| value.nil? || value.empty? }
+  end
+
   def get_user_profile_from_params(params)
     SurveyProfile.where(user_id: params[:user_id]).first!
-    # params.delete(:user_id)
   end
 
   def respond_with_error(message, status = :unprocessable_entity)
