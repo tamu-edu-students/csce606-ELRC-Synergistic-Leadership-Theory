@@ -18,7 +18,6 @@
         <th>Name</th>
         <th>Share code</th>
         <th>Actions</th>
-        <th>Answers</th>
       </tr>
     </thead>
     <tbody>
@@ -28,9 +27,6 @@
           <td><%= response.profile.last_name %>, <%= response.profile.first_name %></td>
           <td><%= response.share_code%></td>
           <td><%= link_to "Show", response %></td>
-          <% response.answers.map do |answer| %>
-            <td><%= answer.choice %></td>
-          <% end %>
         </tr>
       <% end %>
     </tbody>
