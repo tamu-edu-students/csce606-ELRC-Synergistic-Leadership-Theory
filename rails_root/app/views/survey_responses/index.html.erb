@@ -1,15 +1,25 @@
 <p style="color: green"><%= notice %></p>
 
 <h1>Survey responses</h1>
-
-<%= form_with url: survey_responses_path, method: :get do %>
-  <div class="form-group">
-    <label for="query">Query by case number</label>
-    <%= text_field_tag :query, params[:query], class: 'form-control', id: 'query' %>
+<br>
+<div class="row d-flex justify-content-center">
+  <div class="col-8">
+    <%= form_with url: survey_responses_path, method: :get do %>
+      <div class="input-group">
+        <span class="input-group-text">Filter by Share Code</span>
+        <%= text_field_tag :query, params[:query],
+          {
+            class: 'form-control',
+            id: 'query',
+            "aria-label" => "Filter by Share Code"
+          }
+        %>
+        <%= submit_tag 'Search', class: 'btn btn-primary' %>
+      </div>
+    <% end %>
   </div>
-  <%= submit_tag 'Search', class: 'btn btn-primary' %>
-<% end %>
-
+</div>
+<br>
 <div class="table-responsive">
   <table class="table">
     <thead>
