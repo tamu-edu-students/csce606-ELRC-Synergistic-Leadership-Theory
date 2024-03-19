@@ -159,7 +159,11 @@ class SurveyResponsesController < ApplicationController
       },
       {
         title: 'Part 4. Values, Attitudes, and Beliefs',
-        prompt: '#84-91. To what extent do you agree the following characteristics apply to you as the leader? #92-96. To what extent do you agree the following apply to your external community
+        prompt: 'To what extent do you agree the following characteristics apply to you as the leader?'
+      },
+      {
+        title: 'Part 4. Values, Attitudes, and Beliefs',
+        prompt: 'To what extent do you agree the following apply to your external community
         (board, management, citizens)?'
       }
     ]
