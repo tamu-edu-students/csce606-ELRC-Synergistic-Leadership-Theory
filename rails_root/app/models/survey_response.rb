@@ -26,7 +26,7 @@ class SurveyResponse < ApplicationRecord
     survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
 
     params.each do |key, choice|
-      next if key == :user_id or key == 'user_id'
+      next if [:user_id, 'user_id'].include? key
 
       question = SurveyQuestion.find key
       SurveyAnswer.create choice:, question:, response: survey_response
@@ -39,7 +39,7 @@ class SurveyResponse < ApplicationRecord
     # FIXME: When we look up things and fail, we should use more descriptive exceptions instead of ActiveRecord::RecordNotFound
 
     params.each do |key, choice|
-      if key == :user_id or key == 'user_id'
+      if [:user_id, 'user_id'].include? key
         profile = SurveyProfile.where(user_id: params[:user_id]).first!
         update profile:
       else

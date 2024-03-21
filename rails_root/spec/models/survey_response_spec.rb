@@ -2,9 +2,7 @@
 
 require 'rails_helper'
 
-# RSpec.describe SurveyResponse, type: :model do
-#   pending "add some examples to (or delete) #{__FILE__}"
-# end
+# rubocop:disable Metrics/BlockLength
 RSpec.describe SurveyResponse, type: :model do
   context 'with valid params' do
     before do
@@ -22,8 +20,8 @@ RSpec.describe SurveyResponse, type: :model do
         section: 0
       }
 
-      @question = SurveyQuestion.where(id: 1).first() || SurveyQuestion.create!(question_params)
-      @profile = SurveyProfile.where(user_id: 1).first() || SurveyProfile.create!(profile_params)
+      @question = SurveyQuestion.where(id: 1).first || SurveyQuestion.create!(question_params)
+      @profile = SurveyProfile.where(user_id: 1).first || SurveyProfile.create!(profile_params)
     end
 
     after do
@@ -46,7 +44,7 @@ RSpec.describe SurveyResponse, type: :model do
         '1' => 0
       }
 
-      expect { SurveyResponse.create_from_params params }.to raise_error
+      expect { SurveyResponse.create_from_params params }.to raise_error ActiveRecord::RecordNotFound
     end
 
     it 'updating from valid params' do
@@ -71,10 +69,11 @@ RSpec.describe SurveyResponse, type: :model do
       }
 
       response = SurveyResponse.create_from_params params
-      expect {
+      expect do
         params['1'] = nil
         response.update_from_params params
-      }.to raise_error
+      end.to raise_error ActiveRecord::NotNullViolation
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

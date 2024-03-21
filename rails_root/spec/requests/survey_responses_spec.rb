@@ -38,14 +38,12 @@ RSpec.describe '/survey_responses', type: :request do
   end
 
   let(:valid_attributes) do
-    # skip('Add a hash of attributes valid for your model')
     {
       profile_id: survey_profile.user_id
     }
   end
 
   let(:invalid_attributes) do
-    # skip('Add a hash of attributes invalid for your model')
     # any value in form is null
     {
       profile_id: nil,
@@ -135,59 +133,72 @@ RSpec.describe '/survey_responses', type: :request do
   end
 
   # removed because it is not used in the application
-  # describe 'PATCH /update' do
-  #   context 'with valid parameters' do
-  #     let(:survey_question) do
-  #       SurveyQuestion.create!(
-  #         text: 'Question',
-  #         explanation: 'Explanation',
-  #         section: 1
-  #       )
-  #     end
+  describe 'PATCH /update' do
+    context 'with valid parameters' do
+      let(:survey_question) do
+        SurveyQuestion.create!(
+          text: 'Question',
+          explanation: 'Explanation',
+          section: 1
+        )
+      end
 
-  #     let(:survey_answer) do
-  #       SurveyAnswer.create!(
-  #         choice: 1,
-  #         question_id: survey_question.id,
-  #         response_id: survey_response.id
-  #       )
-  #     end
+      let(:new_attributes) do
+        {
+          user_id: survey_profile.user_id,
+          survey_question.id => 2
+        }
+      end
 
-  #     let(:new_attributes) do
+      it 'updates the requested survey_response answers' do
+        survey_answer = SurveyAnswer.create!(
+          choice: 1,
+          question: survey_question,
+          response: survey_response
+        )
 
-  #       {
-  #         survey_answers_attributes: [
+        patch survey_response_url(survey_response), params: { survey_response: new_attributes }
+        survey_answer.reload
+        expect(survey_answer.choice).to eq(2)
+      end
 
-  #           {
-  #             id: survey_answer.id,
-  #             choice: 2
-  #           }
-  #         ]
-  #       }
-  #     end
+      it 'redirects to the survey_response' do
+        SurveyAnswer.create!(
+          choice: 1,
+          question: survey_question,
+          response: survey_response
+        )
 
-  #     it 'updates the requested survey_response answers' do
-  #       patch survey_response_url(survey_response), params: { survey_response: new_attributes }
-  #       survey_answer.reload
-  #       expect(survey_answer.choice).to eq(2)
-  #     end
+        patch survey_response_url(survey_response), params: { survey_response: new_attributes }
+        survey_response.reload
+        expect(response).to redirect_to(survey_response_url(survey_response))
+      end
+    end
 
-  #     it 'redirects to the survey_response' do
-  #       survey_response = SurveyResponse.create! valid_attributes
-  #       patch survey_response_url(survey_response), params: { survey_response: new_attributes }
-  #       survey_response.reload
-  #       expect(response).to redirect_to(survey_response_url(survey_response))
-  #     end
-  #   end
+    context 'with invalid parameters' do
+      it "responds with status 422 for nil input" do
+        invalid_response = {
+          :user_id => nil,
+          '1' => 1
+        }
 
-  #   context 'with invalid parameters' do
-  #     it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-  #       survey_response = SurveyResponse.create! valid_attributes
-  #       patch survey_response_url(survey_response), params: { survey_response: invalid_attributes }
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #     end
-  #   end
-  # end
+        survey_response = SurveyResponse.create! valid_attributes
+        patch survey_response_url(survey_response), params: { survey_response: invalid_response }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "responds with status 422 for invalid user id" do
+        invalid_response = {
+          :user_id => -1,
+          '1' => 1
+        }
+
+        survey_response = SurveyResponse.create! valid_attributes
+        patch survey_response_url(survey_response), params: { survey_response: invalid_response }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
 
   describe 'DELETE /destroy' do
     it 'destroys the requested survey_response' do

@@ -42,12 +42,12 @@ class SurveyResponsesController < ApplicationController
     end
 
     respond_to do |format|
-      if @survey_response.save
-        format.html do
-          redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
-        end
-        format.json { render :show, status: :created, location: @survey_response }
+      @survey_response.save
+
+      format.html do
+        redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
       end
+      format.json { render :show, status: :created, location: @survey_response }
     end
   end
 
@@ -120,10 +120,6 @@ class SurveyResponsesController < ApplicationController
 
   def invalid_form?
     survey_response_params.values.any? { |value| value.nil? || value.empty? }
-  end
-
-  def get_user_profile_from_params(params)
-    SurveyProfile.where(user_id: params[:user_id]).first!
   end
 
   def respond_with_error(message, status = :unprocessable_entity)
