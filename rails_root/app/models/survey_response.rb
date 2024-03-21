@@ -23,10 +23,10 @@ class SurveyResponse < ApplicationRecord
     profile = SurveyProfile.where(user_id: params[:user_id]).first!
 
     # FIXME: Handle share code already existing
-    survey_response = SurveyResponse.new profile:, share_code: SecureRandom.hex(3)
+    survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
 
     params.each do |key, choice|
-      next if key == 'user_id'
+      next if key == :user_id or key == 'user_id'
 
       question = SurveyQuestion.find key
       SurveyAnswer.create choice:, question:, response: survey_response
@@ -37,10 +37,9 @@ class SurveyResponse < ApplicationRecord
 
   def update_from_params(params)
     # FIXME: When we look up things and fail, we should use more descriptive exceptions instead of ActiveRecord::RecordNotFound
-    print self
 
     params.each do |key, choice|
-      if key == 'user_id'
+      if key == :user_id or key == 'user_id'
         profile = SurveyProfile.where(user_id: params[:user_id]).first!
         update profile:
       else
