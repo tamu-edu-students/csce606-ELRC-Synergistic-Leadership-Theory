@@ -12,7 +12,7 @@ end
 
 # Analysis Result Presentation & Data Submission
 When('I try to submit the form') do
-  visit new_survey_response_path
+  visit survey_page_path(1)
   fill_in 'survey_response_user_id', with: @user_id
   @questions = SurveyQuestion.all
   @questions.each do |question|
