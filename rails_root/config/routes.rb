@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   get 'home/index'
   get 'about', to: 'about#index'
 
-  resources :survey_responses
+  get 'survey/page/:page', to: 'survey_responses#survey', as: 'survey_page'
+
+  resources :survey_responses, except: :new
   resources :survey_profiles
   resources :invitations, only: %i[show create]
 

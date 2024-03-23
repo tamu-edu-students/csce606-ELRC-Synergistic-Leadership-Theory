@@ -4,8 +4,10 @@
 
 # rubocop:disable Metrics/ClassLength
 class SurveyResponsesController < ApplicationController
+  include Pagination
+
   before_action :set_survey_data, only: %i[show edit update destroy]
-  before_action :set_survey_sections, only: %i[show edit update new]
+  before_action :set_survey_sections, only: %i[show edit update survey]
 
   # GET /survey_responses or /survey_responses.json
   def index
@@ -22,10 +24,10 @@ class SurveyResponsesController < ApplicationController
     flash.keep(:warning)
   end
 
-  # GET /survey_responses/new
-  def new
+  # GET /survey/page/:page
+  def survey
+    @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: params[:page] })
     @survey_response = SurveyResponse.new
-    @questions = SurveyQuestion
   end
 
   # GET /survey_responses/1/edit
@@ -125,7 +127,7 @@ class SurveyResponsesController < ApplicationController
   def respond_with_error(message, status = :unprocessable_entity)
     respond_to do |format|
       format.html do
-        redirect_to new_survey_response_url, notice: message, status:
+        redirect_to survey_page_path(1), notice: message, status:
       end
       format.json { render json: { error: message }, status: }
     end
