@@ -234,3 +234,9 @@ a {
     width: 3rem;
     height: 3rem;
 }
+
+.btn-passthrough {
+    border: none;
+    background: none;
+    color: inherit;
+  }

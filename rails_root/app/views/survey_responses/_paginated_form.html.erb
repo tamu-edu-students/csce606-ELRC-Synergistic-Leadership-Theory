@@ -1,0 +1,72 @@
+<%= form_with(model: response) do |form| %>
+  <% if response.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(response.errors.count, "error") %> prohibited this response from being saved:</h2>
+      <ul>
+        <% response.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div>
+    <%# FIXME: user_id should not be present in the form. %>
+    <%= form.label :user_id, style: "display: block" %>
+    <% user_id = @response.try(:profile).try(:user_id)%>
+    <%= form.number_field :user_id, :value => user_id %>
+  </div>
+  <div class="text-center">
+    <h2><%= @sections[@section][:title] %></h2>
+    <p><%= @sections[@section][:prompt] %></p>
+  </div>
+  <div class="row d-flex justify-content-center">
+    <div class="col-md-12 col-lg-8" style="height: 500px">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col" class="col-6"></th>
+            <th scope="col" class="col-1 text-center">Strongly Disagree</th>
+            <th scope="col" class="col-1 text-center">Disagree</th>
+            <th scope="col" class="col-1 text-center">Agree</th>
+            <th scope="col" class="col-1 text-center">Strongly Agree</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @questions.each_with_index do |question, idx| %>
+          <tr>
+            <td><%= question.text %></td>
+            <% 4.times do |i| %>
+              <% choice = response.answers.where(question: question).first.try(:choice) %>
+              <td class="text-center"><%= form.radio_button question.id, i, { checked: (i == choice) }%></td>
+            <% end %>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row d-flex justify-content-center">
+    <div class="col-lg-4 col-md-12">
+      <div class="input-group d-flex justify-content-center">
+        <% if  pagination.prev_page? %>
+          <%= link_to "Previous", survey_page_path(pagination.prev_page), class: "btn btn-outline-success" %>
+        <% else %>
+          <button class="btn" disabled>Previous</button>
+        <% end %>
+        <button class="btn" disabled><%= "Page #{pagination.page} of #{pagination.total_pages}" %></button>
+        <% if pagination.next_page? %>
+          <%= link_to "Next", survey_page_path(pagination.next_page), class: "btn btn-outline-success" %>
+        <% else %>
+          <button class="btn" disabled>Next</button>
+        <% end %>
+      </div>
+
+      <%# <%= form.submit %>
+    </div>
+    <div class="col-lg-1 col-md-12 col-sm-12 d-flex justify-content-center">
+      <%# <button class="btn btn-outline-danger">Save</button> %>
+      <%= form.submit "Save", class: "btn btn-outline-success" %>
+    </div>
+  </div>
+<% end %>
