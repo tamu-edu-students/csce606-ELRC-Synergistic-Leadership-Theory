@@ -67,11 +67,27 @@ RSpec.describe '/survey_responses', type: :request do
     end
   end
 
-  describe 'GET /new' do
-    it 'renders a successful response' do
-      get new_survey_response_url
-      expect(response).to be_successful
+  describe 'GET /survey/page/' do
+    context 'with valid parameters' do
+      let!(:survey_question) do
+        SurveyQuestion.create!(
+          text: 'Question',
+          section: 1
+        )
+      end
+
+      it 'renders a successful response' do
+        get survey_page_url(1)
+        expect(response).to be_successful
+      end
     end
+
+    # context 'with invalid parameters' do
+    #   it 'renders a successful response' do
+    #     get survey_page_url(1)
+    #     expect(response).to be_successful
+    #   end
+    # end
   end
 
   describe 'GET /edit' do
@@ -176,7 +192,7 @@ RSpec.describe '/survey_responses', type: :request do
     end
 
     context 'with invalid parameters' do
-      it "responds with status 422 for nil input" do
+      it 'responds with status 422 for nil input' do
         invalid_response = {
           :user_id => nil,
           '1' => 1
@@ -187,7 +203,7 @@ RSpec.describe '/survey_responses', type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      it "responds with status 422 for invalid user id" do
+      it 'responds with status 422 for invalid user id' do
         invalid_response = {
           :user_id => -1,
           '1' => 1
