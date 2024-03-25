@@ -7,7 +7,9 @@
     <h1>Welcome to Our Rails App</h1>
     <p>This is the custom home page of your application.</p>
     <h1>
-      <%= session[:userinfo]['name'] %>, welcome to Our Rails App
+      <% if session[:userinfo].present? %>
+        <%= session[:userinfo]['name'] %> - Welcome to Our Rails App
+      <% end %>
     </h1>
   
 </main>
