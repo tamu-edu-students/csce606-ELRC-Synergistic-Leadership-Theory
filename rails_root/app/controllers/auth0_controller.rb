@@ -7,6 +7,12 @@ class Auth0Controller < ApplicationController
     auth_info = request.env['omniauth.auth']
     session[:userinfo] = auth_info['extra']['raw_info']
 
+    # print session info
+    puts session[:userinfo]
+
+    # create new survey profile if the user is 'new'
+    # if no survey profile contains unique user_id, create a new survey profile
+
     # Redirect to the URL you want after successful auth
     redirect_to root_url
   end
