@@ -18,36 +18,42 @@ class SurveyResponse < ApplicationRecord
 
   has_many :invitations
 
-  def self.create_from_params(params)
+  def self.create_from_params(user_id, params)
     # FIXME: When we look up things and fail, we should use more descriptive exceptions instead of ActiveRecord::RecordNotFound
-    profile = SurveyProfile.where(user_id: params[:user_id]).first!
+    profile = SurveyProfile.where(user_id: user_id).first!
 
     # FIXME: Handle share code already existing
     survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
 
     params.each do |key, choice|
-      next if [:user_id, 'user_id'].include? key
+      begin
+        question = SurveyQuestion.find key
+      rescue ActiveRecord::RecordNotFound
+        next
+      end
 
-      question = SurveyQuestion.find key
       SurveyAnswer.create choice:, question:, response: survey_response
     end
 
     survey_response
   end
 
-  def update_from_params(params)
+  def update_from_params(user_id, params)
     # FIXME: When we look up things and fail, we should use more descriptive exceptions instead of ActiveRecord::RecordNotFound
 
-    params.each do |key, choice|
-      if [:user_id, 'user_id'].include? key
-        profile = SurveyProfile.where(user_id: params[:user_id]).first!
-        update profile:
-      else
-        question = SurveyQuestion.find key
-        answer = SurveyAnswer.where(question:, response: self).first!
+    profile = SurveyProfile.where(user_id: user_id).first!
 
-        answer.update choice:
+    params.each do |key, choice|
+      begin
+        question = SurveyQuestion.find key
+      rescue ActiveRecord::RecordNotFound
+        next
       end
+
+      answer = SurveyAnswer.where(question:, response: self).first!
+      answer.update choice:
     end
   end
+
+  # TODO: Create a new function that either updates existing SurveyAnswers or adds new SurveyAnswers if they do not exist
 end
