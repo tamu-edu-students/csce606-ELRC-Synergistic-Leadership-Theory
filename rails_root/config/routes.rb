@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'home/index'
   get 'about', to: 'about#index'
 
+  get 'survey', to: 'survey_responses#new', as: 'survey'
   get 'survey/page/:page', to: 'survey_responses#survey', as: 'survey_page'
 
   resources :survey_responses, except: :new

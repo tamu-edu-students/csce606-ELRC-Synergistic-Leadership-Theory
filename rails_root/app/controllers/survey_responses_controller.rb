@@ -7,7 +7,7 @@ class SurveyResponsesController < ApplicationController
   include Pagination
 
   before_action :set_survey_data, only: %i[show edit update destroy]
-  before_action :set_survey_sections, only: %i[show edit update survey]
+  before_action :set_survey_sections, only: %i[show edit update survey new]
 
   # GET /survey_responses or /survey_responses.json
   def index
@@ -24,10 +24,18 @@ class SurveyResponsesController < ApplicationController
     flash.keep(:warning)
   end
 
+  def new
+    @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: 1 })
+    @survey_response = SurveyResponse.new
+    session[:user_id] ||= 5 # FIXME: Update when we have authentication feature
+    render :survey
+  end
+
   # GET /survey/page/:page
   def survey
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: params[:page] })
     @survey_response = SurveyResponse.new
+    session[:user_id] ||= 5 # FIXME: Update when we have authentication feature
   end
 
   # GET /survey_responses/1/edit
@@ -37,31 +45,40 @@ class SurveyResponsesController < ApplicationController
   def create
     return respond_with_error 'invalid_form' if invalid_form?
 
+    # TODO: Retrieve SurveyResponse if session[:survey_id] exists, otherwise create
     begin
-      @survey_response = SurveyResponse.create_from_params survey_response_params
+      @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
     rescue ActiveRecord::RecordNotFound
       return respond_with_error 'invalid survey response'
     end
 
+    # TODO: If we did not create a SurveyResponse above, then we must use a function
+    #       that either adds a SurveyAnswer to the SurveyResponse or updates
+
     respond_to do |format|
       @survey_response.save
 
-      format.html do
-        redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
+      if params.include? :redirect_to
+        format.html do
+          redirect_to survey_page_url(params[:redirect_to])
+        end
+      else
+        format.html do
+          redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
+        end
+        format.json { render :show, status: :created, location: @survey_response }
       end
-      format.json { render :show, status: :created, location: @survey_response }
     end
   end
 
-  # logic removed because it is not used in the application
   # PATCH/PUT /survey_responses/1 or /survey_responses/1.json
   def update
     return respond_with_error 'invalid form' if invalid_form?
 
     begin
-      @survey_response.update_from_params survey_response_params
+      @survey_response.update_from_params session[:user_id], survey_response_params
     rescue ActiveRecord::RecordNotFound
-      return respond_with_error 'invalid user id'
+      return respond_with_error message: 'invalid user id', status: :not_found
     end
 
     respond_to do |format|
@@ -133,9 +150,8 @@ class SurveyResponsesController < ApplicationController
     end
   end
 
-  # Only allow a list of trusted parameters through.
   def survey_response_params
-    params.require(:survey_response).permit! # FIXME: Figure out how to use strong params with new model
+    params.require(:survey_response).permit!
   end
 end
 # rubocop:enable Metrics/ClassLength
