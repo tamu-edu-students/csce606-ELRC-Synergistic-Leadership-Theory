@@ -2,6 +2,7 @@
 
 # Controller for the survey_profiles resource
 class SurveyProfilesController < ApplicationController
+  include Secured
   before_action :set_survey_profile, only: %i[show edit update destroy]
 
   # GET /survey_profiles or /survey_profiles.json
@@ -23,6 +24,7 @@ class SurveyProfilesController < ApplicationController
   # POST /survey_profiles or /survey_profiles.json
   def create
     # If any of the survey_profile_params values are nil, then the form is invalid
+
     if survey_profile_params.values.any? { |value| value.nil? || value.empty? }
       respond_to do |format|
         format.html do
@@ -32,7 +34,7 @@ class SurveyProfilesController < ApplicationController
       end
 
     # if user_id is not unique, then the form is invalid
-    elsif SurveyProfile.find_by(user_id: survey_profile_params[:user_id])
+    elsif SurveyProfile.find_by(user_id: session[:userinfo]['sub'])
       respond_to do |format|
         format.html do
           redirect_to new_survey_profile_url, notice: 'user_id is not unique', status: :unprocessable_entity
@@ -42,11 +44,16 @@ class SurveyProfilesController < ApplicationController
 
     else
       @survey_profile = SurveyProfile.new(survey_profile_params)
+      @survey_profile.user_id = session[:userinfo]['sub']
 
       respond_to do |format|
         if @survey_profile.save
           format.html do
-            redirect_to survey_profile_url(@survey_profile), notice: 'Survey profile was successfully created.'
+            # default is below
+            # redirect_to survey_profile_url(@survey_profile), notice: 'Survey profile was successfully created.'
+            #
+            # redirect to the home page after creating a new survey profile
+            redirect_to root_url
           end
           format.json { render :show, status: :created, location: @survey_profile }
 

@@ -17,7 +17,6 @@
       <% if session[:userinfo] %>
         <%= button_to 'Logout', 'auth/logout', method: :get, data: { turbo: false }, class: "nav-link" %>
       <% else %>
-        
           <%= button_to 'Login', '/auth/auth0', method: :post, data: { turbo: false }, class: "nav-link" %>
       <% end %>
     </li>

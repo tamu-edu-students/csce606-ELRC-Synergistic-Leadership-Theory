@@ -18,11 +18,13 @@ Background: Questions and responses exist
 
     Scenario: Verify survey profile page
         Given I am on the site
+        And I try to login
         When I visit survey profile page
         Then I can see profile form
 
     Scenario: Verify survey form page
         Given I am on the site
+        And I try to login
         When I visit survey form page
         Then I can see survey sections
 

@@ -19,11 +19,16 @@ RSpec.describe '/survey_profiles', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # SurveyProfile. As you add validations to SurveyProfile, be sure to
   # adjust the attributes here as well.
+  #
+  before do
+    # create login user
+    mock_auth
+  end
   let(:valid_attributes) do
     # skip('Add a hash of attributes valid for your model')
 
     {
-      user_id: 1,
+      user_id: 'google-oauth2|100507718411999601151',
       first_name: 'John',
       last_name: 'Doe',
       campus_name: 'Campus',
@@ -34,7 +39,7 @@ RSpec.describe '/survey_profiles', type: :request do
   let(:invalid_attributes) do
     # if any field is nil
     {
-      user_id: 1,
+      user_id: '1',
       first_name: 'John',
       last_name: 'Doe',
       campus_name: 'Campus',
@@ -81,9 +86,9 @@ RSpec.describe '/survey_profiles', type: :request do
         end.to change(SurveyProfile, :count).by(1)
       end
 
-      it 'redirects to the created survey_profile' do
+      it 'redirects to the home page' do
         post survey_profiles_url, params: { survey_profile: valid_attributes }
-        expect(response).to redirect_to(survey_profile_url(SurveyProfile.last))
+        expect(response).to redirect_to(root_url)
       end
     end
 
@@ -121,7 +126,7 @@ RSpec.describe '/survey_profiles', type: :request do
       let(:new_attributes) do
         # skip('Add a hash of attributes valid for your model')
         {
-          user_id: 1,
+          user_id: 'google-oauth2|100507718411999601151',
           first_name: 'Johnson Micheal',
           last_name: 'Doe',
           campus_name: 'TAMU',

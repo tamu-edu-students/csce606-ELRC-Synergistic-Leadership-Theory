@@ -15,11 +15,11 @@ require 'json'
 # seed data for the survey_profiles table
 
 SurveyProfile.create!([
-                        { user_id: 5, first_name: 'John', last_name: 'Doe', campus_name: 'Campus 1',
+                        { user_id: '5', first_name: 'John', last_name: 'Doe', campus_name: 'Campus 1',
                           district_name: 'District 1' },
-                        { user_id: 6, first_name: 'Jane', last_name: 'Doe', campus_name: 'Campus 2',
+                        { user_id: '6', first_name: 'Jane', last_name: 'Doe', campus_name: 'Campus 2',
                           district_name: 'District 2' },
-                        { user_id: 7, first_name: 'Jim', last_name: 'Doe', campus_name: 'Campus 3',
+                        { user_id: '7', first_name: 'Jim', last_name: 'Doe', campus_name: 'Campus 3',
                           district_name: 'District 3' }
                       ])
 
@@ -29,17 +29,14 @@ SurveyProfile.all.each do |survey_profile|
   SurveyResponse.create!(profile: survey_profile, share_code: "debug#{survey_profile.user_id}")
 end
 
-
 file_path = Rails.root.join('db', 'seeds', 'questionnaire.json')
 data = JSON.parse(File.read(file_path))
 data.each do |item|
   SurveyQuestion.create!(text: item['text'], explanation: item['explanation'], section: item['section'])
 end
 
-
 SurveyResponse.all.each_with_index do |response, idx|
-  SurveyAnswer.create!(choice: idx, question: SurveyQuestion.first, response: response)
-
+  SurveyAnswer.create!(choice: idx, question: SurveyQuestion.first, response:)
 end
 
 # Path: csce606-ELRC-Synergistic-Leadership-Theory/rails_root/db/schema.rb

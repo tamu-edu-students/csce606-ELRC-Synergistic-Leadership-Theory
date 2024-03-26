@@ -15,7 +15,7 @@ When('I visit survey form page') do
 end
 
 Then('I can see profile form') do
-  expect(page).to have_content('The questionaire has a total of 96 questions split into 4 parts:')
+  expect(page).to have_content('Input user information')
 end
 
 Then('I can see survey sections') do

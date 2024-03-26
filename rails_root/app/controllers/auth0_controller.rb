@@ -6,7 +6,6 @@ class Auth0Controller < ApplicationController
     # Refer to https://github.com/auth0/omniauth-auth0/blob/master/EXAMPLES.md#example-of-the-resulting-authentication-hash for complete information on 'omniauth.auth' contents.
 
     auth_info = request.env['omniauth.auth']
-    puts 'auth_info'
     # puts JSON.pretty_generate(auth_info)
     session[:userinfo] = auth_info['extra']['raw_info']
 
@@ -15,9 +14,16 @@ class Auth0Controller < ApplicationController
 
     # create new survey profile if the user is 'new'
     # if no survey profile contains unique user_id, create a new survey profile
+    # puts 'trying to find survey profile'
+    # puts SurveyProfile.find_by(user_id: session[:userinfo]['sub'])
 
-    # Redirect to the URL you want after successful auth
-    redirect_to root_url
+    if SurveyProfile.find_by(user_id: session[:userinfo]['sub']).nil?
+      redirect_to new_survey_profile_path
+    else
+
+      # Redirect to the URL you want after successful auth
+      redirect_to root_url
+    end
   end
 
   def failure

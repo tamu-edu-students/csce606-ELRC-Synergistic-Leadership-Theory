@@ -22,6 +22,6 @@ Then('the model was not created') do
 end
 
 Then('the model was created') do
-  expect(SurveyProfile.last.user_id).to eq(10)
+  expect(SurveyProfile.last.user_id).to eq('10')
   expect(SurveyResponse.last).to be_truthy
 end

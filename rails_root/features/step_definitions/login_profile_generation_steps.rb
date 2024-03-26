@@ -6,7 +6,6 @@ Given('I am logged in') do
   # Stub the Auth0 /authorize request
 
   # No route matches [GET] "/authorize" (ActionController::RoutingError)
-
 end
 
 Then('I see that my session variable {string} is populated') do |_string|
@@ -18,14 +17,13 @@ end
 Given('that I am on the homepage') do
   visit root_path
   expect(page).to have_current_path(root_path)
-
 end
 
 Given('I try to login') do
   # expect to be on home page and see the login button
   expect(page).to have_content('Login')
   OmniAuth.config.test_mode = true
-  OmniAuth.config.mock_auth[:auth0] = OmniAuth::AuthHash.new({provider: 'auth0',
+  OmniAuth.config.mock_auth[:auth0] = OmniAuth::AuthHash.new({ provider: 'auth0',
                                                                uid: 'google-oauth2|100507718411999601151',
                                                                info: {
                                                                  name: 'John Doe',
@@ -60,7 +58,8 @@ Given('I try to login') do
                                                                  }
                                                                } })
 
-  OmniAuth.config.test_mode = false
+  # visit callback url
+  visit '/auth/auth0/callback'
 end
 
 Given('I have never created a survey profile') do
@@ -69,25 +68,30 @@ Given('I have never created a survey profile') do
 end
 
 Then('I am redirected to the create survey profile page') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_current_path(new_survey_profile_path)
 end
 
-Then('I fill in my district name and campus name and click create') do
-  pending # Write code here that turns the phrase above into concrete actions
+Then('I fill in my first and last name and district name and campus name and click create') do
+  fill_in 'First name', with: 'John'
+  fill_in 'Last name', with: 'Doe'
+  fill_in 'Campus name', with: 'Joe Campus'
+  fill_in 'District name', with: 'Joe District'
+  click_button 'Create Survey profile'
 end
 
 Then('I am redirected to the home page') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_current_path(root_path)
 end
 
-Given('I have created a survey profile') do
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Then('I am redirected to the homepage') do
-  pending # Write code here that turns the phrase above into concrete actions
+Given('I have created a survey profile previously') do
+  SurveyProfile.create(user_id: 'google-oauth2|100507718411999601151', first_name: 'John', last_name: 'Doe', campus_name: 'Joe Campus', district_name: 'Joe District')
 end
 
 Then('I am greeted with a welcome message') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_content('John Doe - Welcome to Our Rails App')
+end
+
+Then('a survey profile is created') do
+  profile = SurveyProfile.find_by_user_id('google-oauth2|100507718411999601151')
+  expect(profile).not_to be_nil
 end
