@@ -6,8 +6,26 @@ Given('I am logged in') do
   # Stub the Auth0 /authorize request
 
   # No route matches [GET] "/authorize" (ActionController::RoutingError)
+
+end
+
+Then('I see that my session variable {string} is populated') do |_string|
+  # check that the session variable :userinfo is not empty or nil
+
+  expect(page).to have_content('John Doe')
+end
+
+Given('that I am on the homepage') do
+  visit root_path
+  expect(page).to have_current_path(root_path)
+
+end
+
+Given('I try to login') do
+  # expect to be on home page and see the login button
+  expect(page).to have_content('Login')
   OmniAuth.config.test_mode = true
-  OmniAuth.config.mock_auth[:auth0] = OmniAuth::AuthHash.new({ provider: 'auth0',
+  OmniAuth.config.mock_auth[:auth0] = OmniAuth::AuthHash.new({provider: 'auth0',
                                                                uid: 'google-oauth2|100507718411999601151',
                                                                info: {
                                                                  name: 'John Doe',
@@ -42,33 +60,12 @@ Given('I am logged in') do
                                                                  }
                                                                } })
 
-  # create mock auth for auth_info = request.env['omniauth.auth']
-
-  # go to home page
-  visit root_path
-
-  # click the login button
-  click_button 'Login'
   OmniAuth.config.test_mode = false
 end
 
-Then('I see that my session variable {string} is populated') do |_string|
-  # check that the session variable :userinfo is not empty or nil
-  visit root_path
-
-  expect(page).to have_content('John Doe')
-end
-
-Given('that I am on the homepage') do
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Given('I try to login') do
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
 Given('I have never created a survey profile') do
-  pending # Write code here that turns the phrase above into concrete actions
+  profile = SurveyProfile.find_by_user_id('google-oauth2|100507718411999601151')
+  expect(profile).to be_nil
 end
 
 Then('I am redirected to the create survey profile page') do
