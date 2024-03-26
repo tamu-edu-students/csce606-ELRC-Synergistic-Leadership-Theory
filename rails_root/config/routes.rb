@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   get '/auth/auth0/callback' => 'auth0#callback'
   get '/auth/failure' => 'auth0#failure'
   get '/auth/logout' => 'auth0#logout'
+  # test route for auth0
+  get '/auth/test' => 'auth0#test'
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

@@ -56,7 +56,6 @@ group :development, :test do
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubycritic', require: false
-  gem 'selenium-webdriver'
   gem 'simplecov', require: false
   gem 'sqlite3', '~> 1.4'
 end
@@ -75,6 +74,8 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'webmock'
 end
 
 group :production do

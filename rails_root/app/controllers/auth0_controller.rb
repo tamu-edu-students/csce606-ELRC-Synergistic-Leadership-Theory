@@ -4,11 +4,14 @@ class Auth0Controller < ApplicationController
     # OmniAuth stores the information returned from Auth0 and the IdP in request.env['omniauth.auth'].
     # In this code, you will pull the raw_info supplied from the id_token and assign it to the session.
     # Refer to https://github.com/auth0/omniauth-auth0/blob/master/EXAMPLES.md#example-of-the-resulting-authentication-hash for complete information on 'omniauth.auth' contents.
+
     auth_info = request.env['omniauth.auth']
+    puts 'auth_info'
+    # puts JSON.pretty_generate(auth_info)
     session[:userinfo] = auth_info['extra']['raw_info']
 
-    # print session info
-    puts session[:userinfo]
+    # print session info in pretty JSON format
+    # puts JSON.pretty_generate(session[:userinfo])
 
     # create new survey profile if the user is 'new'
     # if no survey profile contains unique user_id, create a new survey profile

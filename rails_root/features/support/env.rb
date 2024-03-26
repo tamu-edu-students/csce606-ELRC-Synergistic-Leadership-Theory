@@ -3,6 +3,7 @@
 # Run simplecov before any tests to capture all test coverage
 require 'simplecov'
 require 'simplecov_json_formatter'
+
 SimpleCov.formatters = [
   SimpleCov::Formatter::JSONFormatter,
   SimpleCov::Formatter::HTMLFormatter
