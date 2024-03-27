@@ -8,3 +8,8 @@ test:
   auth0_domain: dev-zcfuck3xg7w5v6sa.us.auth0.com
   auth0_client_id: 4lT03l5GQnvXI8XAUKAtfLxDNUBTwklA
   auth0_client_secret: 66UsasIM8ZpoQc9_1LjGmgWqt-togxTwnABIeOxl1pYUvgkyqRFIxm9H5QwNSSMW
+
+production:
+  auth0_domain: dev-zcfuck3xg7w5v6sa.us.auth0.com
+  auth0_client_id: 4lT03l5GQnvXI8XAUKAtfLxDNUBTwklA
+  auth0_client_secret: 66UsasIM8ZpoQc9_1LjGmgWqt-togxTwnABIeOxl1pYUvgkyqRFIxm9H5QwNSSMW
