@@ -25,13 +25,13 @@ class SurveyResponse < ApplicationRecord
     # FIXME: Handle share code already existing
     survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
 
+    
     params.each do |key, choice|
       begin
         question = SurveyQuestion.find key
       rescue ActiveRecord::RecordNotFound
         next
       end
-
       SurveyAnswer.create choice:, question:, response: survey_response
     end
 
@@ -54,6 +54,9 @@ class SurveyResponse < ApplicationRecord
       answer.update choice:
     end
   end
+  
 
+  
   # TODO: Create a new function that either updates existing SurveyAnswers or adds new SurveyAnswers if they do not exist
+  
 end
