@@ -37,7 +37,6 @@ class SurveyResponsesController < ApplicationController
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: params[:page] })
     @survey_response = SurveyResponse.new
     session[:user_id] ||= 5 # FIXME: Update when we have authentication feature
-    render :survey
   end
 
   # GET /survey_responses/1/edit
@@ -58,7 +57,6 @@ class SurveyResponsesController < ApplicationController
     else
       @survey_response = SurveyResponse.find_by_id(session[:survey_id])
       @survey_response.add_from_params session[:user_id], survey_response_params
-      session[:test] = survey_response_params
     end
     # TODO: If we did not create a SurveyResponse above, then we must use a function
     #       that either adds a SurveyAnswer to the SurveyResponse or updates
