@@ -25,15 +25,26 @@ class SurveyResponse < ApplicationRecord
     # FIXME: Handle share code already existing
     survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
 
-    
-    params.each do |key, choice|
+    96.times do |i|
       begin
-        question = SurveyQuestion.find key
-      rescue ActiveRecord::RecordNotFound
-        next
+        index = (i+1).to_s
+        question = SurveyQuestion.find index
+        if params[index].nil?
+          choice = "5"
+        else
+          choice = params[index]
+        end
+        SurveyAnswer.create choice:, question:, response: survey_response
       end
-      SurveyAnswer.create choice:, question:, response: survey_response
     end
+    # params.each do |key, choice|
+    #   begin
+    #     question = SurveyQuestion.find key
+    #   rescue ActiveRecord::RecordNotFound
+    #     next
+    #   end
+    #   SurveyAnswer.create choice:, question:, response: survey_response
+    # end
 
     survey_response
   end
@@ -54,9 +65,18 @@ class SurveyResponse < ApplicationRecord
       answer.update choice:
     end
   end
-  
-
-  
   # TODO: Create a new function that either updates existing SurveyAnswers or adds new SurveyAnswers if they do not exist
-  
+  def add_from_params(user_id, params)
+    profile = SurveyProfile.where(user_id: user_id).first!
+
+    params.each do |key, choice|
+      begin
+        question = SurveyQuestion.find key
+      rescue ActiveRecord::RecordNotFound
+        next
+      end
+      answer = SurveyAnswer.where(question:, response: self).first!
+      answer.update choice:
+    end
+  end
 end
