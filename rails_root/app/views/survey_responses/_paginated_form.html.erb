@@ -1,4 +1,5 @@
 <%= turbo_frame_tag "questions_frame" do %>
+  <%= session[:test]%>
   <%= form_with model: response, url: survey_responses_path, data: {turbo_frame: "questions_frame"} do |form| %>
     <% if response&.errors&.any? %>
       <div style="color: red">
@@ -58,7 +59,7 @@
             <button class="btn" disabled>Next</button>
           <% end %>
         </div>
-
+        
       </div>
       <div class="col-lg-1 col-2 d-flex justify-content-center">
         <% if pagination.next_page? %>
