@@ -127,10 +127,12 @@
             form_class: "btn btn-outline-success",
             class: "btn-passthrough"
       %>
-      <%= link_to "Delete Response",
+      <%= button_to "Delete Response",
             @survey_response,
             method: :delete,
-            class: "btn btn-outline-danger"
+      
+            form_class: "btn btn-outline-danger",
+            class: "btn-passthrough"
       %>
     </div>
   </div>
