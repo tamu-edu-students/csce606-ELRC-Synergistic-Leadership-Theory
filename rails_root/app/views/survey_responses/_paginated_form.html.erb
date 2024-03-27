@@ -1,5 +1,4 @@
 <%= turbo_frame_tag "questions_frame" do %>
-  <%= session[:test]%>
   <%= form_with model: response, url: survey_responses_path, data: {turbo_frame: "questions_frame"} do |form| %>
     <% if response&.errors&.any? %>
       <div style="color: red">
@@ -41,29 +40,30 @@
         </table>
       </div>
     </div>
-
     <div class="row d-flex justify-content-center">
       <div class="col-lg-4 col-8">
         <div class="input-group d-flex justify-content-center">
+          
+          <button class="btn" disabled><%= "Page #{pagination.page} of #{pagination.total_pages}" %></button>
+          <% if pagination.next_page? %>
+            <%= button_to "Next", survey_page_path(pagination.next_page), class: "btn btn-outline-success", method: :post, params: { redirect_to: pagination.next_page } %>
+            <%# <%= link_to "Next", survey_page_path(pagination.next_page), class: "btn btn-outline-success" %> 
+          <% else %>
+            <button class="btn" disabled>Next</button>
+          <% end %>
+
           <% if pagination.prev_page? %>
             <%= button_to "Previous", survey_page_path(pagination.prev_page), class: "btn btn-outline-success", method: :post, params: { redirect_to: pagination.prev_page } %>
             <%# <%= link_to "Previous", survey_page_path(pagination.prev_page), class: "btn btn-outline-success" %>
           <% else %>
             <button class="btn" disabled>Previous</button>
           <% end %>
-          <button class="btn" disabled><%= "Page #{pagination.page} of #{pagination.total_pages}" %></button>
-          <% if pagination.next_page? %>
-            <%= button_to "Next", survey_page_path(pagination.next_page), class: "btn btn-outline-success", method: :post, params: { redirect_to: pagination.next_page } %>
-            <%# <%= link_to "Next", survey_page_path(pagination.next_page), class: "btn btn-outline-success" %>
-          <% else %>
-            <button class="btn" disabled>Next</button>
-          <% end %>
         </div>
         
       </div>
       <div class="col-lg-1 col-2 d-flex justify-content-center">
         <% if pagination.next_page? %>
-          <%= form.submit "Save", class: "btn btn-outline-success" %>
+          <%= form.submit "Save", class: "btn btn-outline-success"%> 
         <% else %>
           <%= form.submit "Submit", class: "btn btn-outline-success" %>
         <% end %>
