@@ -45,18 +45,22 @@ class SurveyResponsesController < ApplicationController
   # POST /survey_responses or /survey_responses.json
   def create
     return respond_with_error 'invalid_form' if invalid_form?
+    logger.info "Create triggered!!!!!!!!!!!!!!!!!!!!!!!!! params[:page]:#{params[:page]}, session[:page_number]: #{session[:page_number]}, params[:name]:#{params[:name]}, params[:redirect_to]: #{params[:redirect_to]}"
+    
     # TODO: Retrieve SurveyResponse if session[:survey_id] exists, otherwise create
     # begin
     #   @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
     # rescue ActiveRecord::RecordNotFound
     #   return respond_with_error 'invalid survey response'
     # end
-    if session[:survey_id].nil?
-      @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
-      session[:survey_id] = @survey_response.id
-    else
-      @survey_response = SurveyResponse.find_by_id(session[:survey_id])
-      @survey_response.add_from_params session[:user_id], survey_response_params
+    if not survey_response_params.nil?
+      if session[:survey_id].nil?
+        @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
+        session[:survey_id] = @survey_response.id
+      else
+        @survey_response = SurveyResponse.find_by_id(session[:survey_id])
+        @survey_response.add_from_params session[:user_id], survey_response_params
+      end
     end
     # TODO: If we did not create a SurveyResponse above, then we must use a function
     #       that either adds a SurveyAnswer to the SurveyResponse or updates
@@ -144,7 +148,11 @@ class SurveyResponsesController < ApplicationController
   end
 
   def invalid_form?
-    survey_response_params.values.any? { |value| value.nil? || value.empty? }
+    if survey_response_params.nil?
+      return false
+    else
+      return survey_response_params.values.any? { |value| value.nil? || value.empty? }
+    end
   end
 
   def respond_with_error(message, status = :unprocessable_entity)
@@ -157,7 +165,9 @@ class SurveyResponsesController < ApplicationController
   end
 
   def survey_response_params
-    params.require(:survey_response).permit!
+    if params.include? :survey_response
+      params.require(:survey_response).permit!
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength
