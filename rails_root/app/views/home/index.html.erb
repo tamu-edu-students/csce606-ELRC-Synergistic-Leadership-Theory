@@ -16,6 +16,7 @@
               <th>Actions</th>
             </tr>
           </thead>
+          <% if !@survey_responses.nil?%>
           <tbody>
             <% @survey_responses.each do |response| %>
               <tr>
@@ -26,10 +27,12 @@
               </tr>
             <% end %>
           </tbody>
+          <%end%>
         </table>
       </div>
       <%= link_to "Take Survey", new_survey_response_path, class: "btn btn-outline-primary"%>
     <% else%>
+      <h1>Welcome to Our Rails App</h1>
       <h1>You are not logged in. Please login.</h1>
      <% end %>
   
