@@ -27,18 +27,28 @@ class SurveyResponsesController < ApplicationController
   def new
     logger.info "========== new triggered =========="
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: 1 })
-    @survey_response = SurveyResponse.new
-    session[:user_id] ||= 5 # FIXME: Update when we have authentication feature
+    # @survey_response = SurveyResponse.new
+    session[:user_id] = nil # FIXME: Update when we have authentication feature
     session[:survey_id] = nil
-    render :survey
+    session[:page_number] = 1
+
+    if session[:user_id].nil?
+      if session.dig(:userinfo, 'sub').present?
+        session[:user_id] = session[:userinfo]['sub']
+        render :survey
+      else
+        flash[:warning] = "You are not logged in!"
+        redirect_to survey_responses_path
+      end
+    end
+
   end
 
   # GET /survey/page/:page
   def survey
     logger.info "========== survey triggered =========="
-    @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: params[:page] })
+    @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: session[:page_number] })
     @survey_response = SurveyResponse.find_by_id(session[:survey_id])
-    session[:user_id] ||= 5 # FIXME: Update when we have authentication feature
     render :survey
   end
 
@@ -48,7 +58,6 @@ class SurveyResponsesController < ApplicationController
   # POST /survey_responses or /survey_responses.json
   def create
     logger.info "========== create triggered =========="
-    logger.info "params[:page]:#{params[:page]}, session[:page_number]: #{session[:page_number]}, params[:name]:#{params[:name]}, params[:redirect_to]: #{params[:redirect_to]}"
 
     return respond_with_error 'invalid_form' if invalid_form?
     
@@ -58,6 +67,7 @@ class SurveyResponsesController < ApplicationController
     # rescue ActiveRecord::RecordNotFound
     #   return respond_with_error 'invalid survey response'
     # end
+
     if not survey_response_params.nil?
       logger.info "========== survey_response_params not Nil =========="
       if session[:survey_id].nil?

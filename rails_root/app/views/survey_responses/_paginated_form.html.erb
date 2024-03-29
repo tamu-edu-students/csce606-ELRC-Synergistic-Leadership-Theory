@@ -47,13 +47,13 @@
           <button class="btn" disabled><%= "Page #{pagination.page} of #{pagination.total_pages}" %></button>
 
           <% if pagination.prev_page? %>
-            <%= button_to "Previous", survey_responses_path, class: "btn btn-outline-success", method: :post, params: { redirect_to: pagination.prev_page } %>
+            <%= form.submit "Previous", class: "btn btn-outline-success"%> 
           <% else %>
             <button class="btn" disabled>Previous</button>
           <% end %>
           
           <% if pagination.next_page? %>
-            <%= button_to "Next", survey_responses_path , class: "btn btn-outline-success", method: :post, params: { redirect_to: pagination.next_page } %>
+            <%= form.submit "Next", class: "btn btn-outline-success"%> 
           <% else %>
             <button class="btn" disabled>Next</button>
           <% end %>
