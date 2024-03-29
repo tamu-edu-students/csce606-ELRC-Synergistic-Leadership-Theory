@@ -32,23 +32,12 @@ class SurveyResponsesController < ApplicationController
     session[:survey_id] = nil
     session[:page_number] = 1
 
-    if session[:user_id].nil?
-      if session.dig(:userinfo, 'sub').present? && (not session[:userinfo]['sub'].nil?)
-        session[:user_id] = session[:userinfo]['sub']
-        @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
-        logger.info " @survey_response #{ @survey_response}"
-
-        if @survey_response.nil?
-          flash[:warning] = "Survey profile not found!"
-          redirect_to survey_responses_path
-        else
-          session[:survey_id] = @survey_response.id
-          render :survey
-        end
-      else
-        flash[:warning] = "You are not logged in!"
-        redirect_to survey_responses_path
-      end
+    if session.dig(:userinfo, 'sub').present? && (not session[:userinfo]['sub'].nil?)
+      session[:user_id] = session[:userinfo]['sub']
+      render :survey
+    else
+      flash[:warning] = "You are not logged in!"
+      redirect_to survey_responses_path
     end
 
   end
@@ -72,6 +61,17 @@ class SurveyResponsesController < ApplicationController
   # POST /survey_responses or /survey_responses.json
   def create
     return respond_with_error 'invalid_form' if invalid_form?
+
+    if session[:survey_id].nil?
+      @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
+
+      if @survey_response.nil?
+        flash[:warning] = "Survey profile not found!"
+        redirect_to survey_responses_path
+      else
+        session[:survey_id] = @survey_response.id
+      end
+    end
 
     if not survey_response_params.nil?
         @survey_response = SurveyResponse.find_by_id(session[:survey_id])

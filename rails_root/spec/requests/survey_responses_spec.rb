@@ -94,7 +94,7 @@ RSpec.describe '/survey_responses', type: :request do
     it 'renders a successful response' do
       survey_response = SurveyResponse.create! valid_attributes
       get edit_survey_response_url(survey_response)
-      expect(response).to be_successful
+      expect(response).to redirect_to(survey_page_url(1))
     end
   end
 
@@ -117,6 +117,7 @@ RSpec.describe '/survey_responses', type: :request do
       end
       it 'creates a new SurveyResponse' do
         expect do
+          session[:user_id] = 1
           post survey_responses_url, params: { survey_response: create_response_attr }
         end.to change(SurveyResponse, :count).by(1)
       end

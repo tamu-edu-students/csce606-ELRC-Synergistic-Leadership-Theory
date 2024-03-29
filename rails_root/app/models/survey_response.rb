@@ -69,7 +69,8 @@ class SurveyResponse < ApplicationRecord
         end
 
         answer = SurveyAnswer.where(question:, response: self).first!
-        answer.update choice:
+        answer.update(choice: choice)
+        
       end
     end
   end
@@ -88,7 +89,7 @@ class SurveyResponse < ApplicationRecord
           SurveyAnswer.create choice:, question:, response: self
         else
           answer = SurveyAnswer.where(question:, response: self).first!
-          answer.update choice:
+          answer.update(choice: choice)
         end
       end
     end
