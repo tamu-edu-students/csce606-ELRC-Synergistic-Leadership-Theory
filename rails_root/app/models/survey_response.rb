@@ -20,10 +20,25 @@ class SurveyResponse < ApplicationRecord
 
   def self.create_from_params(user_id, params)
     # FIXME: When we look up things and fail, we should use more descriptive exceptions instead of ActiveRecord::RecordNotFound
-    profile = SurveyProfile.where(user_id: user_id).first!
-
-    # FIXME: Handle share code already existing
-    survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
+    begin
+      profile = SurveyProfile.where(user_id: user_id).first!
+      # FIXME: Handle share code already existing
+      survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
+      if not params.nil?
+        params.each do |key, choice|
+          begin
+            question = SurveyQuestion.find key
+          rescue ActiveRecord::RecordNotFound
+            next
+          end
+          SurveyAnswer.create choice:, question:, response: survey_response
+        end
+      end
+      survey_response
+    rescue ActiveRecord::RecordNotFound
+      logger.info "Survey profile not found!"
+      return nil
+    end
 
     # 96.times do |i|
     #   begin
@@ -37,17 +52,7 @@ class SurveyResponse < ApplicationRecord
     #     SurveyAnswer.create choice:, question:, response: survey_response
     #   end
     # end
-    if not params.nil?
-      params.each do |key, choice|
-        begin
-          question = SurveyQuestion.find key
-        rescue ActiveRecord::RecordNotFound
-          next
-        end
-        SurveyAnswer.create choice:, question:, response: survey_response
-      end
-    end
-    survey_response
+
   end
 
   def update_from_params(user_id, params)

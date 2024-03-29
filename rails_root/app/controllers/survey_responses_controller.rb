@@ -33,11 +33,18 @@ class SurveyResponsesController < ApplicationController
     session[:page_number] = 1
 
     if session[:user_id].nil?
-      if session.dig(:userinfo, 'sub').present?
+      if session.dig(:userinfo, 'sub').present? && (not session[:userinfo]['sub'].nil?)
         session[:user_id] = session[:userinfo]['sub']
         @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
-        session[:survey_id] = @survey_response.id
-        render :survey
+        logger.info " @survey_response #{ @survey_response}"
+
+        if @survey_response.nil?
+          flash[:warning] = "Survey profile not found!"
+          redirect_to survey_responses_path
+        else
+          session[:survey_id] = @survey_response.id
+          render :survey
+        end
       else
         flash[:warning] = "You are not logged in!"
         redirect_to survey_responses_path
