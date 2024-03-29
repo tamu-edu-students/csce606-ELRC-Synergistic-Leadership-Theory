@@ -11,5 +11,7 @@
         <%= session[:userinfo]['name'] %> - Welcome to Our Rails App
       <% end %>
     </h1>
-  
+    <h1>Your Histroy Responses</h1>
+    
+    <%= link_to "New survey response", new_survey_response_path %>
 </main>
