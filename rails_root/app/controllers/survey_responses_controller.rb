@@ -49,7 +49,7 @@ class SurveyResponsesController < ApplicationController
   # GET /survey/page/:page
   def survey
     logger.info "========== survey triggered =========="
-    @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: session[:page_number] })
+    @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: params[:page] })
     @survey_response = SurveyResponse.find_by_id(session[:survey_id])
     render :survey
   end
@@ -59,30 +59,29 @@ class SurveyResponsesController < ApplicationController
 
   # POST /survey_responses or /survey_responses.json
   def create
-    logger.info "========== create triggered =========="
-
     return respond_with_error 'invalid_form' if invalid_form?
 
     if not survey_response_params.nil?
-      logger.info "========== survey_response_params not Nil =========="
         @survey_response = SurveyResponse.find_by_id(session[:survey_id])
         @survey_response.add_from_params session[:user_id], survey_response_params
     else
-      logger.info "!!!!!!!!!! survey_response_params is Nil !!!!!!!!!!"
+      flash[:warning] = "survey_response_params is Nil!"
     end
-    # TODO: If we did not create a SurveyResponse above, then we must use a function
-    #       that either adds a SurveyAnswer to the SurveyResponse or updates
 
     respond_to do |format|
-      # @survey_response.save
-
-      if params[]
+      if params[:commit].in?(["Save","Next"])
         format.html do
-          redirect_to survey_page_url(params[:redirect_to])
+          session[:page_number] += 1
+          redirect_to survey_page_url(session[:page_number])
+        end
+      elsif params[:commit] == "Previous"
+        format.html do
+          session[:page_number] -= 1
+          redirect_to survey_page_url(session[:page_number])
         end
       else
         format.html do
-          redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
+          redirect_to survey_response_url(session[:survey_id]), notice: 'Survey response was successfully created.'
         end
         format.json { render :show, status: :created, location: @survey_response }
       end
