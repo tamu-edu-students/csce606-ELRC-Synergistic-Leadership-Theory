@@ -80,8 +80,10 @@ class SurveyResponsesController < ApplicationController
           redirect_to survey_page_url(session[:page_number])
         end
       else
+        @survey_response = SurveyResponse.find_by_id(session[:survey_id])
+        logger.info "@survey_response: #{@survey_response}"
         format.html do
-          redirect_to survey_response_url(session[:survey_id]), notice: 'Survey response was successfully created.'
+          redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
         end
         format.json { render :show, status: :created, location: @survey_response }
       end

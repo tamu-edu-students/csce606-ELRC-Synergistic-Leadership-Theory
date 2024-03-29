@@ -1,5 +1,5 @@
-<%= turbo_frame_tag "questions_frame" do %>
-  <%= form_with model: response, url: survey_responses_path, data: {turbo_frame: "questions_frame"} do |form| %>
+
+  <%= form_with model: response, url: survey_responses_path do |form| %>
     <% if response&.errors&.any? %>
       <div style="color: red">
         <h2><%= pluralize(response.errors.count, "error") %> prohibited this response from being saved:</h2>
@@ -69,4 +69,3 @@
       </div>
     </div>
   <% end %>
-<% end %>
