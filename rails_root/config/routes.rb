@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   get 'survey', to: 'survey_responses#new', as: 'survey'
   get 'survey/page/:page', to: 'survey_responses#survey', as: 'survey_page'
 
-  resources :survey_responses, except: :new
-  patch 'survey_responses', to: 'survey_responses#create', as: :survey_responses_patch
+  resources :survey_responses, except: [:new]
+  patch 'survey_responses', to: 'survey_responses#create', as: :patch_survey_response
   
   resources :survey_profiles
   resources :invitations, only: %i[show create]

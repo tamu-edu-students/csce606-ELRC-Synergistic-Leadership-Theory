@@ -27,8 +27,8 @@ class SurveyResponsesController < ApplicationController
   def new
     logger.info "========== new triggered =========="
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: 1 })
-    # @survey_response = SurveyResponse.new
-    session[:user_id] = nil # FIXME: Update when we have authentication feature
+    @survey_response = SurveyResponse.new
+    session[:user_id] = nil 
     session[:survey_id] = nil
     session[:page_number] = 1
 
@@ -62,7 +62,12 @@ class SurveyResponsesController < ApplicationController
   end
 
   # GET /survey_responses/1/edit
-  def edit; end
+  def edit
+    logger.info "========== edit triggered =========="
+    session[:survey_id] = @survey_response.id
+    session[:page_number] = 1
+    redirect_to survey_page_url(session[:page_number])
+  end
 
   # POST /survey_responses or /survey_responses.json
   def create
