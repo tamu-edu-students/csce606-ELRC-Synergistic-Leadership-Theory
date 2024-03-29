@@ -37,15 +37,16 @@ class SurveyResponse < ApplicationRecord
     #     SurveyAnswer.create choice:, question:, response: survey_response
     #   end
     # end
-    params.each do |key, choice|
-      begin
-        question = SurveyQuestion.find key
-      rescue ActiveRecord::RecordNotFound
-        next
+    if not params.nil?
+      params.each do |key, choice|
+        begin
+          question = SurveyQuestion.find key
+        rescue ActiveRecord::RecordNotFound
+          next
+        end
+        SurveyAnswer.create choice:, question:, response: survey_response
       end
-      SurveyAnswer.create choice:, question:, response: survey_response
     end
-
     survey_response
   end
 
@@ -54,32 +55,36 @@ class SurveyResponse < ApplicationRecord
 
     profile = SurveyProfile.where(user_id: user_id).first!
 
-    params.each do |key, choice|
-      begin
-        question = SurveyQuestion.find key
-      rescue ActiveRecord::RecordNotFound
-        next
-      end
+    if not params.nil?
+      params.each do |key, choice|
+        begin
+          question = SurveyQuestion.find key
+        rescue ActiveRecord::RecordNotFound
+          next
+        end
 
-      answer = SurveyAnswer.where(question:, response: self).first!
-      answer.update choice:
+        answer = SurveyAnswer.where(question:, response: self).first!
+        answer.update choice:
+      end
     end
   end
   # TODO: Create a new function that either updates existing SurveyAnswers or adds new SurveyAnswers if they do not exist
   def add_from_params(user_id, params)
     profile = SurveyProfile.where(user_id: user_id).first!
-    params.each do |key, choice|
-      begin
-        question = SurveyQuestion.find key
-      rescue ActiveRecord::RecordNotFound
-        next
-      end
-      answer = SurveyAnswer.where(question:, response: self).first
-      if answer.nil?
-        SurveyAnswer.create choice:, question:, response: self
-      else
-        answer = SurveyAnswer.where(question:, response: self).first!
-        answer.update choice:
+    if not params.nil?
+      params.each do |key, choice|
+        begin
+          question = SurveyQuestion.find key
+        rescue ActiveRecord::RecordNotFound
+          next
+        end
+        answer = SurveyAnswer.where(question:, response: self).first
+        if answer.nil?
+          SurveyAnswer.create choice:, question:, response: self
+        else
+          answer = SurveyAnswer.where(question:, response: self).first!
+          answer.update choice:
+        end
       end
     end
   end

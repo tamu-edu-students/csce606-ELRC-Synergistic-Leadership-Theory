@@ -35,6 +35,8 @@ class SurveyResponsesController < ApplicationController
     if session[:user_id].nil?
       if session.dig(:userinfo, 'sub').present?
         session[:user_id] = session[:userinfo]['sub']
+        @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
+        session[:survey_id] = @survey_response.id
         render :survey
       else
         flash[:warning] = "You are not logged in!"
@@ -60,23 +62,11 @@ class SurveyResponsesController < ApplicationController
     logger.info "========== create triggered =========="
 
     return respond_with_error 'invalid_form' if invalid_form?
-    
-    # TODO: Retrieve SurveyResponse if session[:survey_id] exists, otherwise create
-    # begin
-    #   @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
-    # rescue ActiveRecord::RecordNotFound
-    #   return respond_with_error 'invalid survey response'
-    # end
 
     if not survey_response_params.nil?
       logger.info "========== survey_response_params not Nil =========="
-      if session[:survey_id].nil?
-        @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
-        session[:survey_id] = @survey_response.id
-      else
         @survey_response = SurveyResponse.find_by_id(session[:survey_id])
         @survey_response.add_from_params session[:user_id], survey_response_params
-      end
     else
       logger.info "!!!!!!!!!! survey_response_params is Nil !!!!!!!!!!"
     end
@@ -86,7 +76,7 @@ class SurveyResponsesController < ApplicationController
     respond_to do |format|
       # @survey_response.save
 
-      if params.include? :redirect_to
+      if params[]
         format.html do
           redirect_to survey_page_url(params[:redirect_to])
         end
