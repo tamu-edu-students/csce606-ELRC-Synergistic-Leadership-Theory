@@ -25,6 +25,7 @@ class SurveyResponsesController < ApplicationController
   end
 
   def new
+    logger.info "========== new triggered =========="
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: 1 })
     @survey_response = SurveyResponse.new
     session[:user_id] ||= 5 # FIXME: Update when we have authentication feature
@@ -34,9 +35,11 @@ class SurveyResponsesController < ApplicationController
 
   # GET /survey/page/:page
   def survey
+    logger.info "========== survey triggered =========="
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: params[:page] })
-    @survey_response = SurveyResponse.new
+    @survey_response = SurveyResponse.find_by_id(session[:survey_id])
     session[:user_id] ||= 5 # FIXME: Update when we have authentication feature
+    render :survey
   end
 
   # GET /survey_responses/1/edit
@@ -44,8 +47,10 @@ class SurveyResponsesController < ApplicationController
 
   # POST /survey_responses or /survey_responses.json
   def create
+    logger.info "========== create triggered =========="
+    logger.info "params[:page]:#{params[:page]}, session[:page_number]: #{session[:page_number]}, params[:name]:#{params[:name]}, params[:redirect_to]: #{params[:redirect_to]}"
+
     return respond_with_error 'invalid_form' if invalid_form?
-    logger.info "Create triggered!!!!!!!!!!!!!!!!!!!!!!!!! params[:page]:#{params[:page]}, session[:page_number]: #{session[:page_number]}, params[:name]:#{params[:name]}, params[:redirect_to]: #{params[:redirect_to]}"
     
     # TODO: Retrieve SurveyResponse if session[:survey_id] exists, otherwise create
     # begin
@@ -54,6 +59,7 @@ class SurveyResponsesController < ApplicationController
     #   return respond_with_error 'invalid survey response'
     # end
     if not survey_response_params.nil?
+      logger.info "========== survey_response_params not Nil =========="
       if session[:survey_id].nil?
         @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
         session[:survey_id] = @survey_response.id
@@ -61,6 +67,8 @@ class SurveyResponsesController < ApplicationController
         @survey_response = SurveyResponse.find_by_id(session[:survey_id])
         @survey_response.add_from_params session[:user_id], survey_response_params
       end
+    else
+      logger.info "!!!!!!!!!! survey_response_params is Nil !!!!!!!!!!"
     end
     # TODO: If we did not create a SurveyResponse above, then we must use a function
     #       that either adds a SurveyAnswer to the SurveyResponse or updates
@@ -83,6 +91,7 @@ class SurveyResponsesController < ApplicationController
 
   # PATCH/PUT /survey_responses/1 or /survey_responses/1.json
   def update
+    logger.info "========== update triggered =========="
     return respond_with_error 'invalid form' if invalid_form?
 
     begin
@@ -113,11 +122,13 @@ class SurveyResponsesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_survey_data
+    logger.info "========== set_survey_data triggered =========="
     @survey_response = SurveyResponse.find params[:id]
     @questions = @survey_response.questions
   end
 
   def set_survey_sections
+    logger.info "========== set_survey_sections triggered =========="
     @sections = [
       {
         title: 'Part 1: Leadership Behavior - Management',
