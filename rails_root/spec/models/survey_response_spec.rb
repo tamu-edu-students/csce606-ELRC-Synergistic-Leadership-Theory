@@ -35,16 +35,15 @@ RSpec.describe SurveyResponse, type: :model do
         '1' => 0
       }
 
-      expect { SurveyResponse.create_from_params params }.not_to raise_error
+      expect { SurveyResponse.create_from_params params[:user_id], params }.not_to raise_error
     end
 
-    it 'creating raises exception with invalid params' do
+    it 'returns nil with invalid params' do
       params = {
         :user_id => nil,
         '1' => 0
       }
-
-      expect { SurveyResponse.create_from_params params }.to raise_error ActiveRecord::RecordNotFound
+      expect(SurveyResponse.create_from_params(params[:user_id], params)).to be_nil
     end
 
     it 'updating from valid params' do
@@ -53,10 +52,10 @@ RSpec.describe SurveyResponse, type: :model do
         '1' => 4
       }
 
-      response = SurveyResponse.create_from_params params
+      response = SurveyResponse.create_from_params params[:user_id], params
       params['1'] = 5
 
-      response.update_from_params params
+      response.update_from_params params[:user_id], params
       answer = response.answers.where(question: @question).first!
 
       expect(answer.choice).to eq(5)
@@ -68,10 +67,10 @@ RSpec.describe SurveyResponse, type: :model do
         '1' => 4
       }
 
-      response = SurveyResponse.create_from_params params
+      response = SurveyResponse.create_from_params params[:user_id], params
       expect do
         params['1'] = nil
-        response.update_from_params params
+        response.update_from_params params[:user_id], params
       end.to raise_error ActiveRecord::NotNullViolation
     end
   end

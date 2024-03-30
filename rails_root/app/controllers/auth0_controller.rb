@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ./app/controllers/auth0_controller.rb
 class Auth0Controller < ApplicationController
   def callback

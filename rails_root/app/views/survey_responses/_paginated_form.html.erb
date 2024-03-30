@@ -1,0 +1,71 @@
+
+  <%= form_with model: response, url: survey_responses_path do |form| %>
+    <% if response&.errors&.any? %>
+      <div style="color: red">
+        <h2><%= pluralize(response.errors.count, "error") %> prohibited this response from being saved:</h2>
+        <ul>
+          <% response.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="text-center">
+      <h2><%= @sections[@section][:title] %></h2>
+      <p><%= @sections[@section][:prompt] %></p>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-12 col-lg-8" style="min-height: 550px">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" class="col-6"></th>
+              <th scope="col" class="col-1 text-center">Strongly Disagree</th>
+              <th scope="col" class="col-1 text-center">Disagree</th>
+              <th scope="col" class="col-1 text-center">Agree</th>
+              <th scope="col" class="col-1 text-center">Strongly Agree</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @questions.each_with_index do |question, idx| %>
+            <tr>
+              <td><%= question.text %></td>
+              <% 4.times do |i| %>
+                <% choice = response&.answers&.where(question: question)&.first.try(:choice) %>
+                <td class="text-center"><%= form.radio_button question.id, i, { checked: (i == choice) }%></td>
+              <% end %>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <div class="col-lg-4 col-8">
+        <div class="input-group d-flex justify-content-center", id = "Page">
+          
+          <button class="btn" disabled><%= "Page #{pagination.page} of #{pagination.total_pages}" %></button>
+
+          <% if pagination.prev_page? %>
+            <%= form.submit "Previous", class: "btn btn-outline-success"%> 
+          <% else %>
+            <button class="btn" disabled>Previous</button>
+          <% end %>
+          
+          <% if pagination.next_page? %>
+            <%= form.submit "Next", class: "btn btn-outline-success"%> 
+          <% else %>
+            <button class="btn" disabled>Next</button>
+          <% end %>
+        </div>
+        
+      </div>
+      <div class="col-lg-1 col-2 d-flex justify-content-center", id = "Save">
+        <% if pagination.next_page? %>
+          <%= form.submit "Save", class: "btn btn-outline-success"%> 
+        <% else %>
+          <%= form.submit "Submit", class: "btn btn-outline-success" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>

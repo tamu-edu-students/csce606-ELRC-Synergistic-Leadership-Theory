@@ -1,15 +1,39 @@
 <!-- app/views/home/index.html.erb -->
 <main>
   <h1 class="visually-hidden">Home</h1>
+    
+    <% if session[:userinfo].present? %>
+        <h1><%= session[:userinfo]['name'] %> - Welcome to Our Rails App</h1>
+        <h2>Your Histroy Responses</h2>
+        <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Created at</th>
+              <th>Invited by</th>
+              <th>Your share code</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <% if !@survey_responses.nil?%>
+          <tbody>
+            <% @survey_responses.each do |response| %>
+              <tr>
+                <td><%= response.created_at%>
+                <td></td>
+                <td><%= response.share_code%></td> 
+                <td><%= link_to "Show", response %></td>
+              </tr>
+            <% end %>
+          </tbody>
+          <%end%>
+        </table>
+      </div>
+      <%= link_to "Take Survey", survey_path, class: "btn btn-outline-primary"%>
+    <% else%>
+      <h1>Welcome to Our Rails App</h1>
+      <h1>You are not logged in. Please login.</h1>
+     <% end %>
   
-    <h1>Home#index</h1>
-    <p>Find me in app/views/home/index.html.erb</p>
-    <h1>Welcome to Our Rails App</h1>
-    <p>This is the custom home page of your application.</p>
-    <h1>
-      <% if session[:userinfo].present? %>
-        <%= session[:userinfo]['name'] %> - Welcome to Our Rails App
-      <% end %>
-    </h1>
-  
+    
 </main>

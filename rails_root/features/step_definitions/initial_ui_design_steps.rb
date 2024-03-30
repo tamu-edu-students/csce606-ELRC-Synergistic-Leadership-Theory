@@ -11,7 +11,15 @@ When('I visit survey profile page') do
 end
 
 When('I visit survey form page') do
-  visit new_survey_response_path
+  visit survey_page_path(1)
+end
+
+When('I visit survey responses page') do
+  visit survey_responses_path
+end
+
+When('I click New survey response') do
+  click_link('New survey response')
 end
 
 Then('I can see profile form') do
@@ -19,9 +27,7 @@ Then('I can see profile form') do
 end
 
 Then('I can see survey sections') do
-  ['Part 1', 'Part 2', 'Part 3', 'Part 4'].each do |string|
-    expect(page).to have_content(string)
-  end
+  expect(page).to have_content('Part 1')
 end
 
 Then('I can see {string}') do |string|

@@ -19,12 +19,6 @@
     min-width: 1.5rem;
   }
 
-  .btn-passthrough {
-    border: none;
-    background: none;
-    color: inherit;
-  }
-
   tr {
     transition: height 0.0s ease;
   }
@@ -133,10 +127,12 @@
             form_class: "btn btn-outline-success",
             class: "btn-passthrough"
       %>
-      <%= link_to "Delete Response",
+      <%= button_to "Delete Response",
             @survey_response,
             method: :delete,
-            class: "btn btn-outline-danger"
+      
+            form_class: "btn btn-outline-danger",
+            class: "btn-passthrough"
       %>
     </div>
   </div>
@@ -144,6 +140,7 @@
   <div class="row d-flex justify-content-center">
     <div class="col-6 text-center">
       <%= link_to "Back to survey responses", survey_responses_path %>
+      <%= link_to "Back to home", root_path %>
     <div>
   </div>
 </div>
