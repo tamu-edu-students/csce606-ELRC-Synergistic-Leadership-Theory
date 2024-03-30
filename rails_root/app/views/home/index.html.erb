@@ -1,7 +1,6 @@
 <!-- app/views/home/index.html.erb -->
 <main>
   <h1 class="visually-hidden">Home</h1>
-  
     
     <% if session[:userinfo].present? %>
         <h1><%= session[:userinfo]['name'] %> - Welcome to Our Rails App</h1>
