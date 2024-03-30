@@ -1,4 +1,5 @@
-# frozen_string_literal: true
+  # frozen_string_literal: true
+  # rubocop:disable all
 
 require 'webmock/cucumber'
 
@@ -95,3 +96,4 @@ Then('a survey profile is created') do
   profile = SurveyProfile.find_by_user_id('google-oauth2|100507718411999601151')
   expect(profile).not_to be_nil
 end
+#rubocop enable all

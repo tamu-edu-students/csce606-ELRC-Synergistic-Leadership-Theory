@@ -20,25 +20,22 @@ class SurveyResponse < ApplicationRecord
 
   def self.create_from_params(user_id, params)
     # FIXME: When we look up things and fail, we should use more descriptive exceptions instead of ActiveRecord::RecordNotFound
-    begin
-      profile = SurveyProfile.where(user_id: user_id).first!
-      # FIXME: Handle share code already existing
-      survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
-      if not params.nil?
-        params.each do |key, choice|
-          begin
-            question = SurveyQuestion.find key
-          rescue ActiveRecord::RecordNotFound
-            next
-          end
-          SurveyAnswer.create choice:, question:, response: survey_response
-        end
+
+    profile = SurveyProfile.where(user_id:).first!
+    # FIXME: Handle share code already existing
+    survey_response = SurveyResponse.create profile:, share_code: SecureRandom.hex(3)
+    params&.each do |key, choice|
+      begin
+        question = SurveyQuestion.find key
+      rescue ActiveRecord::RecordNotFound
+        next
       end
-      survey_response
-    rescue ActiveRecord::RecordNotFound
-      logger.info "Survey profile not found!"
-      return nil
+      SurveyAnswer.create choice:, question:, response: survey_response
     end
+    survey_response
+  rescue ActiveRecord::RecordNotFound
+    logger.info 'Survey profile not found!'
+    nil
 
     # 96.times do |i|
     #   begin
@@ -52,45 +49,44 @@ class SurveyResponse < ApplicationRecord
     #     SurveyAnswer.create choice:, question:, response: survey_response
     #   end
     # end
-
   end
 
   def update_from_params(user_id, params)
     # FIXME: When we look up things and fail, we should use more descriptive exceptions instead of ActiveRecord::RecordNotFound
 
-    profile = SurveyProfile.where(user_id: user_id).first!
+    SurveyProfile.where(user_id:).first!
 
-    if not params.nil?
-      params.each do |key, choice|
-        begin
-          question = SurveyQuestion.find key
-        rescue ActiveRecord::RecordNotFound
-          next
-        end
+    return if params.nil?
 
-        answer = SurveyAnswer.where(question:, response: self).first!
-        answer.update(choice: choice)
-        
+    params.each do |key, choice|
+      begin
+        question = SurveyQuestion.find key
+      rescue ActiveRecord::RecordNotFound
+        next
       end
+
+      answer = SurveyAnswer.where(question:, response: self).first!
+      answer.update(choice:)
     end
   end
+
   # TODO: Create a new function that either updates existing SurveyAnswers or adds new SurveyAnswers if they do not exist
   def add_from_params(user_id, params)
-    profile = SurveyProfile.where(user_id: user_id).first!
-    if not params.nil?
-      params.each do |key, choice|
-        begin
-          question = SurveyQuestion.find key
-        rescue ActiveRecord::RecordNotFound
-          next
-        end
-        answer = SurveyAnswer.where(question:, response: self).first
-        if answer.nil?
-          SurveyAnswer.create choice:, question:, response: self
-        else
-          answer = SurveyAnswer.where(question:, response: self).first!
-          answer.update(choice: choice)
-        end
+    SurveyProfile.where(user_id:).first!
+    return if params.nil?
+
+    params.each do |key, choice|
+      begin
+        question = SurveyQuestion.find key
+      rescue ActiveRecord::RecordNotFound
+        next
+      end
+      answer = SurveyAnswer.where(question:, response: self).first
+      if answer.nil?
+        SurveyAnswer.create choice:, question:, response: self
+      else
+        answer = SurveyAnswer.where(question:, response: self).first!
+        answer.update(choice:)
       end
     end
   end

@@ -10,7 +10,6 @@ Given('I have completed the survey with valid inputs') do
   end
 end
 
-
 Given('I have created survey response') do
   @user_id = 1
   SurveyProfile.create(user_id: @user_id)
@@ -32,7 +31,6 @@ When('I try to submit the form') do
   end
   click_button 'Submit'
 end
-
 
 # Initial UI Design & Theory Exploration
 Given('I am on the site') do

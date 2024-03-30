@@ -24,6 +24,8 @@ SimpleCov.command_name 'specs'
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+# disable all cops for this file
+#rubocop:disable all
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -102,6 +104,7 @@ RSpec.configure do |config|
   #   Kernel.srand config.seed
   #
   #
+  # ignore line length
   def mock_auth
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:auth0] = OmniAuth::AuthHash.new({ provider: 'auth0',
@@ -143,3 +146,4 @@ RSpec.configure do |config|
     get '/auth/auth0/callback'
   end
 end
+#rubocop:enable all

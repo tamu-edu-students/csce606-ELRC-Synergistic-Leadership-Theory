@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-
 RSpec.describe 'home/index.html.erb', type: :view do
   it 'displays the please login message' do
     render
@@ -12,9 +11,8 @@ end
 
 RSpec.describe 'home/index.html.erb', type: :view do
   it 'displays the welcome message with name' do
-    session[:userinfo] = {"name" => "Peter", "sub" => "testestest"}
+    session[:userinfo] = { 'name' => 'Peter', 'sub' => 'testestest' }
     render
     expect(rendered).to have_text('Peter - Welcome to Our Rails App')
   end
 end
-

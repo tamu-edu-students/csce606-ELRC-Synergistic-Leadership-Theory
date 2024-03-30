@@ -43,7 +43,7 @@ RSpec.describe SurveyResponse, type: :model do
         :user_id => nil,
         '1' => 0
       }
-      expect(SurveyResponse.create_from_params params[:user_id], params).to be_nil 
+      expect(SurveyResponse.create_from_params(params[:user_id], params)).to be_nil
     end
 
     it 'updating from valid params' do
