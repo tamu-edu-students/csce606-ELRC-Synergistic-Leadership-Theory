@@ -25,25 +25,24 @@ class SurveyResponsesController < ApplicationController
   end
 
   def new
-    logger.info "========== new triggered =========="
+    logger.info '========== new triggered =========='
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: 1 })
     @survey_response = SurveyResponse.new
-    session[:user_id] = nil 
+    session[:user_id] = nil
     session[:survey_id] = nil
     session[:page_number] = 1
 
-    if session.dig(:userinfo, 'sub').present? && (not session[:userinfo]['sub'].nil?)
+    if session.dig(:userinfo, 'sub').present? && !session[:userinfo]['sub'].nil?
       render :survey
     else
-      flash[:warning] = "You are not logged in!"
+      flash[:warning] = 'You are not logged in!'
       redirect_to survey_responses_path
     end
-
   end
 
   # GET /survey/page/:page
   def survey
-    logger.info "========== survey triggered =========="
+    logger.info '========== survey triggered =========='
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: params[:page] })
     @survey_response = SurveyResponse.find_by_id(session[:survey_id])
     render :survey
@@ -51,25 +50,26 @@ class SurveyResponsesController < ApplicationController
 
   # GET /survey_responses/1/edit
   def edit
-    logger.info "========== edit triggered =========="
+    logger.info '========== edit triggered =========='
     session[:survey_id] = @survey_response.id
     session[:page_number] = 1
     redirect_to survey_page_url(session[:page_number])
   end
 
   def current_user_id
-    return session[:userinfo]['sub'] if session.dig(:userinfo, 'sub').present? && (not session[:userinfo]['sub'].nil?)
+    session[:userinfo]['sub'] if session.dig(:userinfo, 'sub').present? && !session[:userinfo]['sub'].nil?
   end
 
   # POST /survey_responses or /survey_responses.json
+  # rubocop:disable all
   def create
     return respond_with_error 'invalid_form' if invalid_form?
 
     session[:user_id] = current_user_id
-    
+
     unless SurveyProfile.exists?(user_id: session[:user_id])
       # If it does not exist, set a flash message and redirect to the home page
-      flash[:warning] = "Your profile could not be found. Please complete your profile."
+      flash[:warning] = 'Your profile could not be found. Please complete your profile.'
       redirect_to survey_responses_path
       return
     end
@@ -82,24 +82,24 @@ class SurveyResponsesController < ApplicationController
       #   redirect_to survey_responses_path
       #   return
       # else
-        # session[:survey_id] = @survey_response.id
+      # session[:survey_id] = @survey_response.id
       # end
     end
 
-    if not survey_response_params.nil?
-        @survey_response = SurveyResponse.find_by_id(session[:survey_id])
-        @survey_response.add_from_params session[:user_id], survey_response_params
+    if survey_response_params.nil?
+      flash[:warning] = 'survey_response_params is Nil!'
     else
-      flash[:warning] = "survey_response_params is Nil!"
+      @survey_response = SurveyResponse.find_by_id(session[:survey_id])
+      @survey_response.add_from_params session[:user_id], survey_response_params
     end
 
     respond_to do |format|
-      if params[:commit].in?(["Save","Next"])
+      if params[:commit].in?(%w[Save Next])
         format.html do
           session[:page_number] += 1
           redirect_to survey_page_url(session[:page_number])
         end
-      elsif params[:commit] == "Previous"
+      elsif params[:commit] == 'Previous'
         format.html do
           session[:page_number] -= 1
           redirect_to survey_page_url(session[:page_number])
@@ -117,22 +117,22 @@ class SurveyResponsesController < ApplicationController
 
   # PATCH/PUT /survey_responses/1 or /survey_responses/1.json
   def update
-    logger.info "========== update triggered =========="
+    logger.info '========== update triggered =========='
     return respond_with_error 'invalid form' if invalid_form?
 
-    if not survey_response_params.nil?
-      @survey_response.add_from_params session[:user_id], survey_response_params
+    if survey_response_params.nil?
+      flash[:warning] = 'survey_response_params is Nil!'
     else
-      flash[:warning] = "survey_response_params is Nil!"
+      @survey_response.add_from_params session[:user_id], survey_response_params
     end
 
     respond_to do |format|
-      if params[:commit].in?(["Save","Next"])
+      if params[:commit].in?(%w[Save Next])
         format.html do
           session[:page_number] += 1
           redirect_to survey_page_url(session[:page_number])
         end
-      elsif params[:commit] == "Previous"
+      elsif params[:commit] == 'Previous'
         format.html do
           session[:page_number] -= 1
           redirect_to survey_page_url(session[:page_number])
@@ -147,6 +147,7 @@ class SurveyResponsesController < ApplicationController
       end
     end
   end
+  # rubocop:enable all
 
   # DELETE /survey_responses/1 or /survey_responses/1.json
   def destroy
@@ -162,13 +163,13 @@ class SurveyResponsesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_survey_data
-    logger.info "========== set_survey_data triggered =========="
+    logger.info '========== set_survey_data triggered =========='
     @survey_response = SurveyResponse.find params[:id]
     @questions = @survey_response.questions
   end
 
   def set_survey_sections
-    logger.info "========== set_survey_sections triggered =========="
+    logger.info '========== set_survey_sections triggered =========='
     @sections = [
       {
         title: 'Part 1: Leadership Behavior - Management',
@@ -199,11 +200,9 @@ class SurveyResponsesController < ApplicationController
   end
 
   def invalid_form?
-    if survey_response_params.nil?
-      return false
-    else
-      return survey_response_params.values.any? { |value| value.nil? || value.empty? }
-    end
+    return false if survey_response_params.nil?
+
+    survey_response_params.values.any? { |value| value.nil? || value.empty? }
   end
 
   def respond_with_error(message, status = :unprocessable_entity)
@@ -216,9 +215,9 @@ class SurveyResponsesController < ApplicationController
   end
 
   def survey_response_params
-    if params.include? :survey_response
-      params.require(:survey_response).permit!
-    end
+    return unless params.include? :survey_response
+
+    params.require(:survey_response).permit!
   end
 end
 # rubocop:enable Metrics/ClassLength

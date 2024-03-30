@@ -19,13 +19,13 @@ Given('I an on the survey page {int}') do |i|
   end
 end
 
-When('I click Submit button') do 
-    click_button('commit')
-end 
+When('I click Submit button') do
+  click_button('commit')
+end
 
-When('I click Next button') do 
+When('I click Next button') do
   find(:button, name: 'commit')
-end 
+end
 
 Then('I see Next button') do
   expect(page).to have_content('Next')
@@ -35,19 +35,19 @@ Then('I see Previous button') do
   expect(page).to have_content('Previous')
 end
 
-Then ('I should be on the survey page {int}') do |i|
+Then('I should be on the survey page {int}') do |i|
   expect(page).to have_current_path(survey_page_path(i))
 end
 
-Then ('I should be on the survey response page {int}') do |i|
+Then('I should be on the survey response page {int}') do |i|
   expect(page).to have_current_path(survey_response_path(i))
 end
 
-When ('I am on the survey path') do
+When('I am on the survey path') do
   visit survey_path
 end
 
-Then ('I should be on the survey path') do
+Then('I should be on the survey path') do
   expect(page).to have_current_path(survey_path)
 end
 

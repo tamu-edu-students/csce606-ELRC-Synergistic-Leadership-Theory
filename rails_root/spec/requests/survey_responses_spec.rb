@@ -66,8 +66,7 @@ RSpec.describe '/survey_responses', type: :request do
   end
 
   let(:empty_attr) do
-    {
-    }
+    {}
   end
 
   describe 'GET /index' do
@@ -144,7 +143,6 @@ RSpec.describe '/survey_responses', type: :request do
     end
 
     context 'with invalid parameters' do
-      
       before do
         allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
       end
@@ -168,17 +166,14 @@ RSpec.describe '/survey_responses', type: :request do
       end
     end
 
-    
     context 'with invalid user id' do
       it 'redirects to the survey_responses pagge' do
-        
         allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(-1)
         post survey_responses_url, params: { survey_response: create_response_attr }
         expect(response).to redirect_to(survey_responses_url)
       end
     end
 
-    
     context 'with nil survey response' do
       it 'redirects to the survey_responses pagge' do
         allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)

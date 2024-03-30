@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   resources :survey_responses, except: [:new]
   patch 'survey_responses', to: 'survey_responses#create', as: :patch_survey_response
-  
+
   resources :survey_profiles
   resources :invitations, only: %i[show create]
 
