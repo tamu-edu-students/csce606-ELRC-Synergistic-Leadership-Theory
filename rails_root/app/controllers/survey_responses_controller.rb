@@ -32,9 +32,12 @@ class SurveyResponsesController < ApplicationController
     session[:survey_id] = nil
     session[:page_number] = 1
 
-    return unless session.dig(:userinfo, 'sub').present? && !session[:userinfo]['sub'].nil?
-
-    render :survey
+    if session.dig(:userinfo, 'sub').present? && !session[:userinfo]['sub'].nil?
+      render :survey
+    else
+      flash[:warning] = 'You are not logged in!'
+      redirect_to survey_responses_path
+    end
   end
 
   # GET /survey/page/:page
