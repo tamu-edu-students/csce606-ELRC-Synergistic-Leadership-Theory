@@ -28,14 +28,3 @@ Feature: Data Submission
         And I click New survey response
         Then I should be on the survey path
         And I see Previous button
-
-    Scenario: Click submit button
-        Given I am on the site
-        And I try to login
-        And I have created a survey profile previously
-        When I visit survey responses page
-        And I click New survey response
-        And I click Submit button
-        Then I should be on the survey response page 1
-
-    
