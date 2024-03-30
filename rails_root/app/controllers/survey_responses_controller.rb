@@ -67,15 +67,23 @@ class SurveyResponsesController < ApplicationController
 
     session[:user_id] = current_user_id
     
+    unless SurveyProfile.exists?(user_id: session[:user_id])
+      # If it does not exist, set a flash message and redirect to the home page
+      flash[:warning] = "Your profile could not be found. Please complete your profile."
+      redirect_to survey_responses_path
+      return
+    end
+
     if session[:survey_id].nil?
       @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
-
-      if @survey_response.nil?
-        flash[:warning] = "Survey profile not found!"
-        redirect_to survey_responses_path
-      else
-        session[:survey_id] = @survey_response.id
-      end
+      session[:survey_id] = @survey_response.id
+      # if @survey_response.nil?
+      #   flash[:warning] = "Survey profile not found!"
+      #   redirect_to survey_responses_path
+      #   return
+      # else
+        # session[:survey_id] = @survey_response.id
+      # end
     end
 
     if not survey_response_params.nil?
@@ -112,16 +120,30 @@ class SurveyResponsesController < ApplicationController
     logger.info "========== update triggered =========="
     return respond_with_error 'invalid form' if invalid_form?
 
-    begin
-      @survey_response.update_from_params session[:user_id], survey_response_params
-    rescue ActiveRecord::RecordNotFound
-      return respond_with_error message: 'invalid user id', status: :not_found
+    if not survey_response_params.nil?
+      @survey_response.add_from_params session[:user_id], survey_response_params
+    else
+      flash[:warning] = "survey_response_params is Nil!"
     end
 
     respond_to do |format|
-      format.html do
-        redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully updated.'
-        format.json { render :show, status: :ok, location: @survey_response }
+      if params[:commit].in?(["Save","Next"])
+        format.html do
+          session[:page_number] += 1
+          redirect_to survey_page_url(session[:page_number])
+        end
+      elsif params[:commit] == "Previous"
+        format.html do
+          session[:page_number] -= 1
+          redirect_to survey_page_url(session[:page_number])
+        end
+      else
+        @survey_response = SurveyResponse.find_by_id(session[:survey_id])
+        logger.info "@survey_response: #{@survey_response}"
+        format.html do
+          redirect_to survey_response_url(@survey_response), notice: 'Survey response was successfully created.'
+        end
+        format.json { render :show, status: :created, location: @survey_response }
       end
     end
   end

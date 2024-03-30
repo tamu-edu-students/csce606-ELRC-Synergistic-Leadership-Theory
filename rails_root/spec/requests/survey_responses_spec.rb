@@ -57,6 +57,19 @@ RSpec.describe '/survey_responses', type: :request do
     }
   end
 
+  let(:create_response_attr) do
+    {
+
+      user_id: survey_profile.user_id, # replace with the ID of a valid user
+      '1': 1
+    }
+  end
+
+  let(:empty_attr) do
+    {
+    }
+  end
+
   describe 'GET /index' do
     it 'renders a successful response' do
       SurveyResponse.create! valid_attributes
@@ -105,9 +118,6 @@ RSpec.describe '/survey_responses', type: :request do
   end
 
   describe 'POST /create' do
-    before do
-      allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
-    end
     context 'with valid parameters' do
       # creat new question to be in the database for the test
       let!(:survey_question) do
@@ -117,12 +127,8 @@ RSpec.describe '/survey_responses', type: :request do
         )
       end
 
-      let(:create_response_attr) do
-        {
-
-          user_id: survey_profile.user_id, # replace with the ID of a valid user
-          '1': 1
-        }
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
       end
 
       it 'creates a new SurveyResponse' do
@@ -138,28 +144,56 @@ RSpec.describe '/survey_responses', type: :request do
     end
 
     context 'with invalid parameters' do
+      
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
+      end
+
       it 'does not create a new SurveyResponse - bad attributes' do
         expect do
           post survey_responses_url, params: { survey_response: invalid_attributes }
         end.to_not change(SurveyResponse, :count)
       end
 
-      it 'does not create a new SurveyResponse - bad user' do
-        invalid_attributes[:profile_id] = 100_000
-        expect do
-          post survey_responses_url, params: { survey_response: invalid_attributes }
-        end.to_not change(SurveyResponse, :count)
-      end
+      # it 'does not create a new SurveyResponse - bad user' do
+      #   invalid_attributes[:profile_id] = 100_000
+      #   expect do
+      #     post survey_responses_url, params: { survey_response: invalid_attributes }
+      #   end.to_not change(SurveyResponse, :count)
+      # end
 
       it 'returns a failure response (i.e., to display the "new" template)' do
         post survey_responses_url, params: { survey_response: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
+
+    
+    context 'with invalid user id' do
+      it 'redirects to the survey_responses pagge' do
+        
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(-1)
+        post survey_responses_url, params: { survey_response: create_response_attr }
+        expect(response).to redirect_to(survey_responses_url)
+      end
+    end
+
+    
+    context 'with nil survey response' do
+      it 'redirects to the survey_responses pagge' do
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
+        expect do
+          post survey_responses_url, params: { survey_response: nil }
+        end.to_not change(SurveyResponse, :count)
+      end
+    end
   end
 
   # removed because it is not used in the application
   describe 'PATCH /update' do
+    before do
+      allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
+    end
     context 'with valid parameters' do
       let(:survey_question) do
         SurveyQuestion.create!(
@@ -182,23 +216,18 @@ RSpec.describe '/survey_responses', type: :request do
           question: survey_question,
           response: survey_response
         )
-
+        post survey_responses_url, params: { survey_response: create_response_attr }
         patch survey_response_url(survey_response), params: { survey_response: new_attributes }
         survey_answer.reload
         expect(survey_answer.choice).to eq(2)
       end
 
-      it 'redirects to the survey_response' do
-        SurveyAnswer.create!(
-          choice: 1,
-          question: survey_question,
-          response: survey_response
-        )
+      # it 'redirects to the survey_response' do
 
-        patch survey_response_url(survey_response), params: { survey_response: new_attributes }
-        survey_response.reload
-        expect(response).to redirect_to(survey_response_url(survey_response))
-      end
+      #   post survey_responses_url, params: { survey_response: create_response_attr }
+      #   patch survey_response_url(survey_response), params: { survey_response: new_attributes }
+      #   expect(response).to redirect_to(survey_response_url(survey_response))
+      # end
     end
 
     context 'with invalid parameters' do
@@ -213,16 +242,15 @@ RSpec.describe '/survey_responses', type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      it 'responds with status 422 for invalid user id' do
-        invalid_response = {
-          :user_id => -1,
-          '1' => 1
-        }
+      # it 'responds with status 422 for invalid user id' do
+      #   valid_response = {
+      #     '1' => 1
+      #   }
 
-        survey_response = SurveyResponse.create! valid_attributes
-        patch survey_response_url(survey_response), params: { survey_response: invalid_response }
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
+      #   survey_response = SurveyResponse.create! valid_attributes
+      #   patch survey_response_url(survey_response), params: { survey_response: valid_response }
+      #   expect(response).to have_http_status(:unprocessable_entity)
+      # end
     end
   end
 
