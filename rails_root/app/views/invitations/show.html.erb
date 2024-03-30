@@ -3,5 +3,5 @@
 <p>You were invited by <%= @invitation.created_by.first_name %> <%= @invitation.created_by.last_name %>.</p>
 
 <p>
-  <%= link_to "Take the Survey", survey_response_path(@invitation.survey_response), class: 'button-class' %>
+  <%= link_to "Take the Survey", survey_response_path(@invitation.parent_response), class: 'button-class' %>
 </p>
