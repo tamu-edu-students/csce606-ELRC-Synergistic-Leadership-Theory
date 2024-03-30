@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Invitation, type: :model do
   it 'belongs to a survey_response' do
     invitation = Invitation.new
-    expect(invitation).to respond_to(:survey_response)
+    expect(invitation).to respond_to(:parent_response)
   end
 
   it 'belongs to a created_by' do
