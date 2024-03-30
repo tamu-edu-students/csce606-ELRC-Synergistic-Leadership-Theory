@@ -33,7 +33,6 @@ class SurveyResponsesController < ApplicationController
     session[:page_number] = 1
 
     if session.dig(:userinfo, 'sub').present? && (not session[:userinfo]['sub'].nil?)
-      session[:user_id] = session[:userinfo]['sub']
       render :survey
     else
       flash[:warning] = "You are not logged in!"
@@ -58,10 +57,16 @@ class SurveyResponsesController < ApplicationController
     redirect_to survey_page_url(session[:page_number])
   end
 
+  def current_user_id
+    return session[:userinfo]['sub'] if session.dig(:userinfo, 'sub').present? && (not session[:userinfo]['sub'].nil?)
+  end
+
   # POST /survey_responses or /survey_responses.json
   def create
     return respond_with_error 'invalid_form' if invalid_form?
 
+    session[:user_id] = current_user_id
+    
     if session[:survey_id].nil?
       @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
 

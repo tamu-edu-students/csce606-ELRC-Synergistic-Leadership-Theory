@@ -51,6 +51,12 @@ RSpec.describe '/survey_responses', type: :request do
     }
   end
 
+  let(:mock_user) do
+    {
+      'sub' => survey_profile.user_id
+    }
+  end
+
   describe 'GET /index' do
     it 'renders a successful response' do
       SurveyResponse.create! valid_attributes
@@ -99,6 +105,9 @@ RSpec.describe '/survey_responses', type: :request do
   end
 
   describe 'POST /create' do
+    before do
+      allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
+    end
     context 'with valid parameters' do
       # creat new question to be in the database for the test
       let!(:survey_question) do
@@ -115,9 +124,9 @@ RSpec.describe '/survey_responses', type: :request do
           '1': 1
         }
       end
+
       it 'creates a new SurveyResponse' do
         expect do
-          session[:user_id] = 1
           post survey_responses_url, params: { survey_response: create_response_attr }
         end.to change(SurveyResponse, :count).by(1)
       end
