@@ -32,7 +32,13 @@ Then('I should see the invitation landing page') do
 end
 
 Then('I should see a button to take the test') do
-  expect(page).to have_link('Take the Survey', href: survey_response_path(@invitation.parent_response))
+  if page.has_button?('Take the Survey')
+    expect(page).to have_button('Take the Survey')
+    form = page.find('form', text: 'Take the Survey')
+    expect(form[:action]).to eq('/auth/auth0')
+  else
+    expect(page).to have_link('Take the Survey', href: new_survey_response_path(share_code: @invitation.parent_response.share_code))
+  end
 end
 
 Then("the invitation record's visited field should be set to true") do

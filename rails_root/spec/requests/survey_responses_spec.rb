@@ -176,7 +176,7 @@ RSpec.describe '/survey_responses', type: :request do
     end
 
     context 'with invalid parameters' do
-      it "responds with status 422 for nil input" do
+      it 'responds with status 422 for nil input' do
         invalid_response = {
           :user_id => nil,
           '1' => 1
@@ -187,7 +187,7 @@ RSpec.describe '/survey_responses', type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      it "responds with status 422 for invalid user id" do
+      it 'responds with status 422 for invalid user id' do
         invalid_response = {
           :user_id => -1,
           '1' => 1

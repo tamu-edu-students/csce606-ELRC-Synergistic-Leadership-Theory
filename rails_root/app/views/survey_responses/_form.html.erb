@@ -12,7 +12,7 @@
   <div>
     <%= form.label :user_id, style: "display: block" %>
     <% user_id = @survey_response.try(:profile).try(:user_id)%>
-    <%= form.number_field :user_id, :value => user_id %>
+    <%= form.text_field :user_id, value: (session.dig(:userinfo, 'sub') || 'default_value') %>
   </div>
   <div>
     <% if @sections.present? %>
@@ -43,6 +43,7 @@
     <% end %>
   </div>
   <div>
+    <%# <%= form.hidden_field :share_code, value: (params[:share_code] || 'default_value') %>
     <%= form.submit %>
   </div>
 <% end %>
