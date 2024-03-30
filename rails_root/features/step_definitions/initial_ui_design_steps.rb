@@ -14,6 +14,14 @@ When('I visit survey form page') do
   visit survey_page_path(1)
 end
 
+When('I visit survey responses page') do
+  visit survey_responses_path
+end
+
+When('I click New survey response') do
+  click_link('New survey response')
+end
+
 Then('I can see profile form') do
   expect(page).to have_content('Input user information')
 end
