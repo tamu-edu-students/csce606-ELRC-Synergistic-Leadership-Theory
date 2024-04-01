@@ -4,6 +4,9 @@
     
     <% if session[:userinfo].present? %>
         <h1><%= session[:userinfo]['name'] %> - Welcome to Our Rails App</h1>
+        <br>
+        <h2>Your Profile</h2>
+        <%= render @survey_profile%>
         <h2>Your History Responses</h2>
         <div class="table-responsive">
         <table class="table">
