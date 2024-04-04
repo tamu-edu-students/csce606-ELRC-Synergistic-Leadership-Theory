@@ -11,7 +11,7 @@ end
 
 RSpec.describe 'home/index.html.erb', type: :view do
   it 'displays the welcome message with name' do
-    session[:userinfo] = { 'name' => 'Peter', 'sub' => 'testestest' }
+    session[:userinfo] = { 'name' => 'Peter', 'sub' => 1 }
     render
     expect(rendered).to have_text('Peter - Welcome to Our Rails App')
   end
