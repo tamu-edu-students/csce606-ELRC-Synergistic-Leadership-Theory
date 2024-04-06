@@ -44,11 +44,11 @@ Then('I should be on the survey response page {int}') do |i|
 end
 
 When('I am on the survey path') do
-  visit survey_path
+  visit new_survey_response_path
 end
 
 Then('I should be on the survey path') do
-  expect(page).to have_current_path(survey_path)
+  expect(page).to have_current_path(new_survey_response_path)
 end
 
 When('I enter a unique case number in the {string}') do |_string|

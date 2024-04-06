@@ -9,6 +9,8 @@ module Secured
   end
 
   def logged_in_using_omniauth?
+    logger.info '========== logged_in_using_omniauth triggered =========='
     redirect_to '/' unless session[:userinfo].present?
+    # flash[:warning] = 'You are not logged in!'
   end
 end
