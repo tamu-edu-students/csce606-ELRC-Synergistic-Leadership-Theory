@@ -59,7 +59,6 @@ RSpec.describe '/survey_responses', type: :request do
 
   let(:create_response_attr) do
     {
-
       user_id: survey_profile.user_id, # replace with the ID of a valid user
       '1': 1
     }
@@ -71,7 +70,6 @@ RSpec.describe '/survey_responses', type: :request do
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      SurveyResponse.create! valid_attributes
       get survey_responses_url
       expect(response).to be_successful
     end
@@ -79,7 +77,7 @@ RSpec.describe '/survey_responses', type: :request do
 
   describe 'GET /show/:id' do
     it 'renders a successful response' do
-      survey_response = SurveyResponse.create! valid_attributes
+      survey_response = FactoryBot.create(:survey_response)
       get survey_response_url(survey_response)
       expect(response).to be_successful
     end

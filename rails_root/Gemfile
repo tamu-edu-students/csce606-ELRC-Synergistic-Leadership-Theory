@@ -58,6 +58,7 @@ group :development, :test do
   gem 'rubycritic', require: false
   gem 'simplecov', require: false
   gem 'sqlite3', '~> 1.4'
+  gem 'factory_bot_rails'
 end
 
 group :development do
@@ -76,6 +77,7 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'webmock'
+  gem 'rack_session_access'
 end
 
 group :production do

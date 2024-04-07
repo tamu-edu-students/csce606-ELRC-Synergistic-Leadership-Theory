@@ -63,6 +63,7 @@ class SurveyResponsesController < ApplicationController
   # POST /survey_responses or /survey_responses.json
   # rubocop:disable all
   def create
+    logger.info '========== create triggered =========='
     return respond_with_error 'invalid_form' if invalid_form?
 
     if session[:survey_id].nil?
