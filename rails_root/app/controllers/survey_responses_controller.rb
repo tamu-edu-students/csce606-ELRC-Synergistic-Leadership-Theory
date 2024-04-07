@@ -58,8 +58,8 @@ class SurveyResponsesController < ApplicationController
   def edit
     logger.info '========== edit triggered =========='
 
-    return return_to_root 'user_id does not exit.' if session[:user_id].nil?
-    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: session[:user_id])
+    return return_to_root 'You are not logged in.' if current_user_id.nil?
+    return return_to_root 'You cannot edit this result.' if current_user_id != @survey_response.profile.user_id
 
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: session[:page_number] })
   end
