@@ -7,8 +7,8 @@ Given(/the following questions exist/) do |survey_questions_table|
 end
 
 Given(/many questions exist/) do
-  for i in 0..5 do
-    for i in 0..10 do
+  (0..5).each do |_|
+    (0..10).each do |_|
       FactoryBot.create(:survey_question)
     end
   end

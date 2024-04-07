@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # spec/requests/survey_responses_spec.rb
 require 'rails_helper'
 
@@ -26,8 +28,8 @@ RSpec.describe 'SurveyResponses', type: :request do
       end
       it 'renders a successful response' do
         profile = FactoryBot.create(:survey_profile, user_id: 1)
-        _response = FactoryBot.create(:survey_response, profile:)
-        get survey_response_url(_response)
+        my_response = FactoryBot.create(:survey_response, profile:)
+        get survey_response_url(my_response)
         expect(response).to have_http_status(:success)
       end
     end
@@ -101,15 +103,15 @@ RSpec.describe 'SurveyResponses', type: :request do
 
       it 'renders a successful response' do
         profile = FactoryBot.create(:survey_profile, user_id: 1)
-        _response = FactoryBot.create(:survey_response, profile:)
-        get edit_survey_response_path(_response)
+        my_response = FactoryBot.create(:survey_response, profile:)
+        get edit_survey_response_path(my_response)
         expect(response).to have_http_status(:success)
       end
 
       it 'renders the edit template' do
         profile = FactoryBot.create(:survey_profile, user_id: 1)
-        _response = FactoryBot.create(:survey_response, profile:)
-        get edit_survey_response_path(_response)
+        my_response = FactoryBot.create(:survey_response, profile:)
+        get edit_survey_response_path(my_response)
         expect(response).to render_template(:edit)
       end
     end
@@ -189,9 +191,9 @@ RSpec.describe 'SurveyResponses', type: :request do
       end
 
       it 'updates the requested survey_response answers' do
-        _question = survey_question
-        post survey_responses_path, params: { survey_response: { _question.id => 2 } }
-        answer = SurveyAnswer.where(question: _question, response: SurveyResponse.last).first
+        my_question = survey_question
+        post survey_responses_path, params: { survey_response: { my_question.id => 2 } }
+        answer = SurveyAnswer.where(question: my_question, response: SurveyResponse.last).first
         expect(answer.choice).to eq(2)
       end
     end
@@ -267,8 +269,8 @@ RSpec.describe 'SurveyResponses', type: :request do
         allow_any_instance_of(SurveyResponsesController).to receive(:session) { { page_number: 2 } }
       end
       it 'returns to root' do
-        _answer = survey_answer
-        patch survey_response_url(_answer.response), params: { survey_response: { _answer.question.id => 2 } }
+        my_answer = survey_answer
+        patch survey_response_url(my_answer.response), params: { survey_response: { my_answer.question.id => 2 } }
         expect(response).to redirect_to(root_url)
       end
     end
@@ -279,8 +281,8 @@ RSpec.describe 'SurveyResponses', type: :request do
         allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(99)
       end
       it 'redirects to the root page' do
-        _answer = survey_answer
-        patch survey_response_url(_answer.response), params: { survey_response: { _answer.question.id => 2 } }
+        my_answer = survey_answer
+        patch survey_response_url(my_answer.response), params: { survey_response: { my_answer.question.id => 2 } }
         expect(response).to redirect_to(root_url)
       end
     end
@@ -310,9 +312,9 @@ RSpec.describe 'SurveyResponses', type: :request do
 
   describe 'DELETE /destroy' do
     it 'destroys the requested survey_response' do
-      _response = survey_response
+      my_response = survey_response
       expect do
-        delete survey_response_url(_response)
+        delete survey_response_url(my_response)
       end.to change(SurveyResponse, :count).by(-1)
     end
 

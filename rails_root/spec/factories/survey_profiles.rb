@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # spec/factories/survey_profiles.rb
 FactoryBot.define do
   factory :survey_profile do

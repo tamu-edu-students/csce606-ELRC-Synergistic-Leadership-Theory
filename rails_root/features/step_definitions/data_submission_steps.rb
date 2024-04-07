@@ -9,16 +9,6 @@ end
 Then('the analysis results displays my leadership style') do
   expect(page).to have_content('Your leadership type is:')
 end
-require 'rack_session_access/capybara'
-
-Given('I have logged in with user {string}') do |id|
-  page.set_rack_session(userinfo: { 'sub' => id })
-  SurveyProfile.find_or_create_by(user_id: id)
-end
-
-Given('I have not logged in') do
-  page.set_rack_session(userinfo: nil)
-end
 
 Given('I have no survey profile') do
   SurveyProfile.destroy_all
@@ -68,10 +58,9 @@ Then('I should be on root page') do
   expect(page).to have_current_path(root_url, url: true)
 end
 
-
 When('I I fill in the form with Disagree') do
-    @questions = SurveyQuestion.all
-    @questions.limit(10).each do |question|
-      choose "survey_response_#{question.id}_1"
-    end
+  @questions = SurveyQuestion.all
+  @questions.limit(10).each do |question|
+    choose "survey_response_#{question.id}_1"
   end
+end

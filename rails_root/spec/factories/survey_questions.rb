@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # spec/factories/survey_questions.rb
 FactoryBot.define do
   factory :survey_question do
