@@ -21,6 +21,9 @@ class SurveyResponsesController < ApplicationController
 
   # GET /survey_responses/1 or /survey_responses/1.json
   def show
+    return return_to_root 'You are not logged in.' if current_user_id.nil?
+    return return_to_root 'You cannot view this result.' if current_user_id != @survey_response.profile.user_id
+
     flash.keep(:warning)
   end
 
@@ -33,16 +36,14 @@ class SurveyResponsesController < ApplicationController
     logger.info '========== new triggered =========='
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: 1 })
     @survey_response = SurveyResponse.new
+    return return_to_root 'You are not logged in.' if current_user_id.nil?
+
     session[:user_id] = current_user_id
+
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: session[:user_id])
+
     session[:survey_id] = nil
     session[:page_number] = 1
-
-    return if SurveyProfile.exists?(user_id: session[:user_id])
-
-    # If it does not exist, set a flash message and redirect to the home page
-    flash[:warning] = 'Your profile could not be found. Please complete your profile.'
-    redirect_to root_url
-    nil
   end
 
   # GET /survey/page/:page
@@ -56,6 +57,10 @@ class SurveyResponsesController < ApplicationController
   # GET /survey_responses/1/edit
   def edit
     logger.info '========== edit triggered =========='
+
+    return return_to_root 'user_id does not exit.' if session[:user_id].nil?
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: session[:user_id])
+
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: session[:page_number] })
   end
 
@@ -64,17 +69,12 @@ class SurveyResponsesController < ApplicationController
   def create
     logger.info '========== create triggered =========='
     return respond_with_error 'invalid_form' if invalid_form?
+    return return_to_root 'user_id does not exit.' if session[:user_id].nil?
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: session[:user_id])
 
-    if session[:user_id].nil?
-      flash[:warning] = 'user_id does not exit.'
-      redirect_to root_url
-      return
-    end
+    @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
+    session[:survey_id] = @survey_response.id
 
-    unless survey_response_params.nil?
-      @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
-      session[:survey_id] = @survey_response.id
-    end
 
     respond_to do |format|
       if params[:commit].in?(%w[Save Next])
@@ -100,6 +100,8 @@ class SurveyResponsesController < ApplicationController
   def update
     logger.info '========== update triggered =========='
     return respond_with_error 'invalid form' if invalid_form?
+    return return_to_root 'user_id does not exit.' if session[:user_id].nil?
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: session[:user_id])
 
     unless survey_response_params.nil?
       @survey_response.add_from_params session[:user_id], survey_response_params
@@ -185,7 +187,16 @@ class SurveyResponsesController < ApplicationController
   def respond_with_error(message, status = :unprocessable_entity)
     respond_to do |format|
       format.html do
-        redirect_to survey_page_path(1), notice: message, status:
+        redirect_to new_survey_response_path, notice: message, status:
+      end
+      format.json { render json: { error: message }, status: }
+    end
+  end
+
+  def return_to_root(message)
+    respond_to do |format|
+      format.html do
+        redirect_to root_url, notice: message
       end
       format.json { render json: { error: message }, status: }
     end

@@ -19,17 +19,35 @@ RSpec.describe 'SurveyResponses', type: :request do
   end
 
   describe 'GET /show/:id' do
-    # TODO: show if user id matches
-    it 'renders a successful response' do
-      get survey_response_url(survey_response)
-      expect(response).to be_successful
+    context 'valid response and profile exist' do
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return('1')
+      end
+      it 'renders a successful response' do
+        profile = FactoryBot.create(:survey_profile, user_id: 1)
+        _response = FactoryBot.create(:survey_response, profile:)
+        get survey_response_url(_response)
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context 'responses with different profile' do
+      before do
+        survey_response
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(99)
+      end
+
+      it 'redirects to the root page' do
+        get survey_response_url(survey_response)
+        expect(response).to redirect_to(root_url)
+      end
     end
   end
 
   describe 'GET /new' do
     context 'user profile exist' do
       before do
-        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { user_id: survey_profile.user_id} }
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
       end
       it 'returns a successful response' do
         get new_survey_response_path
@@ -42,9 +60,44 @@ RSpec.describe 'SurveyResponses', type: :request do
       end
     end
 
-    context 'user profile not exist' do
+    context 'user does not log in' do
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(nil)
+      end
       it 'redirects to the root page' do
         get new_survey_response_path
+        expect(response).to redirect_to(root_url)
+      end
+
+      context 'user profile not exist' do
+        before do
+          allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(99)
+        end
+        it 'redirects to the root page' do
+          get new_survey_response_path
+          expect(response).to redirect_to(root_url)
+        end
+      end
+    end
+  end
+
+  describe 'GET /edit' do
+    context 'without user id' do
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { page_number: 2 } }
+      end
+      it 'redirects to the root page' do
+        get edit_survey_response_path(survey_response)
+        expect(response).to redirect_to(root_url)
+      end
+    end
+
+    context 'user profile not exist' do
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { page_number: 2, user_id: 99 } }
+      end
+      it 'redirects to the root page' do
+        get edit_survey_response_path(survey_response)
         expect(response).to redirect_to(root_url)
       end
     end
@@ -109,6 +162,100 @@ RSpec.describe 'SurveyResponses', type: :request do
         post survey_responses_path
         expect(response).to redirect_to(root_url)
       end
+    end
+
+    context 'with invalid parameters' do
+      let(:invalid_attributes) do
+        # any value in form is null
+        {
+          profile_id: nil,
+          share_code: 1
+        }
+      end
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { user_id: survey_profile.user_id, page_number: 2 } }
+      end
+
+      it 'does not create a new SurveyResponse - bad attributes' do
+        expect do
+          post survey_responses_path, params: { survey_response: invalid_attributes }
+        end.to_not change(SurveyResponse, :count)
+      end
+
+      it 'does not create a new SurveyResponse - bad user' do
+        invalid_attributes[:profile_id] = 100_000
+        expect do
+          post survey_responses_url, params: { survey_response: invalid_attributes }
+        end.to_not change(SurveyResponse, :count)
+      end
+
+      it 'returns a failure response (i.e., to display the "new" template)' do
+        post survey_responses_url, params: { survey_response: invalid_attributes }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  describe 'PATCH /update' do
+    context 'with valid parameters' do
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { user_id: survey_profile.user_id, page_number: 2 } }
+      end
+
+      it 'updates the requested survey_response answers' do
+        survey_answer = SurveyAnswer.create!(
+          choice: 1,
+          question: survey_question,
+          response: survey_response
+        )
+        post survey_responses_url, params: { survey_response: create_response_attr }
+        patch survey_response_url(survey_response), params: { survey_response: new_attributes }
+        survey_answer.reload
+        expect(survey_answer.choice).to eq(2)
+
+        # it 'redirects to the survey_response' do
+
+        #   post survey_responses_url, params: { survey_response: create_response_attr }
+        #   patch survey_response_url(survey_response), params: { survey_response: new_attributes }
+        #   expect(response).to redirect_to(survey_response_url(survey_response))
+        # end
+      end
+    end
+    context 'with invalid parameters' do
+      it 'responds with status 422 for nil input' do
+        invalid_response = {
+          :user_id => nil,
+          '1' => 1
+        }
+
+        survey_response = SurveyResponse.create! valid_attributes
+        patch survey_response_url(survey_response), params: { survey_response: invalid_response }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      # it 'responds with status 422 for invalid user id' do
+      #   valid_response = {
+      #     '1' => 1
+      #   }
+
+      #   survey_response = SurveyResponse.create! valid_attributes
+      #   patch survey_response_url(survey_response), params: { survey_response: valid_response }
+      #   expect(response).to have_http_status(:unprocessable_entity)
+      # end
+    end
+  end
+
+  describe 'DELETE /destroy' do
+    it 'destroys the requested survey_response' do
+      _response = survey_response
+      expect do
+        delete survey_response_url(_response)
+      end.to change(SurveyResponse, :count).by(-1)
+    end
+
+    it 'redirects to the survey_responses list' do
+      delete survey_response_url(survey_response)
+      expect(response).to redirect_to(survey_responses_url)
     end
   end
 end
