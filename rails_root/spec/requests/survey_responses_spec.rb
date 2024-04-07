@@ -140,7 +140,7 @@ RSpec.describe 'SurveyResponses', type: :request do
   describe 'POST /create' do
     context 'with valid parameters' do
       before do
-        allow_any_instance_of(SurveyResponsesController).to receive(:session) { {page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { page_number: 2 } }
         allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
       end
 
@@ -188,11 +188,10 @@ RSpec.describe 'SurveyResponses', type: :request do
         expect(response).to redirect_to(survey_response_path(SurveyResponse.last))
       end
 
-      
       it 'updates the requested survey_response answers' do
         _question = survey_question
-        post survey_responses_path, params: { survey_response: {_question.id => 2 } }
-        answer = SurveyAnswer.where(question:_question, response: SurveyResponse.last).first
+        post survey_responses_path, params: { survey_response: { _question.id => 2 } }
+        answer = SurveyAnswer.where(question: _question, response: SurveyResponse.last).first
         expect(answer.choice).to eq(2)
       end
     end
@@ -227,7 +226,7 @@ RSpec.describe 'SurveyResponses', type: :request do
         }
       end
       before do
-        allow_any_instance_of(SurveyResponsesController).to receive(:session) { {page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { page_number: 2 } }
         allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
       end
 

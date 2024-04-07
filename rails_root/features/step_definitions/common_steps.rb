@@ -10,26 +10,10 @@ Given('I have completed the survey with valid inputs') do
   end
 end
 
-Given('I have created survey response') do
-  @user_id = 1
-  SurveyProfile.create(user_id: @user_id)
-  SurveyProfile.all.each do |survey_profile|
-    SurveyResponse.create!(profile: survey_profile, share_code: "debug#{survey_profile.user_id}")
-  end
-end
-
-When('I go to survey result page {int}') do |i|
-  visit survey_response_path(i)
-end
-# Analysis Result Presentation & Data Submission
-When('I try to submit the form') do
-  visit survey_page_path(1)
-  # fill_in 'survey_response_user_id', with: @user_id
-  @questions = SurveyQuestion.all
-  @questions.each do |question|
-    choose "survey_response_#{question.id}_1"
-  end
-  click_button 'Submit'
+Given('I have created survey response for user {string}') do |id|
+  @user_id = id
+  survey_profile = SurveyProfile.find_or_create_by(user_id: @user_id)
+  SurveyResponse.create!(profile: survey_profile, share_code: "debug#{survey_profile.user_id}")
 end
 
 # Initial UI Design & Theory Exploration

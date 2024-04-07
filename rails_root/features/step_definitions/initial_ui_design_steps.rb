@@ -6,16 +6,28 @@ Given(/the following questions exist/) do |survey_questions_table|
   end
 end
 
+Given(/many questions exist/) do
+  for i in 0..5 do
+    for i in 0..10 do
+      FactoryBot.create(:survey_question)
+    end
+  end
+end
+
 When('I visit survey profile page') do
   visit new_survey_profile_path
 end
 
-When('I visit survey form page') do
-  visit survey_page_path(1)
+When('I visit new survey page') do
+  visit new_survey_response_path
 end
 
 When('I visit survey responses page') do
   visit survey_responses_path
+end
+
+When('I go to survey result page {int}') do |i|
+  visit survey_response_path(i)
 end
 
 When('I click New survey response') do

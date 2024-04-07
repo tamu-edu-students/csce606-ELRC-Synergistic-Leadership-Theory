@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-Given('I have completed the survey') do
-  profile = SurveyProfile.create!(user_id: 1, first_name: 'John', last_name: 'Doe', campus_name: 'Campus', district_name: 'District')
+Given('I have completed the survey as user {string}') do |id|
+  profile = SurveyProfile.find_or_create_by(user_id: id)
   @survey_response = SurveyResponse.create!(share_code: 'SHARECODE', profile_id: profile.id)
 end
 

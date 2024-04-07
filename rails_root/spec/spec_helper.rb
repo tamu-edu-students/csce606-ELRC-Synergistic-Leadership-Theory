@@ -3,6 +3,7 @@
 # Run simplecov before any tests to capture all test coverage
 require 'simplecov'
 require 'simplecov_json_formatter'
+require 'rack_session_access/capybara'
 SimpleCov.formatters = [
   SimpleCov::Formatter::JSONFormatter,
   SimpleCov::Formatter::HTMLFormatter

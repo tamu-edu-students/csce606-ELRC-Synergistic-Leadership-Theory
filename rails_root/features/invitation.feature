@@ -4,7 +4,8 @@ Feature: Invitation
     I want to send invitations to other people with my unique case number
 
     Scenario: User finishes survey and creates an invitation
-        Given I have completed the survey
+        Given I have logged in with user "1"
+        And I have completed the survey as user "1"
         When I create an invitation at the bottom of the response page
         Then I should see a link that can be copied
 
