@@ -37,13 +37,12 @@ class SurveyResponsesController < ApplicationController
     session[:survey_id] = nil
     session[:page_number] = 1
 
-    unless SurveyProfile.exists?(user_id: session[:user_id])
-      # If it does not exist, set a flash message and redirect to the home page
-      flash[:warning] = 'Your profile could not be found. Please complete your profile.'
-      redirect_to root_url
-      return
-    end
+    return if SurveyProfile.exists?(user_id: session[:user_id])
 
+    # If it does not exist, set a flash message and redirect to the home page
+    flash[:warning] = 'Your profile could not be found. Please complete your profile.'
+    redirect_to root_url
+    nil
   end
 
   # GET /survey/page/:page
@@ -66,13 +65,15 @@ class SurveyResponsesController < ApplicationController
     logger.info '========== create triggered =========='
     return respond_with_error 'invalid_form' if invalid_form?
 
-    if session[:survey_id].nil?
-      @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
-      session[:survey_id] = @survey_response.id
+    if session[:user_id].nil?
+      flash[:warning] = 'user_id does not exit.'
+      redirect_to root_url
+      return
     end
 
     unless survey_response_params.nil?
-      @survey_response.add_from_params session[:user_id], survey_response_params
+      @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
+      session[:survey_id] = @survey_response.id
     end
 
     respond_to do |format|

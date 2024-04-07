@@ -52,13 +52,13 @@ group :development, :test do
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
   gem 'debug', platforms: %i[mri windows]
+  gem 'factory_bot_rails'
   gem 'rspec-rails'
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubycritic', require: false
   gem 'simplecov', require: false
   gem 'sqlite3', '~> 1.4'
-  gem 'factory_bot_rails'
 end
 
 group :development do
@@ -75,9 +75,10 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
+  gem 'rack_session_access'
   gem 'selenium-webdriver'
   gem 'webmock'
-  gem 'rack_session_access'
+  gem 'rails-controller-testing
 end
 
 group :production do
