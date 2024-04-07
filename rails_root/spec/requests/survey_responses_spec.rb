@@ -140,7 +140,8 @@ RSpec.describe 'SurveyResponses', type: :request do
   describe 'POST /create' do
     context 'with valid parameters' do
       before do
-        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { user_id: survey_profile.user_id, page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { {page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
       end
 
       it 'creates a new SurveyResponse when click Next' do
@@ -208,7 +209,8 @@ RSpec.describe 'SurveyResponses', type: :request do
 
     context 'user profile not exist' do
       before do
-        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { user_id: 99, page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(99)
       end
       it 'redirects to the root page' do
         post survey_responses_path
@@ -225,7 +227,8 @@ RSpec.describe 'SurveyResponses', type: :request do
         }
       end
       before do
-        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { user_id: survey_profile.user_id, page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { {page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_profile.user_id)
       end
 
       it 'does not create a new SurveyResponse - bad attributes' do
@@ -244,20 +247,19 @@ RSpec.describe 'SurveyResponses', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       before do
-        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { user_id: survey_profile.user_id, page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:session) { { page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(survey_answer.response.profile.user_id)
       end
 
       it 'updates the requested survey_response answers' do
-        _answer = survey_answer
-        patch survey_response_url(_answer.response), params: { survey_response: { _answer.question.id => 2 } }
-        _answer.reload
-        expect(_answer.choice).to eq(2)
+        patch survey_response_url(survey_answer.response), params: { survey_response: { survey_answer.question.id => 2 } }
+        survey_answer.reload
+        expect(survey_answer.choice).to eq(2)
       end
 
       it 'redirects to the survey_response' do
-        _answer = survey_answer
-        patch survey_response_url(_answer.response), params: { survey_response: { _answer.question.id => 2 } }
-        expect(response).to redirect_to(_answer.response)
+        patch survey_response_url(survey_answer.response), params: { survey_response: { survey_answer.question.id => 2 } }
+        expect(response).to redirect_to(survey_answer.response)
       end
     end
 
@@ -275,10 +277,22 @@ RSpec.describe 'SurveyResponses', type: :request do
     context 'user profile not exist' do
       before do
         allow_any_instance_of(SurveyResponsesController).to receive(:session) { { user_id: 99, page_number: 2 } }
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(99)
       end
       it 'redirects to the root page' do
         _answer = survey_answer
         patch survey_response_url(_answer.response), params: { survey_response: { _answer.question.id => 2 } }
+        expect(response).to redirect_to(root_url)
+      end
+    end
+
+    context 'responses with different profile' do
+      before do
+        allow_any_instance_of(SurveyResponsesController).to receive(:current_user_id).and_return(99)
+      end
+
+      it 'redirects to the root page' do
+        patch survey_response_url(survey_answer.response), params: { survey_response: { survey_answer.question.id => 2 } }
         expect(response).to redirect_to(root_url)
       end
     end

@@ -37,10 +37,7 @@ class SurveyResponsesController < ApplicationController
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: 1 })
     @survey_response = SurveyResponse.new
     return return_to_root 'You are not logged in.' if current_user_id.nil?
-
-    session[:user_id] = current_user_id
-
-    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: session[:user_id])
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: current_user_id)
 
     session[:survey_id] = nil
     session[:page_number] = 1
@@ -57,8 +54,8 @@ class SurveyResponsesController < ApplicationController
   # GET /survey_responses/1/edit
   def edit
     logger.info '========== edit triggered =========='
-
     return return_to_root 'You are not logged in.' if current_user_id.nil?
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: current_user_id)
     return return_to_root 'You cannot edit this result.' if current_user_id != @survey_response.profile.user_id
 
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: session[:page_number] })
@@ -69,10 +66,10 @@ class SurveyResponsesController < ApplicationController
   def create
     logger.info '========== create triggered =========='
     return respond_with_error 'invalid_form' if invalid_form?
-    return return_to_root 'user_id does not exit.' if session[:user_id].nil?
-    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: session[:user_id])
+    return return_to_root 'You are not logged in.' if current_user_id.nil?
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: current_user_id)
 
-    @survey_response = SurveyResponse.create_from_params session[:user_id], survey_response_params
+    @survey_response = SurveyResponse.create_from_params current_user_id, survey_response_params
     session[:survey_id] = @survey_response.id
 
 
@@ -100,11 +97,12 @@ class SurveyResponsesController < ApplicationController
   def update
     logger.info '========== update triggered =========='
     return respond_with_error 'invalid form' if invalid_form?
-    return return_to_root 'user_id does not exit.' if session[:user_id].nil?
-    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: session[:user_id])
+    return return_to_root 'You are not logged in.' if current_user_id.nil?
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: current_user_id)
+    return return_to_root 'You cannot update this result.' if current_user_id != @survey_response.profile.user_id
 
     unless survey_response_params.nil?
-      @survey_response.add_from_params session[:user_id], survey_response_params
+      @survey_response.add_from_params current_user_id, survey_response_params
     end
 
     respond_to do |format|
