@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
@@ -12,69 +12,71 @@ jobs:
     defaults:
       run:
         working-directory: ./rails_root
+    env:
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        bundler-cache: true
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
-    - name: Install dependencies
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
 
-    - name: Run RSpec tests
-      if: '!cancelled()'
-      run: |
-        bundle exec rspec
+      - name: Run RSpec tests
+        if: '!cancelled()'
+        run: |
+          bundle exec rspec
 
-    - name: Run Cucumber tests
-      if: '!cancelled()'
-      run: |
-        bundle exec cucumber
+      - name: Run Cucumber tests
+        if: '!cancelled()'
+        run: |
+          bundle exec cucumber
 
-    - name: Generate SimpleCov report
-      if: '!cancelled()'
-      run: |
-        COVERAGE=true bundle exec rspec
-        COVERAGE=true bundle exec cucumber
+      - name: Generate SimpleCov report
+        if: '!cancelled()'
+        run: |
+          COVERAGE=true bundle exec rspec
+          COVERAGE=true bundle exec cucumber
 
-    # - name: Upload coverage report
-    #   if: '!cancelled()'
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: coverage
-    #     path: coverage
+      # - name: Upload coverage report
+      #   if: '!cancelled()'
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: coverage
+      #     path: coverage
 
-    - name: Rubocop Report
-      if: '!cancelled()'
-      run: |
-        echo "rubocop_offenses=$(rubocop | tail -n1 | awk '{print $4}')" >> "$GITHUB_ENV"
+      - name: Rubocop Report
+        if: '!cancelled()'
+        run: |
+          echo "rubocop_offenses=$(rubocop | tail -n1 | awk '{print $4}')" >> "$GITHUB_ENV"
 
-    - name: Rubocop Badge Color
-      if: '!cancelled()'
-      run: |
-        echo "rubocop_badge_color=$([[ ${{env.rubocop_offenses}} -gt 0 ]] && echo 'red' || echo 'green')" >> "$GITHUB_ENV"
+      - name: Rubocop Badge Color
+        if: '!cancelled()'
+        run: |
+          echo "rubocop_badge_color=$([[ ${{env.rubocop_offenses}} -gt 0 ]] && echo 'red' || echo 'green')" >> "$GITHUB_ENV"
 
-    - name: Rubocop Badge
-      if: '!cancelled()'
-      uses: schneegans/dynamic-badges-action@v1.7.0
-      with:
-        auth: ${{ secrets.GIST_SECRET }}
-        gistID: c7b2d5e19079e12445b300407e383294
-        filename: badge.json
-        label: 'Rubocop'
-        message: "${{ env.rubocop_offenses }} offenses"
-        color: ${{ env.rubocop_badge_color }}
+      - name: Rubocop Badge
+        if: '!cancelled()'
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: c7b2d5e19079e12445b300407e383294
+          filename: badge.json
+          label: 'Rubocop'
+          message: '${{ env.rubocop_offenses }} offenses'
+          color: ${{ env.rubocop_badge_color }}
 
-    - name: Upload coverage report to CodeClimate
-      if: '!cancelled()'
-      uses: paambaati/codeclimate-action@v3.1.1
-      env:
-        CC_TEST_REPORTER_ID: c65072aca2cabde6c5f61913e0a45910a273d78e1a309c785a64de223b1c21af
-      with:
-        coverageLocations: ${{ github.workspace }}/**/coverage.json:simplecov
-        debug: true
+      - name: Upload coverage report to CodeClimate
+        if: '!cancelled()'
+        uses: paambaati/codeclimate-action@v3.1.1
+        env:
+          CC_TEST_REPORTER_ID: c65072aca2cabde6c5f61913e0a45910a273d78e1a309c785a64de223b1c21af
+        with:
+          coverageLocations: ${{ github.workspace }}/**/coverage.json:simplecov
+          debug: true
