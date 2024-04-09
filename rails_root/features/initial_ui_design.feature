@@ -23,17 +23,18 @@ Background: Questions and responses exist
         Then I can see profile form
 
     Scenario: Verify survey form page
-        Given I am on the site
-        And I try to login
-        When I visit survey form page
+        Given I have logged in with user "1"
+        When I visit new survey page
         Then I can see survey sections
 
     Scenario: Verify survey qustions
-        When I visit survey form page
+        Given I have logged in with user "1"
+        When I visit new survey page
         Then I can see "Are you ok?"
 
     Scenario: Verify explanation on survey_responses page
-        Given user 1 responses to question "Are you ok?"
+        Given I have logged in with user "1" 
+        And user 1 responses to question "Are you ok?"
         When I am on the survey responses page of user 1
         Then I can see "Are you ok?"
         And I can see "No I am not"

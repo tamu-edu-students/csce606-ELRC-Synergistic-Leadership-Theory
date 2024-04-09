@@ -1,30 +1,59 @@
 Feature: Data Submission
-    Verify data anylysis
+    Test submission buttons and their functions on the survey page
 
-    Scenario: Analysis displays correct values
-        Given I have completed the survey with valid inputs
-        When I try to submit the form
-        Then the analysis results displays the correct values
+Background: Questions and responses exist
+    Given many questions exist
+    Scenario: Not logged in
+        Given I have not logged in
+        When I visit new survey page
+        Then I should be on root page
 
-    Scenario: Analysis displays tetrahedron
-        Given I have created survey response
-        When I go to survey result page 1
-        Then the analysis results displays my leadership style
+    Scenario: Not create user profile
+        Given I have logged in with user "1"
+        And I have no survey profile
+        When I visit new survey page
+        Then I should be on root page
 
     Scenario: See Next button
-        Given I am on the site
-        And I try to login
-        And I have created a survey profile previously
-        When I visit survey responses page
-        And I click New survey response
-        Then I should be on the survey path
-        And I see Next button
+        Given I have logged in with user "1"
+        When I visit new survey page
+        Then I should see Next button
 
     Scenario: See Save button
-        Given I am on the site
-        And I try to login
-        And I have created a survey profile previously
-        When I visit survey responses page
-        And I click New survey response
-        Then I should be on the survey path
-        And I see Previous button
+        Given I have logged in with user "1"
+        When I visit new survey page
+        Then I should see Save button
+
+    Scenario: See Previous button
+        Given I have logged in with user "1"
+        When I visit new survey page
+        And I click Next button
+        Then I should see Previous button
+
+    Scenario: See Submit button
+        Given I have logged in with user "1"
+        When I visit new survey page
+        And I keep click Next button
+        Then I should see Submit button
+
+    Scenario: See Submit button
+        Given I have logged in with user "1"
+        And I visit new survey page
+        When I keep click Next button
+        And I click Submit button
+        Then I do get redirected to the analysis presentation page
+        
+
+    Scenario: Analysis displays correct values
+        Given I have logged in with user "1"
+        And I visit new survey page
+        When I I fill in the form with Disagree
+        And I keep click Next button
+        And I click Submit button
+        Then I can see "Disagree"
+        
+    Scenario: Analysis displays tetrahedron
+        Given I have logged in with user "1"
+        And I have created survey response for user "1"
+        When I go to survey result page 1
+        Then the analysis results displays my leadership style

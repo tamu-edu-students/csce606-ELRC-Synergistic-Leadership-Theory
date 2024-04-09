@@ -16,7 +16,7 @@ RSpec.describe 'invitations/show', type: :view do
     end
 
     it 'displays a link to take the survey' do
-      expect(rendered).to have_link('Take the Survey', href: survey_path(share_code: 'SHARECODE'))
+      expect(rendered).to have_link('Take the Survey', href: new_survey_response_path(share_code: 'SHARECODE'))
     end
   end
 

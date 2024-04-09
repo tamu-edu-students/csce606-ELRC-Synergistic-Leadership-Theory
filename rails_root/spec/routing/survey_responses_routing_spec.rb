@@ -9,7 +9,7 @@ RSpec.describe SurveyResponsesController, type: :routing do
     end
 
     it 'routes to #new' do
-      expect(get: '/survey/page/1').to route_to('survey_responses#survey', page: '1')
+      expect(get: '/survey_responses/new').to route_to('survey_responses#new')
     end
 
     it 'routes to #show' do
