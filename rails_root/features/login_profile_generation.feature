@@ -7,7 +7,7 @@ Feature: Survey Profile Creation upon successful OAuth login
     And I try to login
     And I have never created a survey profile
     Then I am redirected to the create survey profile page
-    And I fill in my first and last name and district name and campus name and click create
+    And I fill in my first and last name and district name and campus name and organization role and click create
     Then a survey profile is created
     Then I am redirected to the home page
     
