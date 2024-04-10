@@ -116,6 +116,6 @@ class SurveyProfilesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def survey_profile_params
-    params.require(:survey_profile).permit(:user_id, :first_name, :last_name, :campus_name, :district_name)
+    params.require(:survey_profile).permit(:user_id, :first_name, :last_name, :campus_name, :district_name, :role)
   end
 end

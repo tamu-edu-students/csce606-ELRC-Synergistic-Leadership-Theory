@@ -1,4 +1,8 @@
-<h1 class="text-center">ORGANIZATIONAL AND LEADERSHIP EFFECTIVENESS INVENTORY</h1>
+<h1 class="text-center">ORGANIZATIONAL AND LEADERSHIP EFFECTIVENESS INVENTORY
+     <% if session[:userinfo].present? && @survey_profile.present?%>
+        - <%= @survey_profile.role %>
+    <% end %>
+</h1>
 <%# <%= render "form", survey_response: @survey_response, survey_sections: @survey_sections%>
 <%= render partial: 'paginated_form', locals: {
         pagination: @pagination,

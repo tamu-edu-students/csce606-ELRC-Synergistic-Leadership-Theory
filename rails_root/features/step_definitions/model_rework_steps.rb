@@ -40,7 +40,7 @@ Given('I have an valid set of attributes for all models') do
   end
 
   @model_attributes['SurveyProfile'] = {}
-  @model_attributes['SurveyProfile']['role'] = 'principal'
+  @model_attributes['SurveyProfile']['role'] = 'Principal'
   SurveyProfile.column_names.each do |name|
     @model_attributes['SurveyProfile'][name] = 10 if name != 'created_at' && name != 'updated_at' && name != 'role'
   end
