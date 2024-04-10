@@ -16,11 +16,11 @@ require 'json'
 
 SurveyProfile.create!([
                         { user_id: '5', first_name: 'John', last_name: 'Doe', campus_name: 'Campus 1',
-                          district_name: 'District 1' },
+                          district_name: 'District 1', role: 'principal' },
                         { user_id: '6', first_name: 'Jane', last_name: 'Doe', campus_name: 'Campus 2',
-                          district_name: 'District 2' },
+                          district_name: 'District 2', role: 'teacher' },
                         { user_id: '7', first_name: 'Jim', last_name: 'Doe', campus_name: 'Campus 3',
-                          district_name: 'District 3' }
+                          district_name: 'District 3', role: 'superintendent' }
                       ])
 
 # seed data for the survey_responses table

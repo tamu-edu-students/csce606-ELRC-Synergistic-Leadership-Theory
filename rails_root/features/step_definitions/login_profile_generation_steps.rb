@@ -72,11 +72,12 @@ Then('I am redirected to the create survey profile page') do
   expect(page).to have_current_path(new_survey_profile_path)
 end
 
-Then('I fill in my first and last name and district name and campus name and click create') do
+Then('I fill in my first and last name and district name and campus name and organization role and click create') do
   fill_in 'First name', with: 'John'
   fill_in 'Last name', with: 'Doe'
   fill_in 'Campus name', with: 'Joe Campus'
   fill_in 'District name', with: 'Joe District'
+  select 'Principal', from: 'Role'
   click_button 'Create Survey profile'
 end
 

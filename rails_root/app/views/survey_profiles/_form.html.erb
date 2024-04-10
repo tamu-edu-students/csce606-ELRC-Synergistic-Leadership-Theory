@@ -27,6 +27,12 @@
     <%= form.text_field :district_name %>
   </div>
   <div>
+    <%= form.label :role, style: "display: block" %>
+    <%= form.select :role,['Principal', 'Teacher', 'Superintendent'],{prompt: 'Select a role'}, style: "display: block" %>
+  </div>
+  <div>
+      <%= form.label :submit, style: "display: block" %>
+
     <%= form.submit %>
   </div>
 <% end %>
