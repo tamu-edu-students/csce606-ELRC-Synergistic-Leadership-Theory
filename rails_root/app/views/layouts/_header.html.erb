@@ -8,16 +8,16 @@
       <%= link_to "About", about_path, class: "nav-link #{'active' if current_page?(about_path)}" %>
     </li>
     <li class="nav-item">
-      <%# <%= link_to "Survey Responses", survey_responses_path, class: "nav-link #{'active' if current_page?(survey_responses_path)}" %> 
+      <%# <%= link_to "Survey Responses", survey_responses_path, class: "nav-link #{'active' if current_page?(survey_responses_path)}" %>
     </li>
     <li class="nav-item">
-      <%# <%= link_to "Survey Profiles", survey_profiles_path, class: "nav-link #{'active' if current_page?(survey_profiles_path)}" %> 
+      <%# <%= link_to "Survey Profiles", survey_profiles_path, class: "nav-link #{'active' if current_page?(survey_profiles_path)}" %>
     </li>
     <li class="nav-item">
       <% if session[:userinfo] %>
-        <%= button_to 'Logout', 'auth/logout', method: :get, data: { turbo: false }, class: "nav-link" %>
+        <%= button_to 'Logout', root_url + '/auth/logout', method: :get, data: { turbo: false }, class: "nav-link" %>
       <% else %>
-          <%= button_to 'Login', '/auth/auth0', method: :post, data: { turbo: false }, class: "nav-link" %>
+        <%= button_to 'Login', '/auth/auth0', method: :post, data: { turbo: false }, class: "nav-link" %>
       <% end %>
     </li>
   </ul>

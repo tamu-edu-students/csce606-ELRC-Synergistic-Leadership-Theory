@@ -12,7 +12,7 @@ Background: Questions and responses exist
         Given I have logged in with user "1"
         And I have no survey profile
         When I visit new survey page
-        Then I should be on root page
+        Then I am redirected to the create survey profile page
 
     Scenario: See Next button
         Given I have logged in with user "1"
