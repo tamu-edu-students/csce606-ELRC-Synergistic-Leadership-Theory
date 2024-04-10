@@ -93,8 +93,9 @@ Then('I am greeted with a welcome message') do
   expect(page).to have_content('John Doe - Welcome to Our Rails App')
 end
 
-Then('a survey profile is created') do
+Then('a survey profile is created with the proper information') do
   profile = SurveyProfile.find_by_user_id('google-oauth2|100507718411999601151')
+  expect(profile.role).to eq('Principal')
   expect(profile).not_to be_nil
 end
 #rubocop enable all

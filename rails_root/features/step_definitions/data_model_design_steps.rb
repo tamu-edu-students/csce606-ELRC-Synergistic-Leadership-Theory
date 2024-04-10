@@ -3,7 +3,7 @@
 When('I try to create model instances') do |table|
   table.hashes.each do |model|
     @attributes = @model_attributes[model['model_name']]
-    @attributes['role'] = 'principal' if model['model_name'] == 'SurveyProfile'
+    @attributes['role'] = 'Principal' if model['model_name'] == 'SurveyProfile'
 
     if @attributes.values.any?(&:nil?)
       expect do

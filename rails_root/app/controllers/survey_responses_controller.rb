@@ -12,6 +12,7 @@ class SurveyResponsesController < ApplicationController
   # GET /survey_responses or /survey_responses.json
   def index
     if params[:query].present?
+
       @survey_responses = SurveyResponse.where(share_code: params[:query])
       flash[:warning] = "No survey responses found for share code #{params[:query]}" if @survey_responses.empty?
     else
@@ -34,10 +35,13 @@ class SurveyResponsesController < ApplicationController
   def new
     # login check is done in secure.rb
     logger.info '========== new triggered =========='
+
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: 1 })
     @survey_response = SurveyResponse.new
     return return_to_root 'You are not logged in.' if current_user_id.nil?
     return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: current_user_id)
+
+    @survey_profile = SurveyProfile.find_by(user_id: current_user_id)
 
     session[:survey_id] = nil
     session[:page_number] = 1
