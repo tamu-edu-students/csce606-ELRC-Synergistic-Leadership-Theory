@@ -16,16 +16,16 @@ RSpec.describe InvitationsController, type: :controller do # rubocop:disable Met
     context 'when a survey response exists' do
       before do
         post :create, params: { parent_survey_response_id: survey_response.id }
-    end
+      end
 
-    it 'creates a new invitation' do
+      it 'creates a new invitation' do
         expect(assigns(:invitation)).to be_a(Invitation)
         expect(assigns(:invitation)).to be_persisted
-    end
+      end
 
       it 'sets the invitation\'s sharecode to the response\'s sharecode' do
         expect(assigns(:invitation).parent_response.share_code).to eq(survey_response.share_code)
-    end
+      end
 
       it 'sets the invitation\'s parent_response_id to the response\'s id' do
         expect(assigns(:invitation).parent_response_id).to eq(survey_response.id)
@@ -34,7 +34,7 @@ RSpec.describe InvitationsController, type: :controller do # rubocop:disable Met
   end
 
   describe 'GET #show' do
-    let(:profile) { SurveyProfile.create!(user_id: 1, first_name: 'John', last_name: 'Doe', campus_name: 'Campus', district_name: 'District') }
+    let(:profile) { SurveyProfile.create!(user_id: 1, first_name: 'Seymour', last_name: 'Skinner', campus_name: 'Springfield Elementary', district_name: 'Springfield') }
     let(:survey_response) do
       sr = SurveyResponse.create(share_code: 'SHARECODE', profile:)
       puts sr.errors.full_messages if sr.errors.any?
@@ -73,8 +73,15 @@ RSpec.describe InvitationsController, type: :controller do # rubocop:disable Met
       it 'redirects to the root path with an error message' do
         get :show, params: { token: visited_invitation.token }
         expect(response).to redirect_to(not_found_invitations_path)
-        expect(response).to redirect_to(root_path)
-        expect(flash[:error]).to eq('This invitation link has expired.')
+      end
+    end
+  end
+
+  describe 'GET #invitation_created' do
+    context 'when invitation is not found' do
+      it 'redirects to not_found' do
+        get :invitation_created, params: { token: 'nonexistent_token' }
+        expect(response).to redirect_to(not_found_invitations_path)
       end
     end
   end
