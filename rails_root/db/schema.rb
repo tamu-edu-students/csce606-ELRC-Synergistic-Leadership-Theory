@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_10_024358) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_13_233358) do
   create_table "invitations", force: :cascade do |t|
     t.integer "parent_response_id", null: false
-    t.integer "created_by_id", null: false
     t.boolean "visited"
     t.datetime "last_sent"
     t.datetime "created_at", null: false

@@ -4,7 +4,7 @@
 class InvitationsController < ApplicationController
   def create
     @survey_response = SurveyResponse.find_by!(share_code: params[:survey_response_share_code])
-    @invitation = Invitation.create!(parent_response: @survey_response, created_by_id: @survey_response.profile_id)
+    @invitation = Invitation.create!(parent_response: @parent_survey_response, last_sent: Time.now, visited: false)
     flash[:warning] = "Invitation link created: #{invitation_url(@invitation.token)}"
     redirect_to survey_response_path(@survey_response)
   end

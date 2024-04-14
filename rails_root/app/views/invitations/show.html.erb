@@ -1,5 +1,5 @@
 <h1>You've been invited to take a survey (...or have you?)</h1>
-<p>You were invited by <%= @invitation.created_by.first_name %> <%= @invitation.created_by.last_name %>.</p>
+<p>You were invited by <%= @invitation.parent_response.profile.first_name %> <%= @invitation.parent_response.profile.last_name %>.</p>
 <p>
   <%# <%= link_to "Take the Survey", survey_response_path(@invitation.parent_response), class: 'button-class' %>
   <% if session[:userinfo] && session[:invitation] %>
