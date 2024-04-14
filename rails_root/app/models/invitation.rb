@@ -7,6 +7,8 @@ class Invitation < ApplicationRecord
   belongs_to :claimed_by, class_name: 'SurveyProfile', foreign_key: 'claimed_by_id', optional: true
   belongs_to :parent_response, class_name: 'SurveyResponse', foreign_key: 'parent_response_id'
 
+  validates_uniqueness_of :token
+
   before_create :generate_token
 
   private
