@@ -28,8 +28,6 @@ Then('I should see the survey questions specific to the principal') do
   expect(page).to have_content('ORGANIZATIONAL AND LEADERSHIP EFFECTIVENESS INVENTORY - Principal')
 end
 
-
-
 Then('I fill in my information as a teacher') do
   fill_in 'First name', with: 'John'
   fill_in 'Last name', with: 'Doe'
