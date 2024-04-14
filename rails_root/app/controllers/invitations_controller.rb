@@ -5,19 +5,15 @@ class InvitationsController < ApplicationController
   def create
     @survey_response = SurveyResponse.find_by!(share_code: params[:survey_response_share_code])
     @invitation = Invitation.create!(parent_response: @parent_survey_response, last_sent: Time.now, visited: false)
-    flash[:warning] = "Invitation link created: #{invitation_url(@invitation.token)}"
-    redirect_to survey_response_path(@survey_response)
+
+    redirect_to invitation_created_invitation_path(@invitation.token)
   end
 
   def show
     @invitation = Invitation.find_by(token: params[:token])
 
-    if @invitation.nil?
-      flash[:error] = 'This invitation link has expired.'
-      redirect_to root_path
-    elsif @invitation.visited # don't give more info
-      flash[:error] = 'This invitation link has expired.'
-      redirect_to root_path
+    if @invitation.nil? || @invitation.visited
+      redirect_to not_found_invitations_path
     else
       @invitation.update(visited: true)
 
@@ -31,6 +27,21 @@ class InvitationsController < ApplicationController
       session[:invitation] = { share_code: @invitation.parent_response.share_code, expiration: 15.minute.from_now }
     end
   end
+
+  def not_found
+    render :not_found
+  end
+
+  def invitation_created
+    @invitation = Invitation.find_by(token: params[:token])
+
+    return unless @invitation.nil?
+
+    redirect_to not_found_invitations_path
+  end
+
+  private
+
   def claim_invitation(user_profile)
     sharecode_from_invitation = @invitation.parent_response.share_code
 
