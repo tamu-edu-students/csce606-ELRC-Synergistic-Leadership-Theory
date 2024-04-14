@@ -121,7 +121,7 @@
             class: "btn btn-outline-primary"
       %>
       <%= button_to "Create Invitation",
-            invitations_path(survey_response_share_code: @survey_response.share_code),
+            invitations_path(parent_survey_response_id: @survey_response.id),
             method: :post,
             id: "invitation-button",
             form_class: "btn btn-outline-success",

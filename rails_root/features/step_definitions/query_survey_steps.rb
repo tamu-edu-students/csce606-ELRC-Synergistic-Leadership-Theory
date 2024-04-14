@@ -63,3 +63,14 @@ Then('a warning is flashed') do
   # expect there to be a warning flashed
   expect(page).to have_content('No survey responses found for share code 789')
 end
+
+When('I search any responses related to this invitation') do
+  fill_in 'query', with: @invitation.parent_response.share_code
+  click_button 'Search'
+end
+
+Then('I should see "{int}" responses') do |num_responses|
+  within 'table' do
+    expect(all('tr', text: @invitation.parent_response.share_code).count).to eq(num_responses)
+  end
+end
