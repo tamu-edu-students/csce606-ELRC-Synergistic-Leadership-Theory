@@ -11,5 +11,6 @@ class SurveyProfile < ApplicationRecord
            foreign_key: :profile_id,
            class_name: 'SurveyResponse',
            dependent: :destroy
-  has_many :created_invitations, class_name: 'Invitation', foreign_key: 'created_by_id'
+
+  has_many :claimed_invitations, class_name: 'Invitation', foreign_key: 'claimed_by_id'
 end

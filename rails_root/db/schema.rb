@@ -20,7 +20,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_10_024358) do
     t.datetime "updated_at", null: false
     t.string "token"
     t.integer "response_id"
-    t.index ["created_by_id"], name: "index_invitations_on_created_by_id"
+    t.integer "claimed_by_id"
+    t.index ["claimed_by_id"], name: "index_invitations_on_claimed_by_id"
     t.index ["parent_response_id"], name: "index_invitations_on_parent_response_id"
   end
 
@@ -62,7 +63,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_10_024358) do
     t.index ["profile_id"], name: "index_survey_responses_on_profile_id"
   end
 
-  add_foreign_key "invitations", "survey_profiles", column: "created_by_id"
+  add_foreign_key "invitations", "survey_profiles", column: "claimed_by_id"
   add_foreign_key "invitations", "survey_responses", column: "parent_response_id"
   add_foreign_key "invitations", "survey_responses", column: "response_id"
   add_foreign_key "survey_answers", "survey_questions", column: "question_id"
