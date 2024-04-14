@@ -63,8 +63,7 @@ RSpec.describe InvitationsController, type: :controller do # rubocop:disable Met
     context 'when the invitation does not exist' do
       it 'redirects to the root path with an error message' do
         get :show, params: { token: 'nonexistent_token' }
-        expect(response).to redirect_to(root_path)
-        expect(flash[:error]).to eq('This invitation link has expired.')
+        expect(response).to redirect_to(not_found_invitations_path)
       end
     end
 
@@ -73,6 +72,7 @@ RSpec.describe InvitationsController, type: :controller do # rubocop:disable Met
 
       it 'redirects to the root path with an error message' do
         get :show, params: { token: visited_invitation.token }
+        expect(response).to redirect_to(not_found_invitations_path)
         expect(response).to redirect_to(root_path)
         expect(flash[:error]).to eq('This invitation link has expired.')
       end

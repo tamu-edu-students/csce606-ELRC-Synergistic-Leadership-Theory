@@ -15,7 +15,15 @@ Rails.application.routes.draw do
   # patch 'survey_responses', to: 'survey_responses#create', as: :patch_survey_response
 
   resources :survey_profiles
-  resources :invitations, param: :token, only: [:create, :show]
+  resources :invitations, param: :token, only: [:create, :show] do
+    collection do
+      get :not_found
+    end
+
+    member do
+      get :invitation_created
+    end
+  end
 
   get '/auth/auth0/callback' => 'auth0#callback'
   get '/auth/failure' => 'auth0#failure'
