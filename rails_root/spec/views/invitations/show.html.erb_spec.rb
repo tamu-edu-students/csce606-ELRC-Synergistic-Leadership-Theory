@@ -4,9 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'invitations/show', type: :view do
   before do
-    profile = SurveyProfile.create!(user_id: 1, first_name: 'John', last_name: 'Doe', campus_name: 'Campus', district_name: 'District')
-    survey_response = SurveyResponse.create!(share_code: 'SHARECODE', profile_id: profile.id)
-    @invitation = assign(:invitation, Invitation.create!(parent_response_id: survey_response.id, created_by: profile, visited: false, last_sent: Time.now))
+    @invitation = assign(:invitation, Invitation.create!(parent_response_id: parent_survey_response.id, visited: false, last_sent: Time.now))
   end
 
   context 'when user is logged in' do

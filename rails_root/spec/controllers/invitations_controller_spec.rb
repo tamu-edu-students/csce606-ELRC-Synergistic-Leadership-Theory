@@ -40,7 +40,7 @@ RSpec.describe InvitationsController, type: :controller do # rubocop:disable Met
       puts sr.errors.full_messages if sr.errors.any?
       sr
     end
-    let(:invitation) { Invitation.create!(parent_response_id: survey_response.id, created_by: profile, visited: false, last_sent: Time.now) }
+    let(:invitation) { Invitation.create!(parent_response_id: survey_response.id, visited: false, last_sent: Time.now) }
 
     before do
       get :show, params: { token: invitation.token }
@@ -69,7 +69,7 @@ RSpec.describe InvitationsController, type: :controller do # rubocop:disable Met
     end
 
     context 'when the invitation has already been visited' do
-      let(:visited_invitation) { Invitation.create!(parent_response_id: survey_response.id, created_by: profile, visited: true, last_sent: Time.now) }
+      let(:visited_invitation) { Invitation.create!(parent_response_id: survey_response.id, visited: true, last_sent: Time.now) }
 
       it 'redirects to the root path with an error message' do
         get :show, params: { token: visited_invitation.token }
