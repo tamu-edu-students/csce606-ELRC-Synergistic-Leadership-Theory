@@ -2,31 +2,34 @@
 
 require 'rails_helper'
 
-RSpec.describe InvitationsController, type: :controller do
+RSpec.describe InvitationsController, type: :controller do # rubocop:disable Metrics/BlockLength
   render_views
 
   describe 'POST #create' do
-    let(:profile) { SurveyProfile.create!(user_id: 1, first_name: 'John', last_name: 'Doe', campus_name: 'Campus', district_name: 'District') }
+    let(:profile) { SurveyProfile.create!(user_id: 1, first_name: 'Seymour', last_name: 'Skinner', campus_name: 'Springfield Elementary', district_name: 'Springfield') }
     let(:survey_response) do
       sr = SurveyResponse.create(share_code: 'SHARECODE', profile:)
       puts sr.errors.full_messages if sr.errors.any?
       sr
     end
 
+    context 'when a survey response exists' do
+      before do
+        post :create, params: { parent_survey_response_id: survey_response.id }
+    end
+
     it 'creates a new invitation' do
-      expect do
-        post :create, params: { survey_response_share_code: survey_response.share_code }
-      end.to change(Invitation, :count).by(1)
+        expect(assigns(:invitation)).to be_a(Invitation)
+        expect(assigns(:invitation)).to be_persisted
     end
 
-    it 'redirects to the survey response' do
-      post :create, params: { survey_response_share_code: survey_response.share_code }
-      expect(response).to redirect_to(survey_response_path(survey_response))
+      it 'sets the invitation\'s sharecode to the response\'s sharecode' do
+        expect(assigns(:invitation).parent_response.share_code).to eq(survey_response.share_code)
     end
 
-    it 'sets a flash message' do
-      post :create, params: { survey_response_share_code: survey_response.share_code }
-      expect(flash[:warning]).to match(/Invitation link created:/)
+      it 'sets the invitation\'s parent_response_id to the response\'s id' do
+        expect(assigns(:invitation).parent_response_id).to eq(survey_response.id)
+      end
     end
   end
 
