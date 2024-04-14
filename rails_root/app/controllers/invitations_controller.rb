@@ -3,7 +3,7 @@
 # The invited user who visited the url will see this page.
 class InvitationsController < ApplicationController
   def create
-    @survey_response = SurveyResponse.find_by!(share_code: params[:survey_response_share_code])
+    @parent_survey_response = SurveyResponse.find_by!(id: params[:parent_survey_response_id])
     @invitation = Invitation.create!(parent_response: @parent_survey_response, last_sent: Time.now, visited: false)
 
     redirect_to invitation_created_invitation_path(@invitation.token)
@@ -24,7 +24,7 @@ class InvitationsController < ApplicationController
         claim_invitation(user_profile) if user_profile
       end
 
-      session[:invitation] = { share_code: @invitation.parent_response.share_code, expiration: 15.minute.from_now }
+      session[:invitation] = { from: @invitation.id, expiration: 15.minute.from_now }
     end
   end
 

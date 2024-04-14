@@ -3,11 +3,11 @@
 
 require 'webmock/cucumber'
 
-Given('I am logged in') do
+# Given('I am logged in') do
   # Stub the Auth0 /authorize request
 
   # No route matches [GET] "/authorize" (ActionController::RoutingError)
-end
+# end
 
 Then('I see that my session variable {string} is populated') do |_string|
   # check that the session variable :userinfo is not empty or nil
