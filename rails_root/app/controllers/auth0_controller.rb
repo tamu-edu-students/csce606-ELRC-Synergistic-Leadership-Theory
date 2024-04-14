@@ -21,8 +21,9 @@ class Auth0Controller < ApplicationController
 
     if SurveyProfile.find_by(user_id: session[:userinfo]['sub']).nil?
       redirect_to new_survey_profile_path
+    elsif session[:invitation] && claim_invitation
+      # Nothing to do here, claim_invitation already did the redirect
     else
-
       # Redirect to the URL you want after successful auth
       redirect_to root_url
     end
@@ -47,5 +48,24 @@ class Auth0Controller < ApplicationController
     }
 
     URI::HTTPS.build(host: AUTH0_CONFIG['auth0_domain'], path: '/v2/logout', query: request_params.to_query).to_s
+  end
+
+  def claim_invitation
+    temporary_invitation_session_var = session[:invitation]
+
+    if temporary_invitation_session_var && temporary_invitation_session_var['expiration'] > Time.now
+      invitation = Invitation.find_by(id: temporary_invitation_session_var['from'])
+      if invitation
+        sharecode_from_invitation = invitation.parent_response.share_code
+        survey_profile = SurveyProfile.find_by(user_id: session[:userinfo]['sub'])
+        new_response_to_fill = SurveyResponse.create(profile: survey_profile, share_code: sharecode_from_invitation)
+        invitation.update(claimed_by_id: survey_profile.id, response_id: new_response_to_fill.id)
+        redirect_to edit_survey_response_path(new_response_to_fill)
+        return true
+      end
+    end
+
+    session.delete(:invitation)
+    false
   end
 end
