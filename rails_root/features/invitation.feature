@@ -45,3 +45,71 @@ Feature: Invitation
 		When I visit the invitation link
 		Then I should see a button to take the test
 
+	Scenario: Non-logged in user signs up, returns from external auth provider within 15 minutes and claims the invitation
+		Given I have not logged in
+		And an invitation exists
+		When I visit the invitation link
+		Then a session variable named "invitation" should be created
+		Then I decide to use the user ID "hkeller80"
+		And I have been redirected to the external auth provider
+		When I return from the external auth provider 10 minutes later
+		Given I have never created a survey profile
+		Then I am redirected to the create survey profile page
+		Then I fill in my first and last name and district name and campus name and organization role and click create
+		Then the invitation is claimed by user "hkeller80"
+		Then the invitation has a non-null response object
+		And the response has the same sharecode as the invitation
+		Then I should be redirected to the survey edit page
+
+	Scenario: Non-logged in user logs in, returns and claims the invitation
+		Given I "Gary Chalmers", the "Superintendent" from "Springfield Elementary" in "Town of Springfield" join
+		And I am logged in
+		Then I log out
+		And I am not logged in
+		And an invitation exists
+		When I visit the invitation link
+		And I should see the invitation landing page
+		Then a session variable named "invitation" should be created
+		Then I decide to log in as "Gary Chalmers"
+		And I have been redirected to the external auth provider
+		Then I return from the external auth provider 10 minutes later
+		Then the invitation is claimed by me
+		Then the invitation has a non-null response object
+		And the response has the same sharecode as the invitation
+		Then I should be redirected to the survey edit page
+
+	Scenario: User tries hard but misses the 15-minute window
+		Given I have not logged in
+		And an invitation exists
+		When I visit the invitation link
+		Then a session variable named "invitation" should be created
+		Then I decide to use the user ID "mr.bean"
+		And I have been redirected to the external auth provider
+		When I return from the external auth provider 16 minutes later
+		Given I have never created a survey profile
+		Then I am redirected to the create survey profile page
+		Then I fill in my first and last name and district name and campus name and organization role and click create
+		Then the invitation is not claimed by user "mr.bean"
+
+	Scenario: People join and commence an invitation orgy
+		Given I "Gary Chalmers", the "Superintendent" from "Springfield Elementary" in "Town of Springfield" join
+		And I have completed an originating survey
+		And I create an invitation at the bottom of the response page
+		And I log out
+		Then I "Seymour Skinner", the "Principal" from "Springfield Elementary" in "Town of Springfield" join
+		And I visit the invitation link
+		And I click the button to take the test
+		Then I should be redirected to the survey edit page
+		And I have completed the survey
+		And I create an invitation at the bottom of the response page
+		And I log out
+		Then I "Edna Krabappel", the "Teacher" from "Springfield Elementary" in "Town of Springfield" join
+		And I visit the invitation link
+		And I click the button to take the test
+		Then I should be redirected to the survey edit page
+		And I have completed the survey
+		And I log out
+		Then I "Xin Tong", the "Superintendent" from "Team ELRC" in "College Station" join
+		And I am on the survey responses page
+		Then I search any responses related to this invitation
+		Then I should see "3" responses
