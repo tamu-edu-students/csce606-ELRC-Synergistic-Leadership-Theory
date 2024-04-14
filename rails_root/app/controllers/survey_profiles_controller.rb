@@ -23,42 +23,10 @@ class SurveyProfilesController < ApplicationController
 
   # POST /survey_profiles or /survey_profiles.json
   def create
-    # If any of the survey_profile_params values are nil, then the form is invalid
-
-    if survey_profile_params.values.any? { |value| value.nil? || value.empty? }
-      respond_to do |format|
-        format.html do
-          redirect_to new_survey_profile_url, notice: 'invalid form', status: :unprocessable_entity
-        end
-        format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
-      end
-
-    # if user_id is not unique, then the form is invalid
-    elsif SurveyProfile.find_by(user_id: session[:userinfo]['sub'])
-      respond_to do |format|
-        format.html do
-          redirect_to new_survey_profile_url, notice: 'user_id is not unique', status: :unprocessable_entity
-        end
-        format.json { render json: { error: 'user_id is not unique' }, status: :unprocessable_entity }
-      end
-
+    if invalid_form? || non_unique_user?
+      handle_invalid_form
     else
-      @survey_profile = SurveyProfile.new(survey_profile_params)
-      @survey_profile.user_id = session[:userinfo]['sub']
-
-      respond_to do |format|
-        if @survey_profile.save
-          format.html do
-            # default is below
-            # redirect_to survey_profile_url(@survey_profile), notice: 'Survey profile was successfully created.'
-            #
-            # redirect to the home page after creating a new survey profile
-            redirect_to root_url
-          end
-          format.json { render :show, status: :created, location: @survey_profile }
-
-        end
-      end
+      create_survey_profile
     end
   end
 
@@ -109,6 +77,22 @@ class SurveyProfilesController < ApplicationController
 
   private
 
+  def create_survey_profile
+    @survey_profile = SurveyProfile.new(survey_profile_params)
+    @survey_profile.user_id = session[:userinfo]['sub']
+
+    if session[:invitation] && claim_invitation
+      # claim_invitation method will handle the redirect
+    else
+      respond_to do |format|
+        if @survey_profile.save
+          format.html { redirect_to root_url }
+          format.json { render :show, status: :created, location: @survey_profile }
+        end
+      end
+    end
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_survey_profile
     @survey_profile = SurveyProfile.find(params[:id])
@@ -117,5 +101,41 @@ class SurveyProfilesController < ApplicationController
   # Only allow a list of trusted parameters through.
   def survey_profile_params
     params.require(:survey_profile).permit(:user_id, :first_name, :last_name, :campus_name, :district_name, :role)
+  end
+
+  def invalid_form?
+    survey_profile_params.values.any? { |value| value.nil? || value.empty? }
+  end
+
+  def non_unique_user?
+    SurveyProfile.find_by(user_id: session[:userinfo]['sub'])
+  end
+
+  def handle_invalid_form
+    respond_to do |format|
+      format.html do
+        redirect_to new_survey_profile_url, notice: 'invalid form', status: :unprocessable_entity
+      end
+      format.json { render json: { error: 'invalid form' }, status: :unprocessable_entity }
+    end
+  end
+
+  def claim_invitation
+    temporary_invitation_session_var = session[:invitation]
+
+    if temporary_invitation_session_var && temporary_invitation_session_var['expiration'] > Time.now
+      invitation = Invitation.find_by(id: temporary_invitation_session_var['from'])
+      if invitation
+        sharecode_from_invitation = invitation.parent_response.share_code
+        # survey_profile = SurveyProfile.find_by(user_id: session[:userinfo]['sub'])
+        new_response_to_fill = SurveyResponse.create(profile: @survey_profile, share_code: sharecode_from_invitation)
+        invitation.update(claimed_by_id: @survey_profile.id, response_id: new_response_to_fill.id)
+        redirect_to edit_survey_response_path(new_response_to_fill)
+        return true
+      end
+    end
+
+    session.delete(:invitation)
+    false
   end
 end

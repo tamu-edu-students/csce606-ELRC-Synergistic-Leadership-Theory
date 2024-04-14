@@ -79,6 +79,18 @@ Given('the invitation is claimed by user {string}') do |id|
   expect(@invitation.claimed_by_id).to eq(profile.id)
 end
 
+Given('the invitation is claimed by me') do
+  profile = SurveyProfile.find_by(user_id: @my_user_id)
+  @invitation.reload
+  expect(@invitation.claimed_by_id).to eq(profile.id)
+end
+
+Given('the invitation is not claimed by user {string}') do |id|
+  profile = SurveyProfile.find_by(user_id: id)
+  @invitation.reload
+  expect(@invitation.claimed_by_id).not_to eq(profile.id)
+end
+
 And('I click the button to take the test') do
   click_button 'Take the Survey'
 end
