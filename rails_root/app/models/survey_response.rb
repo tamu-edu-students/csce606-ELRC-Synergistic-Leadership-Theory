@@ -47,19 +47,6 @@ class SurveyResponse < ApplicationRecord
   rescue ActiveRecord::RecordNotFound
     logger.info 'Survey profile not found!'
     nil
-
-    # 96.times do |i|
-    #   begin
-    #     index = (i+1).to_s
-    #     question = SurveyQuestion.find index
-    #     if params[index].nil?
-    #       choice = "5"
-    #     else
-    #       choice = params[index]
-    #     end
-    #     SurveyAnswer.create choice:, question:, response: survey_response
-    #   end
-    # end
   end
 
   def update_from_params(user_id, params)
