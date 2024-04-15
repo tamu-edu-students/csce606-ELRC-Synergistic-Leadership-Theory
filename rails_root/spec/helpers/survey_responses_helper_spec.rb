@@ -18,13 +18,7 @@ require 'rails_helper'
 RSpec.describe SurveyResponsesHelper, type: :helper do
   # create other models necessary for testing survey_responses_helper
 
-  let(:survey_answer) do
-    SurveyAnswer.create!(
-      choice: 3,
-      question_id: 1,
-      response_id: 1
-    )
-  end
+  
   let(:survey_profile) do
     SurveyProfile.create!(
       user_id: 1,
@@ -50,7 +44,23 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     )
   end
 
-  
+  let(:survey_profile1) do
+    SurveyProfile.create!(
+      user_id: 2,
+      first_name: 'John',
+      last_name: 'Wick',
+      campus_name: 'Main',
+      district_name: 'District',
+      role: 'Principal'
+    )
+  end
+
+  let(:survey_response1) do
+    SurveyResponse.create!(
+      profile_id: survey_profile1.id,
+      share_code: 'debug6'
+    )
+  end
 
   describe '#average_score' do
     it 'returns the average score of a survey response' do
@@ -72,11 +82,15 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     end
   end
 
-  describe '#average_score' do
-    it 'returns the average score of survey responses of teachers' do
+  describe '#average_of_teachers' do
+    it 'returns a list of average scores of survey responses of teachers' do
       # returns average score of the survey response answers
-      survey_questions = survey_response.answers
-      expect(helper.average_of_teachers(survey_response)).to eq(survey_questions.length)
+
+      expect(helper.average_of_teachers(survey_response)).to eq(Array.new(97, 0))
+    end
+
+    it 'return nil when no corresponding teachers' do
+      expect(helper.average_of_teachers(survey_response1)).to eq(nil)
     end
   end
 end
