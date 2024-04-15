@@ -18,20 +18,28 @@ require 'rails_helper'
 RSpec.describe SurveyResponsesHelper, type: :helper do
   # create other models necessary for testing survey_responses_helper
 
+  let(:survey_answer) do
+    SurveyAnswer.create!(
+      choice: 3,
+      question_id: 1,
+      response_id: 1
+    )
+  end
   let(:survey_profile) do
     SurveyProfile.create!(
       user_id: 1,
       first_name: 'John',
       last_name: 'Doe',
       campus_name: 'Main',
-      district_name: 'District'
+      district_name: 'District',
+      role: 'Teacher'
     )
   end
 
   let(:survey_response) do
     SurveyResponse.create!(
       profile_id: survey_profile.id,
-      share_code: '123'
+      share_code: 'debug7'
     )
   end
 
@@ -42,13 +50,7 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     )
   end
 
-  let(:survey_answer) do
-    SurveyAnswer.create!(
-      choice: 1,
-      question_id: survey_question.id,
-      response_id: survey_response.id
-    )
-  end
+  
 
   describe '#average_score' do
     it 'returns the average score of a survey response' do
@@ -57,7 +59,6 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     end
   end
 
-  require 'rails_helper'
 
   describe '#formatted_date' do
     it 'returns the formatted date of a survey response' do
@@ -68,6 +69,14 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
   describe '#user_of_response' do
     it 'returns the user of a survey response' do
       expect(helper.user_of_response(survey_response)).to eq(survey_response.profile_id)
+    end
+  end
+
+  describe '#average_score' do
+    it 'returns the average score of survey responses of teachers' do
+      # returns average score of the survey response answers
+      survey_questions = survey_response.answers
+      expect(helper.average_of_teachers(survey_response)).to eq(survey_questions.length)
     end
   end
 end
