@@ -6,7 +6,10 @@ class InvitationsController < ApplicationController
     @parent_survey_response = SurveyResponse.find_by!(id: params[:parent_survey_response_id])
     @invitation = Invitation.create!(parent_response: @parent_survey_response, last_sent: Time.now, visited: false)
 
-    redirect_to invitation_created_invitation_path(@invitation.token)
+    render json: {
+      message: "Invitation link created: #{invitation_url(@invitation.token)}",
+      invitation_url: invitation_url(@invitation.token)
+    }
   end
 
   def show
@@ -30,14 +33,6 @@ class InvitationsController < ApplicationController
 
   def not_found
     render :not_found
-  end
-
-  def invitation_created
-    @invitation = Invitation.find_by(token: params[:token])
-
-    return unless @invitation.nil?
-
-    redirect_to not_found_invitations_path
   end
 
   private

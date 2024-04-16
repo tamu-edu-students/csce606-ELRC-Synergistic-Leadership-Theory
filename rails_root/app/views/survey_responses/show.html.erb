@@ -1,5 +1,4 @@
 <p style="color: green"><%= notice %></p>
-
 <%# FIXME: Move this to a stylesheet when we have time %>
 <style>
   .section-header {
@@ -28,7 +27,6 @@
     transition: height 0.0s ease;
   }
 </style>
-
 <div class="container-lg">
   <h1 class="text-center">Your leadership type is: (tbd)</h1>
   <div class="row d-flex justify-content-center">
@@ -93,54 +91,112 @@
                 <td><%= ans.question.text %></td>
                 <td><%= choices[ans.choice] %></td>
                 <% 4.times do |i| %>
-                <td>
-                  <input
+                  <td>
+                    <input
                     type="radio"
                     disabled="disabled"
                     <%= 'checked="checked"' if i == ans.choice %>
                   >
-                </td>
-                <% end %>
-              </tr>
-              <tr class="collapse" id="<%= question_collapse_id %>">
-                <td colspan="6">
+                    </td>
+                  <% end %>
+                </tr>
+                <tr class="collapse" id="<%= question_collapse_id %>">
+                  <td colspan="6">
                     <%= ans.question.explanation %>
-                </td>
-              </tr>
-            <% end %>
-          </table>
-        </div>
-      <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+      </div>
     </div>
-  </div>
-  <hr>
-  <div class="row d-flex justify-content-center">
-    <div class="col-8 btn-group" role="group">
-      <%= link_to "Edit Response",
+    <hr>
+    <%# this is the view containing the link %>
+    <div id="invitation-link-container" class="mt-4" style="display: none;">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Invitation Link Created</h5>
+          <p class="card-text">
+            <span id="invitation-link"></span>
+          </p>
+          <button class="btn btn-primary" onclick="copyToClipboard()">Copy Link</button>
+        </div>
+      </div>
+      <hr>
+    </div>
+    <script>
+      function copyToClipboard() {
+        var linkText = document.getElementById("invitation-link").innerText;
+        navigator.clipboard.writeText(linkText)
+          .then(() => {
+            alert("Link copied to clipboard!");
+          })
+          .catch((error) => {
+            console.error("Failed to copy link: ", error);
+          });
+      }
+    </script>
+    <div class="row d-flex justify-content-center">
+      <div class="col-8 btn-group" role="group">
+        <%= link_to "Edit Response",
             edit_survey_response_path(@survey_response),
             class: "btn btn-outline-primary"
-      %>
-      <%= button_to "Create Invitation",
-            invitations_path(parent_survey_response_id: @survey_response.id),
-            method: :post,
-            id: "invitation-button",
-            form_class: "btn btn-outline-success",
-            class: "btn-passthrough"
-      %>
-      <%= button_to "Delete Response",
+      	%>
+        <%= button_tag "Create Invitation",
+			data: { parent_survey_response_id: @survey_response.id },
+			id: "invitation-button",
+			class: "btn btn-outline-success"
+		%>
+        <%= button_to "Delete Response",
             @survey_response,
             method: :delete,
       
             form_class: "btn btn-outline-danger",
             class: "btn-passthrough"
-      %>
+      	%>
+      </div>
     </div>
-  </div>
-  <br>
-  <div class="row d-flex justify-content-center">
-    <div class="col-6 text-center">
-      <%= link_to "Back to survey responses", survey_responses_path %>
-      <%= link_to "Back to home", root_path %>
-    <div>
-  </div>
-</div>
+    <%# show invitation link if it exist %>
+    <script>
+      function initializeInvitation() {
+          var invitationButton = document.getElementById('invitation-button');
+          var invitationLinkContainer = document.getElementById('invitation-link-container');
+          var invitationLink = document.getElementById('invitation-link');
+
+          invitationButton.addEventListener('click', function() {
+      var parentSurveyResponseId = this.getAttribute('data-parent-survey-response-id');
+
+      fetch('/invitations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ parent_survey_response_id: parentSurveyResponseId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        invitationLink.textContent = data.invitation_url;
+        invitationLinkContainer.style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+          });
+        }
+
+      			if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initializeInvitation);
+        } else {
+          initializeInvitation();
+        }
+    </script>
+    <br>
+    <div class="row d-flex justify-content-center">
+      <div class="col-6 text-center">
+        <%= link_to "Back to survey responses", survey_responses_path %>
+        <%= link_to "Back to home", root_path %>
+        <div>
+        </div>
+      </div>
