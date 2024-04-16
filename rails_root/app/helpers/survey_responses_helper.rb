@@ -48,8 +48,10 @@ module SurveyResponsesHelper
 
   def get_answer(survey_response, id)
     return nil if survey_response.nil?
+
     @survey_answer = SurveyAnswer.find_by(question_id: id, response_id: survey_response.id)
     return nil if @survey_answer.nil?
+
     @survey_answer.choice
   end
 end
