@@ -19,10 +19,6 @@ Rails.application.routes.draw do
     collection do
       get :not_found
     end
-
-    member do
-      get :invitation_created
-    end
   end
 
   get '/auth/auth0/callback' => 'auth0#callback'

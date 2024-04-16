@@ -1,5 +1,4 @@
 <p style="color: green"><%= notice %></p>
-
 <%# FIXME: Move this to a stylesheet when we have time %>
 <style>
   .section-header {
@@ -35,7 +34,6 @@
   }
 
 </style>
-
 <div class="container-lg">
   <h1 class="text-center">Your leadership type is: (tbd)</h1>
   <div class="row d-flex justify-content-center">
@@ -157,15 +155,13 @@
       <%= link_to "Edit Response",
             edit_survey_response_path(@survey_response),
             class: "btn btn-outline-primary"
-      %>
-      <%= button_to "Create Invitation",
-            invitations_path(parent_survey_response_id: @survey_response.id),
-            method: :post,
-            id: "invitation-button",
-            form_class: "btn btn-outline-success",
-            class: "btn-passthrough"
-      %>
-      <%= button_to "Delete Response",
+      	%>
+        <%= button_tag "Create Invitation",
+			data: { parent_survey_response_id: @survey_response.id },
+			id: "invitation-button",
+			class: "btn btn-outline-success"
+		%>
+        <%= button_to "Delete Response",
             @survey_response,
             method: :delete,
       

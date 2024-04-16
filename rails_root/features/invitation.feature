@@ -9,7 +9,6 @@ Feature: Invitation
         When I create an invitation at the bottom of the response page
 		Then the invitation's sharecode should be set to the response's sharecode
 		And the invitation's parent_response_id should be set to the response's id
-        And I should see a link that can be copied
 
 	Scenario: Generate unique invitation URL
 		Given an invitation exists

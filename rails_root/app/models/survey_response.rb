@@ -20,22 +20,37 @@ class SurveyResponse < ApplicationRecord
 
   def self.create_from_params(user_id, params)
     # FIXME: When we look up things and fail, we should use more descriptive exceptions instead of ActiveRecord::RecordNotFound
-
-    profile = SurveyProfile.where(user_id:).first!
+    profile = find_profile(user_id)
 
     # Use provided share_code if exists, else generate a new one
-    share_code = if params.nil?
-                   SecureRandom.hex(3)
-                 else
-                   params[:share_code] || SecureRandom.hex(3)
-                 end
+    share_code = generate_share_code(params)
 
     # FIXME: Handle share code already existing
-    survey_response = SurveyResponse.create(profile:, share_code:)
+    survey_response = create_survey_response(profile, share_code)
 
     return survey_response if params.nil?
 
-    params&.each do |key, choice|
+    create_survey_answers(params, survey_response)
+    survey_response
+  rescue ActiveRecord::RecordNotFound
+    logger.info 'Survey profile not found!'
+    nil
+  end
+
+  def self.find_profile(user_id)
+    SurveyProfile.where(user_id:).first!
+  end
+
+  def self.generate_share_code(params)
+    params.nil? ? SecureRandom.hex(3) : params[:share_code] || SecureRandom.hex(3)
+  end
+
+  def self.create_survey_response(profile, share_code)
+    SurveyResponse.create(profile:, share_code:)
+  end
+
+  def self.create_survey_answers(params, survey_response)
+    params.each do |key, choice|
       begin
         question = SurveyQuestion.find key
       rescue ActiveRecord::RecordNotFound
