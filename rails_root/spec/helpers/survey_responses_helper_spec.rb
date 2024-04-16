@@ -18,7 +18,6 @@ require 'rails_helper'
 RSpec.describe SurveyResponsesHelper, type: :helper do
   # create other models necessary for testing survey_responses_helper
 
-  
   let(:survey_profile) do
     SurveyProfile.create!(
       user_id: 1,
@@ -68,7 +67,6 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       expect(helper.average_score(survey_response)).to eq(survey_response.answers.average(:choice).to_f)
     end
   end
-
 
   describe '#formatted_date' do
     it 'returns the formatted date of a survey response' do

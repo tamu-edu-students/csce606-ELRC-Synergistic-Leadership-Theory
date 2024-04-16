@@ -18,10 +18,11 @@ module SurveyResponsesHelper
     # returns profile_id of the survey response
     survey_response.profile_id
   end
+
   def average_of_teachers(survey_response)
     # returns the average score of the teachers
     @survey_profiles = SurveyProfile.where(role: 'Teacher')
-    @survey_profiles_id = @survey_profiles.map{|profile| profile.id}
+    @survey_profiles_id = @survey_profiles.map(&:id)
     @survey_responses = SurveyResponse.where(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
     total_scores = Array.new(97, 0)
     n = @survey_responses.length
@@ -30,9 +31,8 @@ module SurveyResponsesHelper
         total_scores[ans.question_id] += ans.choice
       end
     end
-    if n == 0
-      return nil
-    end
-    average_scores = total_scores.map{|score| (score.to_f/n)}
+    return nil if n.zero?
+
+    total_scores.map { |score| (score.to_f / n) }
   end
 end
