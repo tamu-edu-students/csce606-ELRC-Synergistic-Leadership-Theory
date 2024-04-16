@@ -25,39 +25,90 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       last_name: 'Doe',
       campus_name: 'Main',
       district_name: 'District',
-      role: 'Teacher'
+      role: 'Principal'
     )
   end
 
   let(:survey_response) do
     SurveyResponse.create!(
       profile_id: survey_profile.id,
-      share_code: 'debug7'
+      share_code: '123456'
     )
   end
-
   let(:survey_question) do
     SurveyQuestion.create!(
       text: 'Question',
       section: 1
     )
   end
-
-  let(:survey_profile1) do
+  let(:survey_profile2) do
     SurveyProfile.create!(
       user_id: 2,
       first_name: 'John',
       last_name: 'Wick',
       campus_name: 'Main',
       district_name: 'District',
-      role: 'Principal'
+      role: 'Teacher'
     )
   end
-
-  let(:survey_response1) do
+  let(:survey_profile3) do
+    SurveyProfile.create!(
+      user_id: 3,
+      first_name: 'John',
+      last_name: 'Lennon',
+      campus_name: 'Main',
+      district_name: 'District',
+      role: 'Superintendent'
+    )
+  end
+  let(:survey_profile4) do
+    SurveyProfile.create!(
+      user_id: 4,
+      first_name: 'John',
+      last_name: 'Lewis',
+      campus_name: 'Main',
+      district_name: 'District',
+      role: 'Teacher'
+    )
+  end
+  let(:survey_response2) do
     SurveyResponse.create!(
-      profile_id: survey_profile1.id,
-      share_code: 'debug6'
+      profile_id: survey_profile2.id,
+      share_code: '123456'
+    )
+  end
+  let(:survey_response3) do
+    SurveyResponse.create!(
+      profile_id: survey_profile3.id,
+      share_code: '123456'
+    )
+  end
+  let(:survey_response4) do
+    SurveyResponse.create!(
+      profile_id: survey_profile4.id,
+      share_code: '123456'
+    )
+  end
+  let(:survey_answers) do
+    SurveyAnswer.create!(
+      choice: 4,
+      question_id: survey_question.id,
+      response_id: survey_response.id
+    )
+    SurveyAnswer.create!(
+      choice: 3,
+      question_id: survey_question.id,
+      response_id: survey_response2.id
+    )
+    SurveyAnswer.create!(
+      choice: 2,
+      question_id: survey_question.id,
+      response_id: survey_response3.id
+    )
+    SurveyAnswer.create!(
+      choice: 1,
+      question_id: survey_question.id,
+      response_id: survey_response4.id
     )
   end
 
@@ -83,12 +134,32 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
   describe '#average_of_teachers' do
     it 'returns a list of average scores of survey responses of teachers' do
       # returns average score of the survey response answers
-
-      expect(helper.average_of_teachers(survey_response)).to eq(Array.new(97, 0))
+      survey_answers
+      averages = Array.new(97, 0.0)
+      averages[1] = 2.0
+      expect(helper.average_of_teachers(survey_response)).to eq(averages)
     end
 
     it 'return nil when no corresponding teachers' do
-      expect(helper.average_of_teachers(survey_response1)).to eq(nil)
+      expect(helper.average_of_teachers(survey_response)).to eq(nil)
+    end
+  end
+
+  describe '#find_teachers' do
+    it 'returns survey responses of teachers having same share code with principal' do
+      survey_answers
+      ids = []
+      teachers_responses = helper.find_teachers(survey_response)
+      teachers_responses.each do |response|
+        ids.append(response.id)
+      end
+      expect(ids).to eq([2, 4])
+    end
+  end
+  describe '#find_superintendent' do
+    it 'returns survey responses of superintendent having same share code with principal' do
+      survey_answers
+      expect(helper.find_superintendent(survey_response).first.id).to eq(3)
     end
   end
 end

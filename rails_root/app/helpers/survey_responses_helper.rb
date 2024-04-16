@@ -21,9 +21,7 @@ module SurveyResponsesHelper
 
   def average_of_teachers(survey_response)
     # returns the average score of the teachers
-    @survey_profiles = SurveyProfile.where(role: 'Teacher')
-    @survey_profiles_id = @survey_profiles.map(&:id)
-    @survey_responses = SurveyResponse.where(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
+    @survey_responses = find_teachers(survey_response)
     total_scores = Array.new(97, 0)
     n = @survey_responses.length
     @survey_responses.each do |response|
@@ -35,4 +33,17 @@ module SurveyResponsesHelper
 
     total_scores.map { |score| (score.to_f / n) }
   end
+
+  def find_superintendent(survey_response)
+    @survey_profiles = SurveyProfile.where(role: 'Superintendent')
+    @survey_profiles_id = @survey_profiles.map(&:id)
+    @survey_responses = SurveyResponse.where(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
+  end
+
+  def find_teachers(survey_response)
+    @survey_profiles = SurveyProfile.where(role: 'Teacher')
+    @survey_profiles_id = @survey_profiles.map(&:id)
+    @survey_responses = SurveyResponse.where(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
+  end
+
 end
