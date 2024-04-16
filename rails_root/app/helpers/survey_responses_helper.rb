@@ -46,12 +46,11 @@ module SurveyResponsesHelper
     @survey_responses = SurveyResponse.where(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
   end
 
-  def get_answer(survey_response, id)
-    return nil if survey_response.nil?
-
-    @survey_answer = SurveyAnswer.find_by(question_id: id, response_id: survey_response.id)
-    return nil if @survey_answer.nil?
+  def get_answer(survey_response, question_id)
+    @survey_answer = survey_response.answers.where(question_id:).first!
 
     @survey_answer.choice
+  rescue StandardError
+    nil
   end
 end
