@@ -62,6 +62,9 @@ class SurveyResponsesController < ApplicationController
     return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: current_user_id)
     return return_to_root 'You cannot edit this result.' if current_user_id != @survey_response.profile.user_id
 
+    # Initialize page number to 1 if not already set
+    session[:page_number] = 1 if session[:page_number].nil?
+
     @pagination, @questions, @section = paginate(collection: SurveyQuestion.all, params: { per_page: 10, page: session[:page_number] })
   end
 
