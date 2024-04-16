@@ -162,6 +162,18 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       expect(helper.find_superintendent(survey_response).first.id).to eq(3)
     end
   end
+  describe '#get_answer' do
+    it 'returns the answer with certain id of response' do
+      survey_answers
+      expect(helper.get_answer(survey_response, 1)).to eq(4)
+    end
+    it 'returns nil if the survey response not exist' do
+      expect(helper.get_answer(nil, 1)).to eq(nil)
+    end
+    it 'returns nil if no answer certain id exists' do
+      expect(helper.get_answer(survey_response, 1)).to eq(nil)
+    end
+  end
 end
 
 # rubocop:enable Metrics/BlockLength

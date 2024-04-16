@@ -51,68 +51,133 @@
     <% answers = sections.map {|section| [section, @survey_response.answers.select {|ans| ans.question.section == section}]}.to_h%>
     <div class="col-9">
       <h2 class="text-center">Your Responses</h2>
-      <br>
-      <% sections.each do |section| %>
-        <% collapse_id = "section#{section}"%>
-        <div class="section-header"
-             data-bs-toggle="collapse"
-             data-bs-target="#<%= collapse_id %>"
-             aria-expanded="false"
-             aria-controls="<%= collapse_id %>">
-          <div class="row d-flex justify-content-center">
-            <h4 class="text-center col-8">
-              <%= @sections[section][:title] %>
-            </h4>
-          </div>
-          <div class="row d-flex justify-content-center">
-            <div class="col-8">
-              <p class="text-center"><%= @sections[section][:prompt] %></p>
+      <% if @survey_response.profile.role != 'Principal'%>
+        <br>
+        <% sections.each do |section| %>
+          <% collapse_id = "section#{section}"%>
+          <div class="section-header"
+              data-bs-toggle="collapse"
+              data-bs-target="#<%= collapse_id %>"
+              aria-expanded="false"
+              aria-controls="<%= collapse_id %>">
+            <div class="row d-flex justify-content-center">
+              <h4 class="text-center col-8">
+                <%= @sections[section][:title] %>
+              </h4>
+            </div>
+            <div class="row d-flex justify-content-center">
+              <div class="col-8">
+                <p class="text-center"><%= @sections[section][:prompt] %></p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="collapse" id="<%= collapse_id %>">
-          <table class="table">
-            <thead class="bg-aggie-maroon text-gray-100">
-              <tr>
-                <th>Question</th>
-                <th>Response</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <% answers[section].each do |ans| %>
-              <% question_collapse_id = "question#{ans.question.id}" %>
-              <tr
-                data-bs-toggle="collapse"
-                data-bs-target="#<%= question_collapse_id %>"
-                aria-expanded="false"
-                aria-controls="<%= question_collapse_id %>"
-              >
-                <td><%= ans.question.text %></td>
-                <td><%= choices[ans.choice] %></td>
-                <% 4.times do |i| %>
-                <td>
-                  <input
-                    type="radio"
-                    disabled="disabled"
-                    <%= 'checked="checked"' if i == ans.choice %>
-                  >
-                </td>
-                <% end %>
-              </tr>
-              <tr class="collapse" id="<%= question_collapse_id %>">
-                <td colspan="6">
-                    <%= ans.question.explanation %>
-                </td>
-              </tr>
-            <% end %>
-          </table>
-        </div>
+          <div class="collapse" id="<%= collapse_id %>">
+            <table class="table">
+              <thead class="bg-aggie-maroon text-gray-100">
+                <tr>
+                  <th>Question</th>
+                  <th>Response</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <% answers[section].each do |ans| %>
+                <% question_collapse_id = "question#{ans.question.id}" %>
+                <tr
+                  data-bs-toggle="collapse"
+                  data-bs-target="#<%= question_collapse_id %>"
+                  aria-expanded="false"
+                  aria-controls="<%= question_collapse_id %>"
+                >
+                  <td><%= ans.question.text %></td>
+                  <td><%= choices[ans.choice] %></td>
+                  <% 4.times do |i| %>
+                  <td>
+                    <input
+                      type="radio"
+                      disabled="disabled"
+                      <%= 'checked="checked"' if i == ans.choice %>
+                    >
+                  </td>
+                  <% end %>
+                </tr>
+                <tr class="collapse" id="<%= question_collapse_id %>">
+                  <td colspan="6">
+                      <%= ans.question.explanation %>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+      
+      <%else%>
+        <% @superintendent_response = find_superintendent(@survey_response).first%>
+        <% @teacher_response = find_teachers(@survey_response).first%>
+        <br>
+        <% sections.each do |section| %>
+          <% collapse_id = "section#{section}"%>
+          <div class="section-header"
+              data-bs-toggle="collapse"
+              data-bs-target="#<%= collapse_id %>"
+              aria-expanded="false"
+              aria-controls="<%= collapse_id %>">
+            <div class="row d-flex justify-content-center">
+              <h4 class="text-center col-8">
+                <%= @sections[section][:title] %>
+              </h4>
+            </div>
+            <div class="row d-flex justify-content-center">
+              <div class="col-8">
+                <p class="text-center"><%= @sections[section][:prompt] %></p>
+              </div>
+            </div>
+          </div>
+          <div class="collapse" id="<%= collapse_id %>">
+            <table class="table">
+              <thead class="bg-aggie-maroon text-gray-100">
+                <tr>
+                  <th>Question</th>
+                  <th>Superintendent</th>
+                  <th>Principal</th>
+                  <th>Teachers</th>
+                 
+                </tr>
+              </thead>
+              <% answers[section].each do |ans| %>
+                <% question_collapse_id = "question#{ans.question.id}" %>
+                <% @superintendent_choice = get_answer(@superintendent_response, ans.question.id)%>
+                <% @teacher_choice = get_answer(@teacher_response, ans.question.id)%>
+                <tr
+                  data-bs-toggle="collapse"
+                  data-bs-target="#<%= question_collapse_id %>"
+                  aria-expanded="false"
+                  aria-controls="<%= question_collapse_id %>"
+                >
+                  <td><%= ans.question.text %></td>
+                  <td><%=  @superintendent_choice.nil? ? "": choices[@superintendent_choice]  %></td>
+                  <td><%= choices[ans.choice]%></td>
+                  <td><%= @teacher_choice.nil? ?  "": choices[@teacher_choice]%></td>
+                  
+                </tr>
+                <tr class="collapse" id="<%= question_collapse_id %>">
+                  <td colspan="6">
+                      <%= ans.question.explanation %>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+
       <% end %>
     </div>
   </div>
+
+
+
   <hr>
   <div class="row d-flex justify-content-center">
     <div class="col-8 btn-group" role="group">
