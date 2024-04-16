@@ -156,12 +156,14 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       expect(ids).to eq([2, 4])
     end
   end
+
   describe '#find_superintendent' do
     it 'returns survey responses of superintendent having same share code with principal' do
       survey_answers
-      expect(helper.find_superintendent(survey_response).first.id).to eq(3)
+      expect(helper.find_superintendent(survey_response).id).to eq(3)
     end
   end
+
   describe '#get_answer' do
     it 'returns the answer with certain id of response' do
       survey_answers

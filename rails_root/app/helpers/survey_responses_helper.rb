@@ -37,7 +37,7 @@ module SurveyResponsesHelper
   def find_superintendent(survey_response)
     @survey_profiles = SurveyProfile.where(role: 'Superintendent')
     @survey_profiles_id = @survey_profiles.map(&:id)
-    @survey_responses = SurveyResponse.where(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
+    @survey_responses = SurveyResponse.find_by(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
   end
 
   def find_teachers(survey_response)
@@ -49,7 +49,7 @@ module SurveyResponsesHelper
   def get_answer(survey_response, id)
     return nil if survey_response.nil?
     @survey_answer = SurveyAnswer.find_by(question_id: id, response_id: survey_response.id)
-    return nil if @survey_answer.nil?    
+    return nil if @survey_answer.nil?
     @survey_answer.choice
   end
 end

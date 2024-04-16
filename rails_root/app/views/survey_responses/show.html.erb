@@ -27,6 +27,13 @@
     height: auto;
     transition: height 0.0s ease;
   }
+  
+ .table{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
 </style>
 
 <div class="container-lg">
@@ -49,11 +56,14 @@
   <div class="row d-flex justify-content-center">
     <% sections = @survey_response.questions.map(&:section).uniq %>
     <% answers = sections.map {|section| [section, @survey_response.answers.select {|ans| ans.question.section == section}]}.to_h%>
+    <% @superintendent_response = find_superintendent(@survey_response)%>
+    <% @teacher_responses = find_teachers(@survey_response)%>
     <div class="col-9">
       <h2 class="text-center">Your Responses</h2>
-      <% if @survey_response.profile.role != 'Principal'%>
+      <% if @survey_response.profile.role != 'Principal' ||(@teacher_responses.empty? && @superintendent_response.nil?)%>
         <br>
         <% sections.each do |section| %>
+          <% answers[section] = answers[section].sort_by{|ans| ans.question_id}%>
           <% collapse_id = "section#{section}"%>
           <div class="section-header"
               data-bs-toggle="collapse"
@@ -114,10 +124,9 @@
         <% end %>
       
       <%else%>
-        <% @superintendent_response = find_superintendent(@survey_response).first%>
-        <% @teacher_response = find_teachers(@survey_response).first%>
         <br>
         <% sections.each do |section| %>
+          <% answers[section] = answers[section].sort_by{|ans| ans.question_id}%>
           <% collapse_id = "section#{section}"%>
           <div class="section-header"
               data-bs-toggle="collapse"
@@ -140,16 +149,18 @@
               <thead class="bg-aggie-maroon text-gray-100">
                 <tr>
                   <th>Question</th>
+                  <% if !@superintendent_response.nil? %>
                   <th>Superintendent</th>
+                  <%end %>
                   <th>Principal</th>
-                  <th>Teachers</th>
-                 
+                  <% @teacher_responses.each_with_index do |response, i|%>
+                    <th><%="Teacher #{i+1}"%></th>
+                  <%end%>
+                  
                 </tr>
               </thead>
               <% answers[section].each do |ans| %>
                 <% question_collapse_id = "question#{ans.question.id}" %>
-                <% @superintendent_choice = get_answer(@superintendent_response, ans.question.id)%>
-                <% @teacher_choice = get_answer(@teacher_response, ans.question.id)%>
                 <tr
                   data-bs-toggle="collapse"
                   data-bs-target="#<%= question_collapse_id %>"
@@ -157,15 +168,24 @@
                   aria-controls="<%= question_collapse_id %>"
                 >
                   <td><%= ans.question.text %></td>
-                  <td><%=  @superintendent_choice.nil? ? "": choices[@superintendent_choice]  %></td>
+                  <%if !@superintendent_response.nil?%>
+                    <% @superintendent_choice = get_answer(@superintendent_response, ans.question.id)%>
+                    <td><%=  @superintendent_choice.nil? ? "": choices[@superintendent_choice] %></td>
+                  <%end%>
                   <td><%= choices[ans.choice]%></td>
-                  <td><%= @teacher_choice.nil? ?  "": choices[@teacher_choice]%></td>
+                  <%@teacher_responses.each do |teacher_response|%>
+                    <% @teacher_choice = get_answer(teacher_response, ans.question.id)%>
+                    <td><%= @teacher_choice.nil? ?  "": choices[@teacher_choice]%></td>
+                  
+                  <%end%>
+                  
                   
                 </tr>
                 <tr class="collapse" id="<%= question_collapse_id %>">
-                  <td colspan="6">
+                  <td colspan="10">
                       <%= ans.question.explanation %>
                   </td>
+                
                 </tr>
               <% end %>
             </table>
