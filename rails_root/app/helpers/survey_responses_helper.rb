@@ -53,4 +53,31 @@ module SurveyResponsesHelper
   rescue StandardError
     nil
   end
+
+  def answers_L1(principal_survey_response, other_survey_response)
+    other_answers = other_survey_response.answers
+
+    parts = [
+      [1, 2],
+      [3],
+      [4],
+      [5, 6]
+    ]
+
+    # sections = SurveyQuestion.all.map(&:section).uniq
+    answers = parts.each_with_index.map do |sections, part|
+      principal_answers = principal_survey_response.answers.select { |ans| sections.include? ans.question.section }
+      other_answers = other_survey_response.answers.select { |ans| sections.include? ans.question.section }
+
+      [part, [principal_answers, other_answers]]
+    end
+
+    # [[section_id, [principal answers, other answers]], ...]
+
+    answers.map do |part, ans|
+      principal_answers, other_answers = ans
+
+      principal_answers.each_with_index.map { |x, i| (x - other_answers[i]).abs }
+    end
+  end
 end

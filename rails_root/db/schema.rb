@@ -62,5 +62,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_13_233358) do
     t.index ["profile_id"], name: "index_survey_responses_on_profile_id"
   end
 
+  add_foreign_key "invitations", "survey_profiles", column: "claimed_by_id"
+  add_foreign_key "invitations", "survey_responses", column: "parent_response_id"
+  add_foreign_key "invitations", "survey_responses", column: "response_id"
+  add_foreign_key "survey_answers", "survey_questions", column: "question_id"
+  add_foreign_key "survey_answers", "survey_responses", column: "response_id"
   add_foreign_key "survey_responses", "survey_profiles", column: "profile_id"
 end

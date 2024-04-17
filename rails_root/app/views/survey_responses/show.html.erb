@@ -32,7 +32,6 @@
     overflow-x: auto;
     white-space: nowrap;
   }
-
 </style>
 <div class="container-lg">
   <h1 class="text-center">Your leadership type is: (tbd)</h1>
@@ -147,8 +146,6 @@
     </div>
   </div>
 
-
-
   <hr>
   <div class="row d-flex justify-content-center">
     <div class="col-8 btn-group" role="group">
@@ -164,7 +161,6 @@
         <%= button_to "Delete Response",
             @survey_response,
             method: :delete,
-      
             form_class: "btn btn-outline-danger",
             class: "btn-passthrough"
       %>
@@ -178,3 +174,6 @@
     <div>
   </div>
 </div>
+
+<%= javascript_import_module_tag "tetrahedron" %>
+
