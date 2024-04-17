@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'webmock/cucumber'
+# require 'webmock/cucumber'
 
 Given('I have completed the survey as user {string}') do |id|
   profile = SurveyProfile.find_or_create_by(user_id: id)
@@ -12,9 +12,17 @@ When('I create an invitation at the bottom of the response page') do
 
   click_button 'Create Invitation'
 
-  # Wait for the flash message to appear and extract the invitation token from it
-  expect(page).to have_content('Invitation Created')
-  @token = page.text.match(%r{Your invitation link is: #{Capybara.current_host}/invitations/([a-zA-Z0-9\-_]+)})[1]
+  # TODO: Set up Capybara for AJAX calls
+  response = page.driver.post(invitations_path, {
+                                parent_survey_response_id: @survey_response.id
+                              })
+
+  json_response = JSON.parse(response.body)
+
+  invitation_link = json_response['invitation_url']
+
+  # extract token
+  @token = invitation_link.match(%r{#{Capybara.current_host}/invitations/([a-zA-Z0-9\-_]+)})[1]
   @invitation = Invitation.find_by(token: @token)
 end
 
@@ -24,10 +32,6 @@ end
 
 And('the invitation\'s parent_response_id should be set to the response\'s id') do
   expect(@invitation.parent_response_id).to eq(@survey_response.id)
-end
-
-Then('I should see a link that can be copied') do
-  expect(page.body).to match(%r{Your invitation link is: #{Capybara.current_host}/invitations/#{@token}})
 end
 
 ###

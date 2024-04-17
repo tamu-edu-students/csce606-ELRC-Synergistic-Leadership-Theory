@@ -21,12 +21,12 @@
         </thead>
         <% if !@survey_responses.nil?%>
           <tbody>
-            <% @survey_responses.each do |response_hash| %>
+            <% @survey_responses.zip(@invitations).each do |response, invited_by| %>
               <tr>
-                <td><%= response_hash[:response].created_at %></td>
-                <td><%= response_hash[:invited_by] %></td>
-                <td><%= response_hash[:response].share_code %></td>
-                <td><%= link_to "Show", survey_response_path(response_hash[:response]) %></td>
+                <td><%= response.created_at %></td>
+                <td><%= invited_by %></td>
+                <td><%= response.share_code %></td>
+                <td><%= link_to "Show", survey_response_path(response) %></td>
               </tr>
             <% end %>
           </tbody>

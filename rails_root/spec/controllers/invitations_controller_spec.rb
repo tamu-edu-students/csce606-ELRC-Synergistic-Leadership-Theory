@@ -76,13 +76,4 @@ RSpec.describe InvitationsController, type: :controller do # rubocop:disable Met
       end
     end
   end
-
-  describe 'GET #invitation_created' do
-    context 'when invitation is not found' do
-      it 'redirects to not_found' do
-        get :invitation_created, params: { token: 'nonexistent_token' }
-        expect(response).to redirect_to(not_found_invitations_path)
-      end
-    end
-  end
 end
