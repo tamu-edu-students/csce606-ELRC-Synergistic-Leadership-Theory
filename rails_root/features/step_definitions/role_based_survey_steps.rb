@@ -25,7 +25,7 @@ When('I navigate to the survey page') do
 end
 
 Then('I should see the survey questions specific to the principal') do
-  expect(page).to have_content('ORGANIZATIONAL AND LEADERSHIP EFFECTIVENESS INVENTORY - Principal')
+  expect(page).to have_content('To what extent do you agree the following behaviors reflect your personal leadership behaviors')
 end
 
 Then('I fill in my information as a teacher') do
@@ -49,7 +49,7 @@ Then('I am logged in as a teacher') do
 end
 
 Then('I should see the survey questions specific to the teacher') do
-  expect(page).to have_content('ORGANIZATIONAL AND LEADERSHIP EFFECTIVENESS INVENTORY - Teacher')
+  expect(page).to have_content("To what extent do you agree the following behaviors reflect your principal's leadership behaviors")
 end
 
 Then('I fill in my information as a superintendent') do
@@ -73,5 +73,5 @@ Then('I am logged in as a superintendent') do
 end
 
 Then('I should see the survey questions specific to the superintendent') do
-  expect(page).to have_content('ORGANIZATIONAL AND LEADERSHIP EFFECTIVENESS INVENTORY - Superintendent')
+  expect(page).to have_content("To what extent do you agree the following behaviors reflect your principal's leadership behaviors")
 end
