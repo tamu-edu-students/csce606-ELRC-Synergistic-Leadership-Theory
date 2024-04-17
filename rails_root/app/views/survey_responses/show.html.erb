@@ -28,11 +28,6 @@
     transition: height 0.0s ease;
   }
   
- .table{
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
 
 </style>
 
@@ -57,10 +52,10 @@
     <% sections = @survey_response.questions.map(&:section).uniq %>
     <% answers = sections.map {|section| [section, @survey_response.answers.select {|ans| ans.question.section == section}]}.to_h%>
     <% @superintendent_response = find_superintendent(@survey_response)%>
-    <% @teacher_responses = find_teachers(@survey_response)%>
+    <% @average_of_teachers = average_of_teachers(@survey_response)%>
     <div class="col-9">
       <h2 class="text-center">Your Responses</h2>
-      <% if @survey_response.profile.role != 'Principal' ||(@teacher_responses.empty? && @superintendent_response.nil?)%>
+      <% if @survey_response.profile.role != 'Principal' ||(@average_of_teachers.nil? && @superintendent_response.nil?)%>
         <br>
         <% sections.each do |section| %>
           <% answers[section] = answers[section].sort_by{|ans| ans.question_id}%>
@@ -150,13 +145,12 @@
                 <tr>
                   <th>Question</th>
                   <% if !@superintendent_response.nil? %>
-                  <th>Superintendent</th>
+                    <th>Superintendent</th>
                   <%end %>
                   <th>Principal</th>
-                  <% @teacher_responses.each_with_index do |response, i|%>
-                    <th><%="Teacher #{i+1}"%></th>
+                  <% if !@average_of_teachers.nil? %>
+                    <th>Teachers</th>
                   <%end%>
-                  
                 </tr>
               </thead>
               <% answers[section].each do |ans| %>
@@ -173,10 +167,8 @@
                     <td><%=  @superintendent_choice.nil? ? "": choices[@superintendent_choice] %></td>
                   <%end%>
                   <td><%= choices[ans.choice]%></td>
-                  <%@teacher_responses.each do |teacher_response|%>
-                    <% @teacher_choice = get_answer(teacher_response, ans.question.id)%>
-                    <td><%= @teacher_choice.nil? ?  "": choices[@teacher_choice]%></td>
-                  
+                  <%if !@average_of_teachers.nil?%>
+                  <td><%= @average_of_teachers[ans.question.id].nil? ?  "": choices[@average_of_teachers[ans.question.id].round()]%></td> 
                   <%end%>
                   
                   

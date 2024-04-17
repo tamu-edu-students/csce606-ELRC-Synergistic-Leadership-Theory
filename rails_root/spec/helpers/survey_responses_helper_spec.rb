@@ -135,7 +135,7 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     it 'returns a list of average scores of survey responses of teachers' do
       # returns average score of the survey response answers
       survey_answers
-      averages = Array.new(97, 0.0)
+      averages = Array.new(97, nil)
       averages[1] = 2.0
       expect(helper.average_of_teachers(survey_response)).to eq(averages)
     end
