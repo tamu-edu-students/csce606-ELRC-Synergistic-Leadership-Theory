@@ -46,6 +46,8 @@ module SurveyResponsesHelper
     @survey_profiles = SurveyProfile.where(role: 'Teacher')
     @survey_profiles_id = @survey_profiles.map(&:id)
     @survey_responses = SurveyResponse.where(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
+
+    @survey_responses
   end
 
   def get_answer(survey_response, question_id)
@@ -56,30 +58,24 @@ module SurveyResponsesHelper
     nil
   end
 
-  def answers_L1(principal_survey_response, other_survey_response)
-    other_answers = other_survey_response.answers
-
+  def get_part_difference(response, other)
     parts = [
-      [1, 2],
+      [0, 1],
+      [2],
       [3],
-      [4],
-      [5, 6]
+      [4, 5]
     ]
 
-    # sections = SurveyQuestion.all.map(&:section).uniq
-    answers = parts.each_with_index.map do |sections, part|
-      principal_answers = principal_survey_response.answers.select { |ans| sections.include? ans.question.section }
-      other_answers = other_survey_response.answers.select { |ans| sections.include? ans.question.section }
+    parts.map do |sections|
+      answers = response.answers.select { |ans| sections.include? ans.question.section }
+      other_answers = other.answers.select { |ans| sections.include? ans.question.section }
 
-      [part, [principal_answers, other_answers]]
-    end
-
-    # [[section_id, [principal answers, other answers]], ...]
-
-    answers.map do |part, ans|
-      principal_answers, other_answers = ans
-
-      principal_answers.each_with_index.map { |x, i| (x - other_answers[i]).abs }
+      if answers.empty?
+        0
+      else
+        difference = answers.each_with_index.map { |x, i| (x.choice - other_answers[i].choice).abs }.sum
+        difference / answers.length
+      end
     end
   end
 end
