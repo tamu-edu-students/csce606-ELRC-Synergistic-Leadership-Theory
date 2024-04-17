@@ -27,18 +27,20 @@
     transition: height 0.0s ease;
   }
 
- .table{
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
 </style>
+
+<% @superintendent_response = find_superintendent(@survey_response)%>
+<% @average_of_teachers = average_of_teachers(@survey_response)%>
+<% combined_view = @survey_response.profile.role == 'Principal' && !(@average_of_teachers.nil? && @superintendent_response.nil?) %>
+
 <div class="container-lg">
   <h1 class="text-center">Your leadership type is: (tbd)</h1>
+  <% if combined_view %>
   <div class="row d-flex justify-content-center">
-    <%= image_tag("https://upload.wikimedia.org/wikipedia/commons/7/70/Tetrahedron.gif", style: "width:400px;" ) %>
+    <div id="tetrahedron" class="col-6">
+    </div>
   </div>
+  <% end %>
   <div class="row d-flex justify-content-center">
     <div class="col-8">
       <h3>
@@ -51,18 +53,15 @@
   </div>
   <hr>
   <% choices = ["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"] %>
+  <% sections = @survey_response.questions.map(&:section).uniq %>
+  <% answers = sections.map {|section| [section, @survey_response.answers.select {|ans| ans.question.section == section}]}.to_h%>
   <div class="row d-flex justify-content-center">
-    <% sections = @survey_response.questions.map(&:section).uniq %>
-    <% answers = sections.map {|section| [section, @survey_response.answers.select {|ans| ans.question.section == section}]}.to_h%>
-    <% @superintendent_response = find_superintendent(@survey_response)%>
-    <% @average_of_teachers = average_of_teachers(@survey_response)%>
     <div class="col-9">
       <br>
 
       <% sections.each do |section| %>
         <% answers[section] = answers[section].sort_by { |ans| ans.question_id } %>
         <% collapse_id = "section#{section}" %>
-        <% combined_view = @survey_response.profile.role == 'Principal' && !(@average_of_teachers.nil? && @superintendent_response.nil?) %>
 
         <div class="section-header"
           data-bs-toggle="collapse"
@@ -186,6 +185,7 @@
         <%= button_to "Delete Response",
             @survey_response,
             method: :delete,
+
             form_class: "btn btn-outline-danger",
             class: "btn-passthrough"
       	%>
@@ -220,14 +220,12 @@
           });
         }
 
-      			if (document.readyState === 'loading') {
+        if (document.readyState === 'loading') {
           document.addEventListener('DOMContentLoaded', initializeInvitation);
         } else {
           initializeInvitation();
         }
     </script>
-
-
 
   <br>
   <div class="row d-flex justify-content-center">
@@ -238,4 +236,8 @@
   </div>
 </div>
 
-<%= javascript_import_module_tag "tetrahedron" %>
+<% if combined_view %>
+<script type="module">
+  import "tetrahedron"
+</script>
+<% end %>

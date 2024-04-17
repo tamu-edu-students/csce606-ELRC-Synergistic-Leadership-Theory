@@ -1,52 +1,56 @@
-import * as THREE from 'three';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as THREE from 'three'
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
-// instantiate a loader
-const loader = new OBJLoader();
+const objLoader = new OBJLoader()
+const mtlLoader = new MTLLoader()
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.001, 200 );
-camera.position.z = .1;
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.0001, 25 )
+camera.position.z = .1
 
-scene.background = new THREE.Color(0x1d2626)
+scene.background = new THREE.Color(0xffffff)
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer()
 
-const material = new THREE.MeshStandardMaterial( { color: 0xffffff } );
+const controls = new OrbitControls( camera, renderer.domElement )
+controls.enableZoom = false
+controls.enablePan = false
 
-const controls = new OrbitControls( camera, renderer.domElement );
+var ambLight = new THREE.AmbientLight( 0x1b1b1b )
 
-var dirLight = new THREE.DirectionalLight( 0xffffff );
-dirLight.position.set( 0, 100, 1000 ).normalize();
-camera.add( dirLight );
+scene.add(ambLight)
+
+var dirLight = new THREE.DirectionalLight( 0xffffff )
+dirLight.position.set( 0, 0, .1 ).normalize()
+camera.add( dirLight )
 
 scene.add( camera )
 
-loader.load(
-    '/models/tetrahedron.obj',
-    object => {
-        object.traverse( function ( child ) {
-            if ( child instanceof THREE.Mesh ) {
-                child.material = material;
-            }
-        } );
-
-        scene.add( object );
-
-        document.body.appendChild( renderer.domElement );
+mtlLoader.load(
+    '/models/tetrahedron.mtl',
+    materials => {
+        objLoader.setMaterials(materials)
+        objLoader.load(
+            '/models/tetrahedron.obj',
+            tetrahedron => scene.add( tetrahedron ),
+            _ => {},
+            console.warn
+        )
     },
     _ => {},
     console.warn
-);
+)
 
 function animate() {
-    requestAnimationFrame( animate );
+    requestAnimationFrame( animate )
 
-    // required if controls.enableDamping or controls.autoRotate are set to true
-    controls.update();
-    renderer.render( scene, camera );
+    controls.update()
+    renderer.render( scene, camera )
 }
 
-renderer.setSize( window.innerWidth, window.innerHeight );
-animate();
+const container = document.getElementById("tetrahedron")
+renderer.setSize( container.getBoundingClientRect().width, container.getBoundingClientRect().width )
+container.appendChild( renderer.domElement )
+animate()
