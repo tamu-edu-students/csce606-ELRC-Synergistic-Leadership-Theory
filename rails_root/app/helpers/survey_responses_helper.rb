@@ -22,16 +22,18 @@ module SurveyResponsesHelper
   def average_of_teachers(survey_response)
     # returns the average score of the teachers
     @survey_responses = find_teachers(survey_response)
-    total_scores = Array.new(97, 0)
+    total_scores = Array.new(97, nil)
+
     n = @survey_responses.length
-    @survey_responses.each do |response|
-      response.answers.each do |ans|
-        total_scores[ans.question_id] += ans.choice
-      end
-    end
     return nil if n.zero?
 
-    total_scores.map { |score| (score.to_f / n) }
+    @survey_responses.each do |response|
+      response.answers.each do |ans|
+        total_scores[ans.question_id] = 0 if total_scores[ans.question_id].nil?
+        total_scores[ans.question_id] += ans.choice.to_f / n
+      end
+    end
+    total_scores
   end
 
   def find_superintendent(survey_response)

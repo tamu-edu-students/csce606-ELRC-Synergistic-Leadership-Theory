@@ -154,16 +154,92 @@ class SurveyResponsesController < ApplicationController
     @questions = @survey_response.questions
   end
 
+  # rubocop:disable Metrics/MethodLength
   def set_survey_sections
     logger.info '========== set_survey_sections triggered =========='
+    # puts(session.to_json)
+
+    # return if current_user_id.nil?
+    return respond_with_error 'invalid form' if invalid_form?
+
+    return return_to_root 'You are not logged in.' if current_user_id.nil?
+    return return_to_root 'Your profile could not be found. Please complete your profile.' unless SurveyProfile.exists?(user_id: current_user_id)
+
+    @survey_profile = SurveyProfile.find_by(user_id: current_user_id)
+
+    # render based on role stored in session
+
+    if @survey_profile.role == 'Principal'
+
+      @sections = [
+        {
+          title: 'Part 1: Leadership Behavior - Management',
+          prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
+        },
+        {
+          title: 'Part 1: Leadership Behavior - Interpersonal',
+          prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
+        },
+        {
+          title: 'Part 2. External Forces',
+          prompt: 'To what extent do you believe your board or immediate superior agrees to the importance of the following?'
+        },
+        {
+          title: 'Part 3. Organizational Structure',
+          prompt: 'To what extent do you agree the following characteristics apply to your organization?'
+        },
+        {
+          title: 'Part 4. Values, Attitudes, and Beliefs',
+          prompt: 'To what extent do you agree the following characteristics apply to you as the leader?'
+        },
+        {
+          title: 'Part 4. Values, Attitudes, and Beliefs',
+          prompt: 'To what extent do you agree the following apply to your external community
+          (board, management, citizens)?'
+        }
+      ]
+    end
+
+    if @survey_profile.role == 'Teacher'
+
+      @sections = [
+        {
+          title: 'Part 1: Leadership Behavior - Management',
+          prompt: "To what extent do you agree the following behaviors reflect your principal's leadership behaviors?"
+        },
+        {
+          title: 'Part 1: Leadership Behavior - Interpersonal',
+          prompt: "To what extent do you agree the following behaviors reflect your principal's leadership behaviors?"
+        },
+        {
+          title: 'Part 2. External Forces',
+          prompt: 'To what extent do you believe your board or immediate superior agrees to the importance of the following?'
+        },
+        {
+          title: 'Part 3. Organizational Structure',
+          prompt: 'To what extent do you agree the following characteristics apply to your organization?'
+        },
+        {
+          title: 'Part 4. Values, Attitudes, and Beliefs',
+          prompt: 'To what extent do you agree the following characteristics apply to you as the leader?'
+        },
+        {
+          title: 'Part 4. Values, Attitudes, and Beliefs',
+          prompt: 'To what extent do you agree the following apply to your external community
+          (board, management, citizens)?'
+        }
+      ]
+    end
+    return unless @survey_profile.role == 'Superintendent'
+
     @sections = [
       {
         title: 'Part 1: Leadership Behavior - Management',
-        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
+        prompt: "To what extent do you agree the following behaviors reflect your principal's leadership behaviors?"
       },
       {
         title: 'Part 1: Leadership Behavior - Interpersonal',
-        prompt: 'To what extent do you agree the following behaviors reflect your personal leadership behaviors?'
+        prompt: "To what extent do you agree the following behaviors reflect your principal's leadership behaviors?"
       },
       {
         title: 'Part 2. External Forces',
@@ -184,6 +260,7 @@ class SurveyResponsesController < ApplicationController
       }
     ]
   end
+  # rubocop:enable Metrics/MethodLength
 
   def invalid_form?
     return false if survey_response_params.nil?
