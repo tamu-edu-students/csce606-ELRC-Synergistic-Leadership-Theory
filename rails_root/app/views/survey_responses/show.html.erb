@@ -123,7 +123,7 @@
                       <% if teacher_average[ans.question_id] == nil %>
                         <td></td>
                       <% else %>
-                        <%= teacher_choice = (teacher_average[ans.question.id] || 0).round() %>
+                        <% teacher_choice = (teacher_average[ans.question.id] || 0).round() %>
                         <td class="<%= colors[(teacher_choice - ans.choice).abs] %>"><%= choices[teacher_choice] %></td>
                       <% end %>
                     <% end %>
