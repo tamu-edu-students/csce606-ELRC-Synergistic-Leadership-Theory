@@ -29,7 +29,7 @@ module SurveyResponsesHelper
     n = teacher_responses.length
     teacher_responses.each do |res|
       res.answers.each do |ans|
-        total_scores[ans.question_id] = (total_scores[ans.question_id] || 0) + ans.choice.to_f / n
+        total_scores[ans.question_id] = (total_scores[ans.question_id] || 0) + (ans.choice.to_f / n)
       end
     end
 
@@ -37,13 +37,13 @@ module SurveyResponsesHelper
   end
 
   def find_superintendent(response)
-    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: {role: 'Superintendent'}).first!
+    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: { role: 'Superintendent' }).first!
   rescue StandardError
     nil
   end
 
   def find_teachers(response)
-    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: {role: 'Teacher'})
+    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: { role: 'Teacher' })
   rescue StandardError
     nil
   end
