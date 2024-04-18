@@ -29,9 +29,9 @@
 
 </style>
 
-<% @superintendent_response = find_superintendent(@survey_response)%>
-<% @average_of_teachers = average_of_teachers(@survey_response)%>
-<% combined_view = @survey_response.profile.role == 'Principal' && !(@average_of_teachers.nil? && @superintendent_response.nil?) %>
+<% superintendent_response = find_superintendent(@survey_response)%>
+<% teacher_average = average_of_teachers(@survey_response)%>
+<% combined_view = @survey_response.profile.role == 'Principal' && !(teacher_average.nil? && superintendent_response.nil?) %>
 
 <div class="container-lg">
   <h1 class="text-center">Your leadership type is: (tbd)</h1>
@@ -53,6 +53,8 @@
   </div>
   <hr>
   <% choices = ["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"] %>
+  <% colors = ["table-success", "table-warning", "table-warning", "table-danger"] %>
+
   <% sections = @survey_response.questions.map(&:section).uniq %>
   <% answers = sections.map {|section| [section, @survey_response.answers.select {|ans| ans.question.section == section}]}.to_h%>
   <div class="row d-flex justify-content-center">
@@ -84,11 +86,11 @@
               <tr>
                 <th>Question</th>
                 <% if combined_view %>
-                  <% if !@superintendent_response.nil? %>
+                  <% if !superintendent_response.nil? %>
                     <th>Superintendent</th>
                   <%end %>
                   <th>Your Response</th>
-                  <% if !@average_of_teachers.nil? %>
+                  <% if !teacher_average.nil? %>
                     <th>Teachers</th>
                   <%end%>
                 <% else %>
@@ -112,14 +114,19 @@
                   <td><%= ans.question.text %></td>
 
                   <% if combined_view %>
-                    <%if !@superintendent_response.nil?%>
-                      <% @superintendent_choice = get_answer(@superintendent_response, ans.question.id)%>
-                      <td><%=  @superintendent_choice.nil? ? "": choices[@superintendent_choice] %></td>
-                    <%end%>
+                    <% unless superintendent_response.nil? %>
+                      <% superintendent_choice = get_answer(superintendent_response, ans.question.id)%>
+                      <td class="<%= colors[(superintendent_choice - ans.choice).abs] %>"><%=  superintendent_choice.nil? ? "": choices[superintendent_choice] %></td>
+                    <% end %>
                     <td><%= choices[ans.choice] %></td>
-                    <%if !@average_of_teachers.nil?%>
-                      <td><%= @average_of_teachers[ans.question.id].nil? ?  "": choices[@average_of_teachers[ans.question.id].round()]%></td>
-                    <%end%>
+                    <% unless teacher_average.nil?%>
+                      <% if teacher_average[ans.question_id] == nil %>
+                        <td></td>
+                      <% else %>
+                        <%= teacher_choice = (teacher_average[ans.question.id] || 0).round() %>
+                        <td class="<%= colors[(teacher_choice - ans.choice).abs] %>"><%= choices[teacher_choice] %></td>
+                      <% end %>
+                    <% end %>
                   <% else %>
                     <td><%= choices[ans.choice] %></td>
                     <% 4.times do |i| %>
