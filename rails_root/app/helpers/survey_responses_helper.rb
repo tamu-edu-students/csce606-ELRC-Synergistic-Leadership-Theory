@@ -19,41 +19,37 @@ module SurveyResponsesHelper
     survey_response.profile_id
   end
 
-  def average_of_teachers(survey_response)
+  def average_of_teachers(response)
     # returns the average score of the teachers
-    @survey_responses = find_teachers(survey_response)
+    teacher_responses = find_teachers(response)
     total_scores = Array.new(97, nil)
 
-    n = @survey_responses.length
-    return nil if n.zero?
+    return nil if teacher_responses.empty?
 
-    @survey_responses.each do |response|
-      response.answers.each do |ans|
-        total_scores[ans.question_id] = 0 if total_scores[ans.question_id].nil?
-        total_scores[ans.question_id] += ans.choice.to_f / n
+    n = teacher_responses.length
+    teacher_responses.each do |res|
+      res.answers.each do |ans|
+        total_scores[ans.question_id] = (total_scores[ans.question_id] || 0) + ans.choice.to_f / n
       end
     end
+
     total_scores
   end
 
-  def find_superintendent(survey_response)
-    @survey_profiles = SurveyProfile.where(role: 'Superintendent')
-    @survey_profiles_id = @survey_profiles.map(&:id)
-    @survey_responses = SurveyResponse.find_by(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
+  def find_superintendent(response)
+    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: {role: 'Superintendent'}).first!
+  rescue StandardError
+    nil
   end
 
-  def find_teachers(survey_response)
-    @survey_profiles = SurveyProfile.where(role: 'Teacher')
-    @survey_profiles_id = @survey_profiles.map(&:id)
-    @survey_responses = SurveyResponse.where(share_code: survey_response.share_code, profile_id: @survey_profiles_id)
-
-    @survey_responses
+  def find_teachers(response)
+    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: {role: 'Teacher'})
+  rescue StandardError
+    nil
   end
 
-  def get_answer(survey_response, question_id)
-    @survey_answer = survey_response.answers.where(question_id:).first!
-
-    @survey_answer.choice
+  def get_answer(response, question_id)
+    response.answers.where(question_id:).first!.choice
   rescue StandardError
     nil
   end
