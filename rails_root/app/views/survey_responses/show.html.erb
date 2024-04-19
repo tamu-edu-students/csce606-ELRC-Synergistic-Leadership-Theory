@@ -37,7 +37,7 @@
   <h1 class="text-center">Your leadership type is: (tbd)</h1>
   <% if combined_view %>
   <div class="row d-flex justify-content-center">
-    <div id="tetrahedron" class="col-6" data-tetrahedron-type="">
+    <div id="superintendent-tetrahedron" class="col-6" data-tetrahedron-type="">
     </div>
   </div>
   <% end %>
@@ -245,6 +245,14 @@
 
 <% if combined_view %>
 <script type="module">
-  import "tetrahedron"
+  import { loadModel } from  "tetrahedron"
+
+  <% unless superintendent_response == nil %>
+  loadModel("superintendent-tetrahedron", "<%= get_part_difference(@survey_response, superintendent_response).join('_') %>")
+  <% end %>
+
+  // <% unless teacher_average == nil %>
+  // loadModel("<%= get_part_difference(@survey_response, superintendent_response).join('_') %>")
+  // <% end %>
 </script>
 <% end %>

@@ -3,54 +3,71 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
-const objLoader = new OBJLoader()
-const mtlLoader = new MTLLoader()
+function loadModel(containerID, tetrahedronType) {
+    if (!(typeof tetrahedronType === 'string' || tetrahedronType instanceof String))
+        return
 
-const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.0001, 25 )
-camera.position.z = .1
+    const container = document.getElementById(containerID)
+    const fileStem = `/models/${tetrahedronType}_tetrahedron`
 
-scene.background = new THREE.Color(0xffffff)
+    const objLoader = new OBJLoader()
+    const mtlLoader = new MTLLoader()
 
-const renderer = new THREE.WebGLRenderer()
+    const renderer = new THREE.WebGLRenderer()
+    container.appendChild( renderer.domElement )
+    renderer.setSize( container.getBoundingClientRect().width, container.getBoundingClientRect().width )
 
-const controls = new OrbitControls( camera, renderer.domElement )
-controls.enableZoom = false
-controls.enablePan = false
+    const scene = new THREE.Scene()
+    scene.background = new THREE.Color(0xffffff)
 
-var ambLight = new THREE.AmbientLight( 0x1b1b1b )
+    const camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 20 )
+    const controls = new OrbitControls( camera, renderer.domElement )
 
-scene.add(ambLight)
+    camera.position.z = 1
+    controls.enableZoom = false
+    controls.enablePan = false
 
-var dirLight = new THREE.DirectionalLight( 0xffffff )
-dirLight.position.set( 0, 0, .1 ).normalize()
-camera.add( dirLight )
+    // var ambLight = new THREE.AmbientLight( 0xffffff )
+    // scene.add(ambLight)
 
-scene.add( camera )
+    var dirLight = new THREE.DirectionalLight( 0xffffff  )
+    dirLight.position.set( 0, 2, 10 ).normalize()
+    camera.add( dirLight )
 
-mtlLoader.load(
-    '/models/tetrahedron.mtl',
-    materials => {
-        objLoader.setMaterials(materials)
-        objLoader.load(
-            '/models/tetrahedron.obj',
-            tetrahedron => scene.add( tetrahedron ),
-            _ => {},
-            console.warn
-        )
-    },
-    _ => {},
-    console.warn
-)
+    scene.add( camera )
 
-function animate() {
-    requestAnimationFrame( animate )
+    mtlLoader.load(
+        fileStem + '.mtl',
+        materials => {
+            objLoader.setMaterials(materials)
+            objLoader.load(
+                fileStem + '.obj',
+                tetrahedron => {
+                    // FIXME: Adjust materials in MTL instead of programmatically
+                    for (const material of Object.values(materials.materials))
+                        material.shininess = 125
 
-    controls.update()
-    renderer.render( scene, camera )
+                    materials.materials.orange.color = new THREE.Color(0xFF4F00)
+
+                    tetrahedron.scale.setScalar(8)
+                    scene.add( tetrahedron )
+                },
+                _ => console.log('loaded obj'),
+                console.warn
+            )
+        },
+        _ => console.log('loaded mtl'),
+        console.warn
+    )
+
+    function animate() {
+        requestAnimationFrame( animate )
+
+        controls.update()
+        renderer.render( scene, camera )
+    }
+
+    animate()
 }
 
-const container = document.getElementById("tetrahedron")
-renderer.setSize( container.getBoundingClientRect().width, container.getBoundingClientRect().width )
-container.appendChild( renderer.domElement )
-animate()
+export { loadModel }
