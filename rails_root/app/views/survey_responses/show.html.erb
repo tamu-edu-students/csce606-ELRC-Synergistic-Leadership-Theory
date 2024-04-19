@@ -53,14 +53,20 @@
   <% unless teacher_average.nil? %>
   <% teacher_alignment = get_teacher_part_difference(@survey_response) %>
   <% end %>
+
   <div class="row d-flex justify-content-center">
     <div class="col-8">
       <table class="table">
       <thead>
         <tr>
           <th>Value</th>
+          <% unless superintendent_response.nil? %>
           <th>Superintendent</th>
+          <% end %>
+
+          <% unless teacher_average.nil? %>
           <th>Teachers</th>
+          <% end %>
         </tr>
       </thead>
       <tbody>
@@ -88,6 +94,12 @@
   </div>
   <% else %>
   <h1 class="text-center">Synergistic Leadership Theory</h1>
+
+  <% if @survey_response.profile.role == 'Principal' %>
+  <div class="alert alert-info" role="alert">
+    For analysis of your school's synergism, create and send an invitation.
+  </div>
+  <% end %>
   <% end %>
   <div class="row d-flex justify-content-center">
     <div class="col-8">
