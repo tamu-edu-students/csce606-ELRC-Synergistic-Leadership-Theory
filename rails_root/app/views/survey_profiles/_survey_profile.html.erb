@@ -1,28 +1,32 @@
-<div id="<%= dom_id survey_profile %>">
+<div class="row d-flex" id="<%= dom_id survey_profile %>">
+  <div class="col-6">
+    <table class="table" style="--bs-border-width: 0">
+      <tbody>
+        <tr>
+          <td style="width: 25%"><strong style="text-transform: uppercase">First Name</strong></td>
+          <td><%= survey_profile.first_name %></td>
+        </tr>
 
-  <p>
-    <strong>First name:</strong>
-    <%= survey_profile.first_name %>
-  </p>
+        <tr>
+          <td style="width: 25%"><strong style="text-transform: uppercase">Last Name</strong></td>
+          <td><%= survey_profile.last_name %></td>
+        </tr>
 
-  <p>
-    <strong>Last name:</strong>
-    <%= survey_profile.last_name %>
-  </p>
+        <tr>
+          <td style="width: 25%"><strong style="text-transform: uppercase">Campus</strong></td>
+          <td><%= survey_profile.campus_name %></td>
+        </tr>
 
-  <p>
-    <strong>Campus name:</strong>
-    <%= survey_profile.campus_name %>
-  </p>
+        <tr>
+          <td style="width: 25%"><strong style="text-transform: uppercase">District</strong></td>
+          <td><%= survey_profile.district_name %></td>
+        </tr>
 
-  <p>
-    <strong>District name:</strong>
-    <%= survey_profile.district_name %>
-  </p>
-
-  <p>
-    <strong>Role:</strong>
-    <%= survey_profile.role %>
-  </p>
-
+        <tr>
+          <td style="width: 25%"><strong style="text-transform: uppercase">Role</strong></td>
+          <td><%= survey_profile.role %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
