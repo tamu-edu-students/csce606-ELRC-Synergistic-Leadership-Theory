@@ -1,38 +1,38 @@
-<%= form_with(model: survey_profile) do |form| %>
-  <% if survey_profile.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(survey_profile.errors.count, "error") %> prohibited this survey_profile from being saved:</h2>
-      <ul>
-        <% survey_profile.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<%= form_with(model: survey_profile, html: {class: "col-4 offset-4"}) do |form| %>
+  <div class="row d-flex justify-content-center">
+    <% if survey_profile.errors.any? %>
+      <div style="color: red">
+        <h2><%= pluralize(survey_profile.errors.count, "error") %> prohibited this survey_profile from being saved:</h2>
+        <ul>
+          <% survey_profile.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  
+    <div class="mb-3">
+      <%= form.label :first_name, style: "display: block;text-transform: uppercase;" %>
+      <%= form.text_field :first_name, class: "form-control" %>
     </div>
-  <% end %>
- 
-  <div>
-    <%= form.label :first_name, style: "display: block" %>
-    <%= form.text_field :first_name %>
-  </div>
-  <div>
-    <%= form.label :last_name, style: "display: block" %>
-    <%= form.text_field :last_name %>
-  </div>
-  <div>
-    <%= form.label :campus_name, style: "display: block" %>
-    <%= form.text_field :campus_name %>
-  </div>
-  <div>
-    <%= form.label :district_name, style: "display: block" %>
-    <%= form.text_field :district_name %>
-  </div>
-  <div>
-    <%= form.label :role, style: "display: block" %>
-    <%= form.select :role,['Principal', 'Teacher', 'Superintendent'],{prompt: 'Select a role'}, style: "display: block" %>
-  </div>
-  <div>
-      <%= form.label :submit, style: "display: block" %>
-
-    <%= form.submit %>
+    <div class="mb-3">
+      <%= form.label :last_name, style: "display: block;text-transform: uppercase;" %>
+      <%= form.text_field :last_name, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :campus_name, style: "display: block;text-transform: uppercase;" %>
+      <%= form.text_field :campus_name, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :district_name, style: "display: block;text-transform: uppercase;" %>
+      <%= form.text_field :district_name, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :role, style: "display: block;text-transform: uppercase;" %>
+      <%= form.select :role,['Principal', 'Teacher', 'Superintendent'], {prompt: 'Select a role'}, class: "form-select" %>
+    </div>
+    <div class="mb-3 text-center">
+      <%= form.submit class: "btn btn-outline-primary" %>
+    </div>
   </div>
 <% end %>

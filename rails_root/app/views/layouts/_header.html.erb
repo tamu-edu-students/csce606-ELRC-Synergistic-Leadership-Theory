@@ -1,24 +1,41 @@
-<header id="main-header" class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-  <%= link_to "School of Education & Human Development", 'https://education.tamu.edu/', class: "d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none" %>
-  <ul class="nav">
-    <li class="nav-item">
-      <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}", aria: { current: "page" } %>
-    </li>
-    <li class="nav-item">
-      <%= link_to "About", about_path, class: "nav-link #{'active' if current_page?(about_path)}" %>
-    </li>
-    <li class="nav-item">
-      <%# <%= link_to "Survey Responses", survey_responses_path, class: "nav-link #{'active' if current_page?(survey_responses_path)}" %>
-    </li>
-    <li class="nav-item">
-      <%# <%= link_to "Survey Profiles", survey_profiles_path, class: "nav-link #{'active' if current_page?(survey_profiles_path)}" %>
-    </li>
-    <li class="nav-item">
-      <% if session[:userinfo] %>
-        <%= button_to 'Logout', root_url + '/auth/logout', method: :get, data: { turbo: false }, class: "nav-link" %>
-      <% else %>
-        <%= button_to 'Login', '/auth/auth0', method: :post, data: { turbo: false }, class: "nav-link" %>
-      <% end %>
-    </li>
-  </ul>
-</header>
+<nav id="main-header" class="navbar navbar-expand-lg navbar-light border-bottom" style="margin-bottom: 1rem;">
+  <%# <%= link_to "School of Education & Human Development", 'https://education.tamu.edu/', class: "d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none" %>
+  <div class="container-fluid">
+    <div class="navbar-brand">
+      <div class="c-logo-lockup c-logo-lockup_horizontal">
+        <div class="c-logo-lockup-logo">
+          <a href="https://www.tamu.edu/" aria-label="visit tamu.edu"><img src="https://dmc-assets.tamu.edu/pattern-library/logos/TAM-LogoBox.svg" alt="Texas A&amp;M University logo" /></a>
+        </div>
+        <div class="c-logo-lockup-wordmark">
+          <a href="https://education.tamu.edu/">
+            <p class="c-logo-lockup-wordmark-large">School of Education &amp; Development</p>
+          </a>
+          <a href="https://elrc.tamu.edu">
+            <p class="c-logo-lockup-wordmark-small">Education Leadership Research Center</p>
+          </a>
+        </div>
+      </div>
+    </div>
+    <ul class="nav">
+      <li class="nav-item">
+        <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}", aria: { current: "page" } %>
+      </li>
+      <li class="nav-item">
+        <%= link_to "About", about_path, class: "nav-link #{'active' if current_page?(about_path)}" %>
+      </li>
+      <li class="nav-item">
+        <%# <%= link_to "Survey Responses", survey_responses_path, class: "nav-link #{'active' if current_page?(survey_responses_path)}" %>
+      </li>
+      <li class="nav-item">
+        <%# <%= link_to "Survey Profiles", survey_profiles_path, class: "nav-link #{'active' if current_page?(survey_profiles_path)}" %>
+      </li>
+      <li class="nav-item">
+        <% if session[:userinfo] %>
+          <%= button_to 'Logout', root_url + '/auth/logout', method: :get, data: { turbo: false }, class: "nav-link" %>
+        <% else %>
+          <%= button_to 'Login', '/auth/auth0', method: :post, data: { turbo: false }, class: "nav-link" %>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</nav>

@@ -35,7 +35,7 @@ When('I click New survey response') do
 end
 
 Then('I can see profile form') do
-  expect(page).to have_content('Input user information')
+  expect(page).to have_button('Create Survey profile')
 end
 
 Then('I can see survey sections') do

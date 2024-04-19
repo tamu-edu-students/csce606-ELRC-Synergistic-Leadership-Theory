@@ -1,0 +1,56 @@
+/*-- Base logo lockup --*/
+.c-logo-lockup {
+  padding: 0rem;
+  max-width: 400px;
+}
+.c-logo-lockup a {
+  text-decoration: none;
+  color: var(--color-black);
+}
+.c-logo-lockup a:hover {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.c-logo-lockup .c-logo-lockup-logo {
+  padding: 0 0.7rem;
+  display: flex;
+}
+.c-logo-lockup .c-logo-lockup-logo img {
+  width: 64px;
+  height: 64px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.c-logo-lockup .c-logo-lockup-wordmark {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+.c-logo-lockup .c-logo-lockup-wordmark .c-logo-lockup-wordmark-small {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.c-logo-lockup .c-logo-lockup-wordmark .c-logo-lockup-wordmark-large {
+  font-size: 1.2rem;
+  letter-spacing: 0.5px;
+}
+
+/*-- Logo Lockup Horizontal --*/
+.c-logo-lockup_horizontal {
+  display: flex;
+  align-items: center;
+}
+.c-logo-lockup_horizontal .c-logo-lockup-wordmark {
+  display: flex;
+  flex-direction: column;
+}
+.c-logo-lockup_horizontal .c-logo-lockup-wordmark-small {
+  display: block;
+  margin: 0;
+}
+.c-logo-lockup_horizontal .c-logo-lockup-wordmark-large {
+  line-height: 1.5rem;
+  margin: 0px 0px;
+  letter-spacing: 0.25px;
+}

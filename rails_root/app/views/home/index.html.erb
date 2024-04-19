@@ -3,13 +3,13 @@
   <h1 class="visually-hidden">Home</h1>
   <% if session[:userinfo].present? %>
     <h1>ORGANIZATIONAL AND LEADERSHIP EFFECTIVENESS INVENTORY</h1>
-     <h2>  Welcome <%= session[:userinfo]['name'] %></h2>
-    <br>
-    <h2>Your Profile</h2>
+    <h2>Welcome <%= session[:userinfo]['name'] %></h2>
+    <hr>
+    <h3>Profile</h3>
     <% if @survey_profile.present? %>
-      <%= render @survey_profile%>
+      <%= render @survey_profile %>
     <%end%>
-    <h2>Your Survey Responses</h2>
+    <h3>Survey Responses</h3>
     <div class="table-responsive">
       <table class="table">
         <thead>
@@ -37,7 +37,7 @@
     </div>
     <%= link_to "Take Survey", new_survey_response_path, class: "btn btn-outline-primary"%>
   <% else%>
-    <h1>Welcome to Our Rails App</h1>
+    <h1>Welcome.</h1>
     <h1>You are not logged in. Please login.</h1>
   <% end %>
 </main>
