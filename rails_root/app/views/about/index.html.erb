@@ -1,4 +1,4 @@
-<div>
+<div class="col-8 offset-2">
   <h1>ABOUT SYNERGISTIC LEADERSHIP THEORY</h1>
   <div>
     <div>
@@ -20,9 +20,18 @@
     </div>
     <div>
       <h2>The Tetrahedron Model</h2>
+      <div class="row d-flex justify-content-center">
+        <div class="col-6" id="tetrahedron">
+        </div>
+      </div>
       <p>The distinct feature of the Synergistic Leadership Theory is its depiction through a tetrahedron model, offering a visual framework to analyze the theory's four foundational elements and their interconnections. The tetrahedron model visually represents the SLT's four factors as vertices, emphasizing their equal importance and interactivity. The model's invariance, meaning it retains its shape regardless of which vertex is the base, symbolizes the non-hierarchical nature of the factors. The six edges represent the non-linear relationships between the factors, inferring dynamic interactions rather than linear cause-effect relationships. This model underscores the complex, interconnected nature of leadership within an organization, highlighting that changes in one factor can significantly influence the others.</p>
       <p>In addition to demonstrating the relation between the four factors in the theory, the tetrahedron serves as a convenient tool for visualizing the evaluation of a leader's effectiveness, as assessed by the Organizational Leadership Effectiveness Inventory (OLEI). The tetrahedron model is used to visualize OLEI results, showcasing the balance (alignment) or imbalance (misalignment) between these factors. When factors align, the tetrahedron's edges are straight, signifying strong, harmonious interactions, suggesting effective leadership. Conversely, misalignment causes distortions in the tetrahedron's shape, indicating areas of tension or conflict that could undermine leadership effectiveness. This visualization aids in diagnosing organizational leadership dynamics, facilitating targeted improvements by identifying which factors or interactions need attention.</p>
-      <%= image_tag("https://upload.wikimedia.org/wikipedia/commons/7/70/Tetrahedron.gif", style: "width:400px;" ) %>
+      
     </div>
   </div>
 </div>
+<script type="module">
+  import { loadModel } from  "tetrahedron"
+
+  loadModel("tetrahedron", "0_0_0_0")
+</script>
