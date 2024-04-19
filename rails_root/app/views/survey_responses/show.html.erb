@@ -29,23 +29,71 @@
 
 </style>
 
+<%# FIXME: A lot of the logic in this view should not be done in here %>
+
 <% superintendent_response = find_superintendent(@survey_response)%>
 <% teacher_average = average_of_teachers(@survey_response)%>
 <% combined_view = @survey_response.profile.role == 'Principal' && !(teacher_average.nil? && superintendent_response.nil?) %>
+<% colors = ["table-success", "table-warning", "table-warning", "table-danger"] %>
 
 <div class="container-lg">
-  <h1 class="text-center">Your leadership type is: (tbd)</h1>
   <% if combined_view %>
+  <h1 class="text-center">Your Represented Synergy</h1>
   <div class="row d-flex justify-content-center">
-    <div id="superintendent-tetrahedron" class="col-6" data-tetrahedron-type="">
+    <div id="superintendent-tetrahedron" class="col-4"></div>
+    <div id="teacher-tetrahedron" class="col-4"></div>
+  </div>
+  <% difference_text = ["Synergized", "Slightly Misaligned", "Misaligned", "Severely Misaligned"] %>
+  <% value_text = ["Leadership", "External Forces", "Organizational Structure", "Values, Attributes, and Beliefs"] %>
+
+  <% unless superintendent_response.nil? %>
+  <% superintendent_alignment = get_part_difference(@survey_response, superintendent_response) %>
+  <% end %>
+
+  <% unless teacher_average.nil? %>
+  <% teacher_alignment = get_teacher_part_difference(@survey_response) %>
+  <% end %>
+  <div class="row d-flex justify-content-center">
+    <div class="col-8">
+      <table class="table">
+      <thead>
+        <tr>
+          <th>Value</th>
+          <th>Superintendent</th>
+          <th>Teachers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% value_text.each_with_index do |value, idx| %>
+          <tr>
+            <td><%= value %></td>
+            <% unless superintendent_response.nil? %>
+            <% synergism = superintendent_alignment[idx] %>
+            <td class="<%= colors[synergism] %>">
+              <%= difference_text[synergism] %>
+            </td>
+            <% end %>
+
+            <% unless teacher_average.nil? %>
+            <% synergism = teacher_alignment[idx] %>
+            <td class="<%= colors[synergism] %>">
+              <%= difference_text[synergism] %>
+            </td>
+            <% end %>
+          </tr>
+          <% end %>
+      </tbody>
+    </table>
     </div>
   </div>
   <% end %>
   <div class="row d-flex justify-content-center">
     <div class="col-8">
+      <% if combined_view %>
       <h3>
         This tetrahedron represents the alignment of the four factors based on your leadership behaviors to align the four factors.
       </h3>
+      <% end %>
       <p style="text-align:justify;">
         The purpose of this qualitative study was to apply the Synergistic Leadership Theory (SLT) to the leadership experiences of five female superintendents leading successful school districts. The SLT is an interactive theory, which includes female experiences, but it applies to men and women. It provides a framework for leaders to align four factors that impact successful leadership: (a) attitudes, values, and beliefs; (b) leadership behaviors; (c) organizational structure; and (d) external forces. Four research questions guided my study: (a) What are the leadership behaviors of the superintendents? (b) Is the organizational structure of each district aligned with the superintendent’s leadership behaviors? (c) How do the leadership behaviors of the superintendent impact the relations between the district and the external forces? (d) Are the attitudes, values, and beliefs of the superintendent aligned to the attitudes, values, and beliefs of the school board member and the administrative team member
       </p>
@@ -53,7 +101,6 @@
   </div>
   <hr>
   <% choices = ["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"] %>
-  <% colors = ["table-success", "table-warning", "table-warning", "table-danger"] %>
 
   <% sections = @survey_response.questions.map(&:section).uniq %>
   <% answers = sections.map {|section| [section, @survey_response.answers.select {|ans| ans.question.section == section}]}.to_h%>
@@ -247,12 +294,12 @@
 <script type="module">
   import { loadModel } from  "tetrahedron"
 
-  <% unless superintendent_response == nil %>
-  loadModel("superintendent-tetrahedron", "<%= get_part_difference(@survey_response, superintendent_response).join('_') %>")
+  <% unless superintendent_response.nil? %>
+  loadModel("superintendent-tetrahedron", "<%= superintendent_alignment.join('_') %>")
   <% end %>
 
-  // <% unless teacher_average == nil %>
-  // loadModel("<%= get_part_difference(@survey_response, superintendent_response).join('_') %>")
-  // <% end %>
+  <% unless teacher_average.nil? %>
+  loadModel("teacher-tetrahedron", "<%= teacher_alignment.join('_') %>")
+  <% end %>
 </script>
 <% end %>
