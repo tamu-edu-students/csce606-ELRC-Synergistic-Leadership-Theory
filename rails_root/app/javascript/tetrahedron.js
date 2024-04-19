@@ -1,16 +1,14 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 export function loadModel(containerID, tetrahedronType) {
-	if (!(typeof tetrahedronType === 'string' || tetrahedronType instanceof String)) {
+	if (!(typeof tetrahedronType === 'string' || tetrahedronType instanceof String))
 		return;
-	}
 
 	const container = document.getElementById(containerID);
 
-	let gui, pose1, pose2, pose3, pose4, rest;
+	let pose1, pose2, pose3, pose4, rest;
 	let pose1Copy, pose2Copy, pose3Copy, pose4Copy, restCopy;
 	let camera, scene, renderer, controls;
 	let weights;
@@ -84,12 +82,15 @@ export function loadModel(containerID, tetrahedronType) {
 
 		controls = new OrbitControls(camera, renderer.domElement);
 
+        controls.enableZoom = false
+        controls.enablePan = false
+
 		const loader = new GLTFLoader();
 
 		loader.load(
 			'/scene/poses.glb',
-			function (gltf) {
-				gltf.scene.traverse(function (child) {
+			gltf => {
+				gltf.scene.traverse(child => {
 					if (child.isMesh) {
 						child.geometry.computeVertexNormals();
 
@@ -130,14 +131,10 @@ export function loadModel(containerID, tetrahedronType) {
 				scene.add(gltf.scene);
 				camera.position.z = 5;
 
-				updateBlendShapes();
+				updateBlendShapes(tetrahedronType.split('_').map(x => parseFloat(x) / 3.));
 			},
-			function (xhr) {
-				// console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-			},
-			function (error) {
-				console.log('An error happened', error);
-			}
+			_ => {},
+            console.error
 		);
 
 		window.addEventListener('resize', onWindowResize, false);
@@ -154,9 +151,6 @@ export function loadModel(containerID, tetrahedronType) {
 	}
 
 	function onWindowResize() {
-		// camera.aspect = window.innerWidth / window.innerHeight;
-		// camera.updateProjectionMatrix();
-		// renderer.setSize(window.innerWidth, window.innerHeight);
 		width = container.getBoundingClientRect().width
 		height = container.getBoundingClientRect().height
 
@@ -224,19 +218,12 @@ export function loadModel(containerID, tetrahedronType) {
 				}
 			}
 		}
+
 		pose1.geometry.attributes.position.needsUpdate = true;
 		pose2.geometry.attributes.position.needsUpdate = true;
 		pose3.geometry.attributes.position.needsUpdate = true;
 		pose4.geometry.attributes.position.needsUpdate = true;
 	}
-
-	gui = new GUI();
-	let beta = [0.01, 0.01, 0.01, 0.01];
-
-	gui.add(beta, 0, 0.01, 1).name('pose1').onChange(() => updateBlendShapes(beta));
-	gui.add(beta, 1, 0.01, 1).name('pose2').onChange(() => updateBlendShapes(beta));
-	gui.add(beta, 2, 0.01, 1).name('pose3').onChange(() => updateBlendShapes(beta));
-	gui.add(beta, 3, 0.01, 1).name('pose4').onChange(() => updateBlendShapes(beta));
 
 	init();
 }
