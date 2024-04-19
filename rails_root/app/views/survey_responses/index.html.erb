@@ -6,7 +6,7 @@
   <div class="col-8">
     <%= form_with url: survey_responses_path, method: :get do %>
       <div class="input-group">
-        <span class="input-group-text">Filter by Share Code</span>
+        <span class="input-group-text">Filter by Invite Token</span>
         <%= text_field_tag :query, params[:query],
           {
             class: 'form-control',
@@ -26,7 +26,7 @@
       <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Share code</th>
+        <th>Invite token</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -35,7 +35,7 @@
         <tr>
           <td><%= response.profile.user_id %></td>
           <td><%= response.profile.last_name %>, <%= response.profile.first_name %></td>
-          <td><%= response.share_code%></td>
+          <td><%= invite_token(response)%></td>
           <td><%= link_to "Show", response %></td>
         </tr>
       <% end %>

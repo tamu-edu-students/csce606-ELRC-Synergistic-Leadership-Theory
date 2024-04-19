@@ -16,7 +16,7 @@ Then('a survey profile is created for me as a principal') do
 end
 
 Then('I am logged in as a principal') do
-  expect(page).to have_content('John Doe - Welcome to Our Rails App')
+  expect(page).to have_content('Welcome John Doe')
   expect(page).to have_content('Role: Principal')
 end
 
@@ -44,7 +44,7 @@ Then('a survey profile is created for me as a teacher') do
 end
 
 Then('I am logged in as a teacher') do
-  expect(page).to have_content('John Doe - Welcome to Our Rails App')
+  expect(page).to have_content('Welcome John Doe')
   expect(page).to have_content('Role: Teacher')
 end
 
@@ -68,7 +68,7 @@ Then('a survey profile is created for me as a superintendent') do
 end
 
 Then('I am logged in as a superintendent') do
-  expect(page).to have_content('John Doe - Welcome to Our Rails App')
+  expect(page).to have_content('Welcome John Doe')
   expect(page).to have_content('Role: Superintendent')
 end
 

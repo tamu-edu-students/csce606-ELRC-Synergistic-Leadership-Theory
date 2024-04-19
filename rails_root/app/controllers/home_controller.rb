@@ -2,6 +2,8 @@
 
 # Controller for the home page
 class HomeController < ApplicationController
+
+  helper_method :invite_token
   def index
     return if session[:userinfo].nil?
 
@@ -31,5 +33,10 @@ class HomeController < ApplicationController
     parent_response = SurveyResponse.find(invitation.parent_response_id)
     profile = SurveyProfile.find(parent_response.profile_id) if parent_response
     "#{profile.first_name} #{profile.last_name}" if profile
+  end
+
+  def invite_token(response)
+    invitation = Invitation.find_by(response_id: response.id)
+    invitation ? invitation.token : 'N/A'
   end
 end
