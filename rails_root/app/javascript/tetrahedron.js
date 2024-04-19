@@ -56,7 +56,7 @@ export function loadModel(containerID, tetrahedronType) {
 
 	function loadScene() {
 		scene = new THREE.Scene();
-		scene.background = new THREE.Color(0xf0f0f0);
+		scene.background = new THREE.Color(0xffffff);
 
 		const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
 		hemiLight.position.set(0, 20, 0);
