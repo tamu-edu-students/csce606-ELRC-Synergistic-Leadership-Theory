@@ -56,4 +56,4 @@ Background: Questions and responses exist
         Given I have logged in with user "1"
         And I have created survey response for user "1"
         When I go to survey result page 1
-        Then the analysis results displays my leadership style
+        Then the analysis results displays the SLT summary

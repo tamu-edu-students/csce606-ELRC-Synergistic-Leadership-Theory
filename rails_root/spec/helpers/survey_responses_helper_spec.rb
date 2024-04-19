@@ -131,8 +131,24 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     end
   end
 
+  describe '#teacher_average_by_part' do
+    it 'returns a list of average responses for each question for each teacher survey response grouped by part' do
+      survey_answers
+
+      expected = [{ 1 => 2.0 }, {}, {}, {}]
+
+      expect(helper.teacher_average_by_part(survey_response)).to eq expected
+    end
+
+
+    it 'returns a list of empty hashes when response has no corresponding teachers' do
+      expected = [{}, {}, {}, {}]
+      expect(helper.teacher_average_by_part(survey_response)).to eq expected
+    end
+  end
+
   describe '#average_of_teachers' do
-    it 'returns a list of average scores of survey responses of teachers' do
+    it 'returns a list of average responses for each question for each teacher survey response' do
       # returns average score of the survey response answers
       survey_answers
       averages = Array.new(97, nil)
@@ -176,6 +192,28 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       expect(helper.get_answer(survey_response, 1)).to eq(nil)
     end
   end
+
+  describe '#get_part_difference' do
+    it 'returns a list the average difference in choices by part against the superintendent' do
+      survey_answers
+
+
+      expected = [0, 0, 0, 0]
+
+      other_response = helper.find_superintendent(survey_response)
+      expect(helper.get_part_difference(survey_response, other_response)).to eq expected
+    end
+  end
+
+  describe '#get_teacher_part_difference' do
+    it 'returns a list the average difference in choices by part against the average teacher' do
+      survey_answers
+
+      expected = [0, 0, 0, 0]
+      expect(helper.get_teacher_part_difference(survey_response)).to eq expected
+    end
+  end
 end
+
 
 # rubocop:enable Metrics/BlockLength

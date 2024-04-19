@@ -233,13 +233,11 @@
             edit_survey_response_path(@survey_response),
             class: "btn btn-outline-primary"
       	%>
-        <% if combined_view %>
         <%= button_tag "Create Invitation",
           data: { parent_survey_response_id: @survey_response.id },
           id: "invitation-button",
           class: "btn btn-outline-success"
         %>
-        <% end %>
         <%= button_to "Delete Response",
             @survey_response,
             method: :delete,
