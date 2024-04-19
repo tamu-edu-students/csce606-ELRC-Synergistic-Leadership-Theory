@@ -76,6 +76,7 @@ module SurveyResponsesHelper
     nil
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def get_teacher_part_difference(response)
     parts = [
       [0, 1],
@@ -131,4 +132,5 @@ module SurveyResponsesHelper
       end
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 end
