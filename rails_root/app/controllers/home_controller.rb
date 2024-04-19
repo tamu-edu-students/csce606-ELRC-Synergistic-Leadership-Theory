@@ -2,7 +2,6 @@
 
 # Controller for the home page
 class HomeController < ApplicationController
-
   helper_method :invite_token
   def index
     return if session[:userinfo].nil?

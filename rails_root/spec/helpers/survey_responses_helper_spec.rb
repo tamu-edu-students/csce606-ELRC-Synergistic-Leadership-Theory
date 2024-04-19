@@ -140,7 +140,6 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       expect(helper.teacher_average_by_part(survey_response)).to eq expected
     end
 
-
     it 'returns a list of empty hashes when response has no corresponding teachers' do
       expected = [{}, {}, {}, {}]
       expect(helper.teacher_average_by_part(survey_response)).to eq expected
@@ -197,7 +196,6 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     it 'returns a list the average difference in choices by part against the superintendent' do
       survey_answers
 
-
       expected = [0, 0, 0, 0]
 
       other_response = helper.find_superintendent(survey_response)
@@ -214,6 +212,5 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     end
   end
 end
-
 
 # rubocop:enable Metrics/BlockLength
