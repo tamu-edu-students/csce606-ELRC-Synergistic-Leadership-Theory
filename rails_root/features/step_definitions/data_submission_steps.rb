@@ -6,8 +6,8 @@ Then('the analysis results displays the correct values') do
   end
 end
 
-Then('the analysis results displays my leadership style') do
-  expect(page).to have_content('Your leadership type is:')
+Then('the analysis results displays the SLT summary') do
+  expect(page).to have_content('The purpose of this qualitative study was to apply the Synergistic Leadership Theory (SLT)')
 end
 
 Given('I have no survey profile') do
