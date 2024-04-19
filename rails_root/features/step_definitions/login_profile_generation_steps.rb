@@ -90,7 +90,7 @@ Given('I have created a survey profile previously') do
 end
 
 Then('I am greeted with a welcome message') do
-  expect(page).to have_content('John Doe - Welcome to Our Rails App')
+  expect(page).to have_content('Welcome John Doe')
 end
 
 Then('a survey profile is created with the proper information') do

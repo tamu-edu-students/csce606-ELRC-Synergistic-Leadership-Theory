@@ -111,4 +111,4 @@ Feature: Invitation
 		Then I "Xin Tong", the "Superintendent" from "Team ELRC" in "College Station" join
 		And I am on the survey responses page
 		Then I search any responses related to this invitation
-		Then I should see "3" responses
+		Then I should see "1" responses

@@ -5,6 +5,7 @@
 # rubocop:disable Metrics/ClassLength
 class SurveyResponsesController < ApplicationController
   include Pagination
+  helper_method :invite_token
 
   before_action :set_survey_data, only: %i[show edit update destroy]
   before_action :set_survey_sections, only: %i[show edit update survey new]
@@ -13,7 +14,7 @@ class SurveyResponsesController < ApplicationController
   def index
     if params[:query].present?
 
-      @survey_responses = SurveyResponse.where(share_code: params[:query])
+      @survey_responses = Invitation.where(token: params[:query]).map(&:response)
       flash[:warning] = "No survey responses found for share code #{params[:query]}" if @survey_responses.empty?
     else
       @survey_responses = SurveyResponse.all
@@ -188,7 +189,7 @@ class SurveyResponsesController < ApplicationController
         },
         {
           title: 'Part 4. Values, Attitudes, and Beliefs',
-          prompt: 'To what extent do you agree the following characteristics apply to you as the leader?'
+          prompt: 'To what extent do you agree the following characteristics apply to the principal?'
         },
         {
           title: 'Part 4. Values, Attitudes, and Beliefs',
@@ -211,7 +212,7 @@ class SurveyResponsesController < ApplicationController
         },
         {
           title: 'Part 2. External Forces',
-          prompt: 'To what extent do you believe your board or immediate superior agrees to the importance of the following?'
+          prompt: 'To what extent do you believe your principal agrees to the importance of the following?'
         },
         {
           title: 'Part 3. Organizational Structure',
@@ -219,7 +220,7 @@ class SurveyResponsesController < ApplicationController
         },
         {
           title: 'Part 4. Values, Attitudes, and Beliefs',
-          prompt: 'To what extent do you agree the following characteristics apply to you as the leader?'
+          prompt: 'To what extent do you agree the following characteristics apply to the principal?'
         },
         {
           title: 'Part 4. Values, Attitudes, and Beliefs',
@@ -241,7 +242,7 @@ class SurveyResponsesController < ApplicationController
       },
       {
         title: 'Part 2. External Forces',
-        prompt: 'To what extent do you believe your board or immediate superior agrees to the importance of the following?'
+        prompt: 'To what extent do you believe your principal agrees to the importance of the following?'
       },
       {
         title: 'Part 3. Organizational Structure',
@@ -249,7 +250,7 @@ class SurveyResponsesController < ApplicationController
       },
       {
         title: 'Part 4. Values, Attitudes, and Beliefs',
-        prompt: 'To what extent do you agree the following characteristics apply to you as the leader?'
+        prompt: 'To what extent do you agree the following characteristics apply to the principal?'
       },
       {
         title: 'Part 4. Values, Attitudes, and Beliefs',
@@ -288,6 +289,11 @@ class SurveyResponsesController < ApplicationController
     return unless params.include? :survey_response
 
     params.require(:survey_response).permit!
+  end
+
+  def invite_token(response)
+    invitation = Invitation.find_by(response_id: response.id)
+    invitation ? invitation.token : 'N/A'
   end
 end
 # rubocop:enable Metrics/ClassLength

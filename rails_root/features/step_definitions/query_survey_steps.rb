@@ -3,6 +3,9 @@
 Given('survey responses exist') do
   SurveyResponse.create!(profile_id: 1, share_code: '123')
   SurveyResponse.create!(profile_id: 2, share_code: '456')
+
+  @invitation = Invitation.create!(response_id: 1, parent_response_id: 1)
+  @invitation.update(token: '123')
 end
 
 Given('I am on the survey responses page') do
@@ -36,6 +39,7 @@ Then('I should be on the survey path') do
 end
 
 When('I enter a unique case number in the {string}') do |_string|
+  puts Invitation.all.to_json
   fill_in 'query', with: '123'
   click_button 'Search'
 end
@@ -43,6 +47,7 @@ end
 Then('I see a list of survey responses with that case number') do
   # expect there to be survey responses with the case number in the table of survey responses
   within 'table' do
+    # puts page.body
     expect(page).to have_content('123')
   end
 end
@@ -65,12 +70,13 @@ Then('a warning is flashed') do
 end
 
 When('I search any responses related to this invitation') do
-  fill_in 'query', with: @invitation.parent_response.share_code
+  puts @invitation.to_json
+  fill_in 'query', with: @invitation.token
   click_button 'Search'
 end
 
 Then('I should see "{int}" responses') do |num_responses|
   within 'table' do
-    expect(all('tr', text: @invitation.parent_response.share_code).count).to eq(num_responses)
+    expect(all('tr', text: @invitation.token).count).to eq(num_responses)
   end
 end
