@@ -19,6 +19,28 @@ module SurveyResponsesHelper
     survey_response.profile_id
   end
 
+  def teacher_average_by_part(response)
+    parts = [
+      [0, 1],
+      [2],
+      [3],
+      [4, 5]
+    ]
+
+    teacher_responses = find_teachers(response)
+
+    parts.map do |sections|
+      answers = {}
+      teacher_responses.each do |res|
+        res.answers.select { |ans| sections.include? ans.question.section }.each do |ans|
+          answers[ans.question_id] = (answers[ans.question_id] || 0) + ans.choice
+        end
+      end
+
+      answers.transform_values! { |v| v.to_f / teacher_responses.length }
+    end
+  end
+
   def average_of_teachers(response)
     # returns the average score of the teachers
     teacher_responses = find_teachers(response)
@@ -54,6 +76,35 @@ module SurveyResponsesHelper
     nil
   end
 
+  def get_teacher_part_difference(response)
+    parts = [
+      [0, 1],
+      [2],
+      [3],
+      [4, 5]
+    ]
+
+    teacher_avgs = teacher_average_by_part(response)
+
+    parts.each_with_index.map do |sections, idx|
+      answers = response.answers.select { |ans| sections.include? ans.question.section }
+      teacher_answers = teacher_avgs[idx]
+
+      if answers.empty?
+        0
+      else
+        difference = 0
+
+        answers.each do |x|
+          teacher_choice = teacher_answers[x.question_id]
+          difference += (x.choice - teacher_choice).abs unless teacher_choice.nil?
+        end
+
+        (difference.to_f / answers.length).round
+      end
+    end
+  end
+
   def get_part_difference(response, other)
     parts = [
       [0, 1],
@@ -69,8 +120,14 @@ module SurveyResponsesHelper
       if answers.empty?
         0
       else
-        difference = answers.each_with_index.map { |x, i| (x.choice - other_answers[i].choice).abs }.sum
-        difference / answers.length
+        difference = 0
+
+        answers.each do |x|
+          other_choice = other_answers.detect { |y| x.question_id == y.question_id }
+          difference += (x.choice - other_choice.choice).abs unless other_choice.nil?
+        end
+
+        (difference.to_f / answers.length).round
       end
     end
   end
