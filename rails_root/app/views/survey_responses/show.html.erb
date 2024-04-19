@@ -86,6 +86,8 @@
     </table>
     </div>
   </div>
+  <% else %>
+  <h1 class="text-center">Synergistic Leadership Theory</h1>
   <% end %>
   <div class="row d-flex justify-content-center">
     <div class="col-8">
@@ -231,11 +233,13 @@
             edit_survey_response_path(@survey_response),
             class: "btn btn-outline-primary"
       	%>
+        <% if combined_view %>
         <%= button_tag "Create Invitation",
-			data: { parent_survey_response_id: @survey_response.id },
-			id: "invitation-button",
-			class: "btn btn-outline-success"
-		%>
+          data: { parent_survey_response_id: @survey_response.id },
+          id: "invitation-button",
+          class: "btn btn-outline-success"
+        %>
+        <% end %>
         <%= button_to "Delete Response",
             @survey_response,
             method: :delete,
