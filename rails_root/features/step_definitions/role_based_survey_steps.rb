@@ -17,7 +17,7 @@ end
 
 Then('I am logged in as a principal') do
   expect(page).to have_content('Welcome John Doe')
-  expect(page).to have_content('Role: Principal')
+  expect(page).to have_content('Role Principal')
 end
 
 When('I navigate to the survey page') do
@@ -45,7 +45,7 @@ end
 
 Then('I am logged in as a teacher') do
   expect(page).to have_content('Welcome John Doe')
-  expect(page).to have_content('Role: Teacher')
+  expect(page).to have_content('Role Teacher')
 end
 
 Then('I should see the survey questions specific to the teacher') do
@@ -69,7 +69,7 @@ end
 
 Then('I am logged in as a superintendent') do
   expect(page).to have_content('Welcome John Doe')
-  expect(page).to have_content('Role: Superintendent')
+  expect(page).to have_content('Role Superintendent')
 end
 
 Then('I should see the survey questions specific to the superintendent') do
