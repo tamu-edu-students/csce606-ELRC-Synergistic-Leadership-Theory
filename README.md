@@ -50,7 +50,7 @@ bundle install
 
 ### Run locally
 
-Create master key
+Create master key (future improvement - remove master key from repo)
 
 ```
 cd rails_root
