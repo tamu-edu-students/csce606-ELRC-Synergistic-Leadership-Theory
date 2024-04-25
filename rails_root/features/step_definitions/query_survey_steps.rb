@@ -39,7 +39,7 @@ Then('I should be on the survey path') do
 end
 
 When('I enter a unique case number in the {string}') do |_string|
-  puts Invitation.all.to_json
+  # puts Invitation.all.to_json
   fill_in 'query', with: '123'
   click_button 'Search'
 end
@@ -70,7 +70,7 @@ Then('a warning is flashed') do
 end
 
 When('I search any responses related to this invitation') do
-  puts @invitation.to_json
+  # puts @invitation.to_json
   fill_in 'query', with: @invitation.token
   click_button 'Search'
 end
