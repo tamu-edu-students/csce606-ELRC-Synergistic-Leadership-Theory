@@ -2,6 +2,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
+import { GammaCorrectionShader } from 'three/addons/shaders/GammaCorrectionShader.js';
+
 export function loadModel(containerID, tetrahedronType) {
     if (!(typeof tetrahedronType === 'string' || tetrahedronType instanceof String))
         return;
@@ -13,6 +20,18 @@ export function loadModel(containerID, tetrahedronType) {
     let camera, scene, renderer, controls;
     let weights;
     let width, height;
+
+    let composer, effectFXAA, outlinePass;
+    let selectedObjects = [];
+
+    const params = {
+        edgeStrength: 3.0,
+        rotate: true,
+    };
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    const group = new THREE.Group();
 
     const material1 = getMaterial(0xF44336); // Red 500
     const material2 = getMaterial(0x2196F3); // Blue 500
@@ -61,6 +80,8 @@ export function loadModel(containerID, tetrahedronType) {
 
         controls.enableZoom = false
         controls.enablePan = false
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
 
         const loader = new GLTFLoader();
 
@@ -105,8 +126,8 @@ export function loadModel(containerID, tetrahedronType) {
                         }
                     }
                 });
-
-                scene.add(gltf.scene);
+                group.add(gltf.scene);
+                scene.add(group);
                 camera.position.z = 5;
 
                 updateBlendShapes(tetrahedronType.split('_').map(x => parseFloat(x) / 3.));
@@ -115,13 +136,85 @@ export function loadModel(containerID, tetrahedronType) {
             console.error
         );
 
+        // postprocessing 
+        composer = new EffectComposer(renderer);
+
+        const renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+
+        const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+        composer.addPass(gammaCorrectionPass);
+
+        outlinePass = new OutlinePass(new THREE.Vector2(width, width), scene, camera);
+        outlinePass.edgeStrength = params.edgeStrength;
+        outlinePass.overlayMaterial.blending = THREE.CustomBlending
+        composer.addPass(outlinePass);
+
+        effectFXAA = new ShaderPass(FXAAShader);
+        effectFXAA.uniforms['resolution'].value.set(1 / width, 1 / width);
+        composer.addPass(effectFXAA);
+
+        renderer.domElement.style.touchAction = 'none';
+        renderer.domElement.addEventListener('pointermove', onPointerMove);
+
+        function onPointerMove(event) {
+            if (event.isPrimary === false) return;
+
+            mouse.x = (event.clientX / width) * 2 - 1;
+            mouse.y = - (event.clientY / width) * 2 + 1;
+
+            checkIntersection();
+        }
+
+        function addSelectedObject(object) {
+            selectedObjects = [];
+            selectedObjects.push(object);
+        }
+
+        function checkIntersection() {
+            raycaster.setFromCamera(mouse, camera);
+
+            const intersects = raycaster.intersectObject(scene, true);
+
+            if (intersects.length > 0) {
+                const selectedObject = intersects[0].object;
+                addSelectedObject(selectedObject);
+                outlinePass.selectedObjects = selectedObjects;
+
+                var poseColor = 0xffffff;
+                if (selectedObject === pose1) {
+                    poseColor = 0xF44336;
+                } else if (selectedObject === pose2) {
+                    poseColor = 0x2196F3;
+                } else if (selectedObject === pose3) {
+                    poseColor = 0x4CAF50;
+                } else if (selectedObject === pose4) {
+                    poseColor = 0xFFEB3B;
+                }
+                outlinePass.visibleEdgeColor.set(poseColor);
+                outlinePass.hiddenEdgeColor.set(poseColor);
+
+                renderer.domElement.style.cursor = 'pointer';
+            } else {
+                outlinePass.selectedObjects = [];
+                renderer.domElement.style.cursor = 'default';
+            }
+        }
+
         window.addEventListener('resize', onWindowResize, false);
         animate();
     }
 
     function animate() {
         requestAnimationFrame(animate);
-        render();
+
+        const timer = performance.now();
+        if (params.rotate) {
+            group.rotation.y = timer * 0.0001;
+        }
+        // render();
+        controls.update();
+        composer.render();
     }
 
     function render() {
@@ -135,6 +228,9 @@ export function loadModel(containerID, tetrahedronType) {
         camera.aspect = width / width;
         camera.updateProjectionMatrix();
         renderer.setSize(width, width);
+
+        composer.setSize(width, width);
+        effectFXAA.uniforms['resolution'].value.set(1 / width, 1 / width);
     }
 
     function init() {
