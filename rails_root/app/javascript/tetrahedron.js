@@ -25,7 +25,7 @@ export function loadModel(containerID, tetrahedronType) {
     let selectedObjects = [];
 
     const params = {
-        edgeStrength: 3.0,
+        edgeStrength: 10.0,
         rotate: true,
     };
 
