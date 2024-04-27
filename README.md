@@ -126,3 +126,16 @@ Generate database
 heroku run rails db:migrate
 heroku run rails db:seed
 ```
+
+## Contacts
+Andres Santiago <Andylsantiago20@tamu.edu>
+
+Jacob Mathes <thejacobm1@tamu.edu>
+
+Minseo Park <minseo.park@tamu.edu>
+
+Brandon Nguyen <bgn@tamu.edu>
+
+Yi-Ting Lee <lucalee207@tamu.edu>
+
+Chengyuan Qian <cyqian@tamu.edu>
