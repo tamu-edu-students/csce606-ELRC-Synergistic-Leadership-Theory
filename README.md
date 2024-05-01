@@ -50,11 +50,11 @@ bundle install
 
 ### Run locally
 
-Create master key (future improvement - remove master key from repo)
+Create master key (obtain master key either via Dr.Ritchey or by emailing team members in contact section)
 
 ```
 cd rails_root
-echo "d98b20070bfcf9059926029b3a959b64" > ./config/master.key
+echo "<master key here>" > ./config/master.key
 ```
 
 Generate database
@@ -109,7 +109,7 @@ Add config vars
 
 ```
 heroku config:set PROJECT_PATH=rails_root
-heroku config:set RAILS_MASTER_KEY=d98b20070bfcf9059926029b3a959b64
+heroku config:set RAILS_MASTER_KEY=<master key here>
 ```
 
 Install [Heroku Postgres](https://elements.heroku.com/addons/heroku-postgresql) and attach to application
