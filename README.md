@@ -1,14 +1,25 @@
-# Synergistic Leadership Theory Survey Application
+**Link to the Team Working Agreement:**
+https://drive.google.com/file/d/16uUZbFhEMnh5MCQcVUXWtCvOM4edJY95/view?usp=sharing
 
-[![Test Coverage](https://api.codeclimate.com/v1/badges/62f4dd4fb092b4211973/test_coverage)](https://codeclimate.com/repos/65caed0abc0d27237b1794c9/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/62f4dd4fb092b4211973/maintainability)](https://codeclimate.com/repos/65caed0abc0d27237b1794c9/maintainability)
+---
+
+# Deployed app link:
+
+https://elrc-app-dfcfc7cd862b.herokuapp.com/
+
+---
+
+# Readme:
+
+<!--[![Test Coverage](https://api.codeclimate.com/v1/badges/62f4dd4fb092b4211973/test_coverage)](https://codeclimate.com/repos/65caed0abc0d27237b1794c9/test_coverage) 
+[![Maintainability](https://api.codeclimate.com/v1/badges/62f4dd4fb092b4211973/maintainability)](https://codeclimate.com/repos/65caed0abc0d27237b1794c9/maintainability) -->
 ![rubocop](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/barnden/c7b2d5e19079e12445b300407e383294/raw/badge.json)
 
 - [Deployed Application](https://elrc-app-dfcfc7cd862b.herokuapp.com/)
-- [Code Climate Reports](https://codeclimate.com/repos/65caed0abc0d27237b1794c9/maintainability)
-- [GitHub Repo](https://github.com/tamu-edu-students/csce606-ELRC-Synergistic-Leadership-Theory)
-- [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2690137)
-- [Slack](https://app.slack.com/client/T06GRHECJEM/C06GY2R74KX)
+- [Code Climate Reports](https://codeclimate.com/github/tamu-edu-students/csce606-ELRC-OLEI_Project)
+- [GitHub Repo](https://github.com/tamu-edu-students/csce606-ELRC-OLEI_Project)
+- [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2720653)
+- [Slack](https://app.slack.com/client/T07NQ098G0G/C07NE1HS2BB)
 
 <details open="open">
 <summary>Table of Contents</summary>
@@ -36,13 +47,13 @@
 Clone repository
 
 ```
-git clone git@github.com:tamu-edu-students/csce606-ELRC-Synergistic-Leadership-Theory.git
+git clone git@github.com:tamu-edu-students/csce606-ELRC-OLEI_Project.git
 ```
 
 Install all dependencies
 
 ```
-cd csce606-ELRC-Synergistic-Leadership-Theory/rails_root
+cd csce606-ELRC-OLEI_Project/rails_root
 bundle install
 ```
 
@@ -56,6 +67,10 @@ Create master key (obtain master key either via Dr.Ritchey or by emailing team m
 cd rails_root
 echo "<master key here>" > ./config/master.key
 ```
+
+Running database locally
+
+`bundle config set --local without 'production' ` (Using SQLite only otherwise ``brew install pg``)
 
 Generate database
 
@@ -128,14 +143,14 @@ heroku run rails db:seed
 ```
 
 ## Contacts
-Andres Santiago <Andylsantiago20@tamu.edu>
 
-Jacob Mathes <thejacobm1@tamu.edu>
+* Chih-Chuan Hsu <agenuinedream@tamu.edu>
+* Kunal Somendrasingh
+* Manoj Gurram
+* Manoj Peta
+* Sai Aakarsh Padma
+* Sai Nithin
+* Vinayaka Hegde
+* [Legacy Code](https://github.com/tamu-edu-students/csce606-ELRC-Synergistic-Leadership-Theory)
 
-Minseo Park <minseo.park@tamu.edu>
 
-Brandon Nguyen <bgn@tamu.edu>
-
-Yi-Ting Lee <lucalee207@tamu.edu>
-
-Chengyuan Qian <cyqian@tamu.edu>

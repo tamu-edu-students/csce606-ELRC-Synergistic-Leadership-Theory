@@ -41,3 +41,8 @@ coverage/*
 sorbet
 
 .vscode
+
+# Ignore for mac
+*.DS_Store
+*/.DS_Store
+*/*/.DS_Store
