@@ -43,7 +43,6 @@ Background: Questions and responses exist
         And I click Submit button
         Then I do get redirected to the analysis presentation page
         
-
     Scenario: Analysis displays correct values
         Given I have logged in with user "1"
         And I visit new survey page

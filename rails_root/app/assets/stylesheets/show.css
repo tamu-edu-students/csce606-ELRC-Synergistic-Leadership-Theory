@@ -1,0 +1,80 @@
+.section-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.section-header h4:before {
+  content: '\25B6';
+  font-size: .85em;
+  min-width: 1.5rem;
+}
+
+.section-header[aria-expanded="true"] h4:before {
+  content: '\25BC';
+  font-size: .85em;
+  min-width: 1.5rem;
+}
+
+tr {
+  transition: height 0.0s ease;
+}
+
+tr.collapsing {
+  height: auto;
+  transition: height 0.0s ease;
+}
+
+.table-slight-red {
+  background-color: #ffffff; /* Light red */
+  color: black;
+}
+
+.table-mild-red {
+  background-color: #ff9999; /* Mild red */
+  color: black;
+}
+
+.table-medium-red {
+  background-color: #ff6666; /* Medium red */
+  color: white;
+}
+
+.table-strong-red {
+  background-color: #ff3333; /* Strong red */
+  color: white;
+}
+
+/* Center text in table headers and cells */
+/* table th, table td {
+  text-align: center;
+  vertical-align: middle;
+} */
+
+/* Align the first column to the left */
+table td:first-child {
+  text-align: left;
+}
+
+/* Optional: Adjust the padding for better spacing */
+.table th, .table td {
+  padding: 10px;
+}
+
+/* Icon styles */
+.icon {
+  font-size: 1.5em;
+}
+
+/* Optional styling for the invitation link */
+#invitation-link-container {
+  margin-top: 20px;
+}
+
+#invitation-link {
+  font-weight: bold;
+  color: #007bff; /* Bootstrap primary color */
+}
+
+#invitation-link:hover {
+  text-decoration: underline;
+}

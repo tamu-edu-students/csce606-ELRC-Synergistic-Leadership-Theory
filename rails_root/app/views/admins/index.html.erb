@@ -1,0 +1,40 @@
+<main>
+  <h1 class="visually-hidden">Admin Dashboard</h1>
+  <% if session[:userinfo].present? %>
+    <h1>ADMIN DASHBOARD</h1>
+    <h2>Welcome <%= session[:userinfo]['name'] %></h2>
+    <hr>
+    <h3>Survey Responses</h3>
+    <div class="table-responsive">
+      <table class = "table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Profile</th>
+            <th>Share Code</th>
+            <th>Created At</th>
+            <th>View Survey</th> 
+          </tr>
+        </thead>
+        <% if @survey_responses.present? %>
+          <tbody>
+            <% @survey_responses.each do |response| %>
+              <tr>
+                <td><%= response.id %></td>
+                <td><%= response.profile.user_id %></td>
+                <td><%= response.share_code %></td>
+                <td><%= response.created_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
+                <td>
+                <%= link_to 'View Survey', survey_response_path(response) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        <% end %>
+      </table>
+    </div>
+  <% else %>
+    <h1>Welcome.</h1>
+    <h1>You are not logged in. Please login.</h1>
+  <% end %>
+</main>

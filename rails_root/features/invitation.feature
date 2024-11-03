@@ -61,7 +61,7 @@ Feature: Invitation
 		Then I should be redirected to the survey edit page
 
 	Scenario: Non-logged in user logs in, returns and claims the invitation
-		Given I "Gary Chalmers", the "Superintendent" from "Springfield Elementary" in "Town of Springfield" join
+		Given I "Gary Chalmers", the "Supervisor" from "Springfield Elementary" in "Town of Springfield" join
 		And I am logged in
 		Then I log out
 		And I am not logged in
@@ -91,7 +91,7 @@ Feature: Invitation
 		Then the invitation is not claimed by user "mr.bean"
 
 	Scenario: People join and commence an invitation orgy
-		Given I "Gary Chalmers", the "Superintendent" from "Springfield Elementary" in "Town of Springfield" join
+		Given I "Gary Chalmers", the "Supervisor" from "Springfield Elementary" in "Town of Springfield" join
 		And I have completed an originating survey
 		And I create an invitation at the bottom of the response page
 		And I log out
@@ -102,13 +102,13 @@ Feature: Invitation
 		And I have completed the survey
 		And I create an invitation at the bottom of the response page
 		And I log out
-		Then I "Edna Krabappel", the "Teacher" from "Springfield Elementary" in "Town of Springfield" join
+		Then I "Edna Krabappel", the "Supervisee" from "Springfield Elementary" in "Town of Springfield" join
 		And I visit the invitation link
 		And I click the button to take the test
 		Then I should be redirected to the survey edit page
 		And I have completed the survey
 		And I log out
-		Then I "Xin Tong", the "Superintendent" from "Team ELRC" in "College Station" join
+		Then I "Xin Tong", the "Supervisor" from "Team ELRC" in "College Station" join
 		And I am on the survey responses page
 		Then I search any responses related to this invitation
 		Then I should see "1" responses

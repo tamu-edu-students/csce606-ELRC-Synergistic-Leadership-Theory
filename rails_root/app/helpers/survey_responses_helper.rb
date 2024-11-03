@@ -19,7 +19,7 @@ module SurveyResponsesHelper
     survey_response.profile_id
   end
 
-  def teacher_average_by_part(response)
+  def supervisee_average_by_part(response)
     parts = [
       [0, 1],
       [2],
@@ -27,29 +27,29 @@ module SurveyResponsesHelper
       [4, 5]
     ]
 
-    teacher_responses = find_teachers(response)
+    supervisee_responses = find_supervisees(response)
 
     parts.map do |sections|
       answers = {}
-      teacher_responses.each do |res|
+      supervisee_responses.each do |res|
         res.answers.select { |ans| sections.include? ans.question.section }.each do |ans|
           answers[ans.question_id] = (answers[ans.question_id] || 0) + ans.choice
         end
       end
 
-      answers.transform_values! { |v| v.to_f / teacher_responses.length }
+      answers.transform_values! { |v| v.to_f / supervisee_responses.length }
     end
   end
 
-  def average_of_teachers(response)
-    # returns the average score of the teachers
-    teacher_responses = find_teachers(response)
+  def average_of_supervisees(response)
+    # returns the average score of the supervisees
+    supervisee_responses = find_supervisees(response)
     total_scores = Array.new(97, nil)
 
-    return nil if teacher_responses.empty?
+    return nil if supervisee_responses.empty?
 
-    n = teacher_responses.length
-    teacher_responses.each do |res|
+    n = supervisee_responses.length
+    supervisee_responses.each do |res|
       res.answers.each do |ans|
         total_scores[ans.question_id] = (total_scores[ans.question_id] || 0) + (ans.choice.to_f / n)
       end
@@ -58,14 +58,14 @@ module SurveyResponsesHelper
     total_scores
   end
 
-  def find_superintendent(response)
-    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: { role: 'Superintendent' }).first!
+  def find_supervisor(response)
+    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: { role: 'Supervisor' }).first!
   rescue StandardError
     nil
   end
 
-  def find_teachers(response)
-    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: { role: 'Teacher' })
+  def find_supervisees(response)
+    SurveyResponse.joins(:profile).where(share_code: response.share_code, profile: { role: 'Supervisee' })
   rescue StandardError
     nil
   end
@@ -77,7 +77,7 @@ module SurveyResponsesHelper
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-  def get_teacher_part_difference(response)
+  def get_supervisee_part_difference(response)
     parts = [
       [0, 1],
       [2],
@@ -85,23 +85,26 @@ module SurveyResponsesHelper
       [4, 5]
     ]
 
-    teacher_avgs = teacher_average_by_part(response)
+    supervisee_avgs = supervisee_average_by_part(response)
 
     parts.each_with_index.map do |sections, idx|
       answers = response.answers.select { |ans| sections.include? ans.question.section }
-      teacher_answers = teacher_avgs[idx]
+      supervisee_answers = supervisee_avgs[idx]
 
       if answers.empty?
         0
       else
         difference = 0
+        nonempty_answers = answers.select { |ans| !ans.choice.nil? }
 
-        answers.each do |x|
-          teacher_choice = teacher_answers[x.question_id]
-          difference += (x.choice - teacher_choice).abs unless teacher_choice.nil?
+        nonempty_answers.each do |x|
+          supervisee_choice = supervisee_answers[x.question_id]
+          difference += (x.choice - supervisee_choice).abs unless supervisee_choice.nil?
         end
 
-        (difference.to_f / answers.length).round
+        length = nonempty_answers.length - supervisee_answers.select { |_, v| v.nil? }.length
+
+        (difference.to_f / length).round
       end
     end
   end
@@ -122,13 +125,14 @@ module SurveyResponsesHelper
         0
       else
         difference = 0
-
-        answers.each do |x|
+        nonempty_answers = answers.select { |ans| !ans.choice.nil? }
+        nonempty_answers.each do |x|
           other_choice = other_answers.detect { |y| x.question_id == y.question_id }
-          difference += (x.choice - other_choice.choice).abs unless other_choice.nil?
+          difference += (x.choice - other_choice.choice).abs unless (other_choice.nil?)
         end
 
-        (difference.to_f / answers.length).round
+        length = nonempty_answers.length - other_answers.select { |ans| ans.choice.nil? }.length
+        (difference.to_f / length).round
       end
     end
   end
