@@ -20,3 +20,6 @@ Layout/LineLength:
 
 Metrics/AbcSize:
   Max: 40
+
+Metrics/ModuleLength:
+  Max: 150

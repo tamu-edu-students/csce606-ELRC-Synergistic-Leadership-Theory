@@ -32,7 +32,7 @@
               <td><%= question.text %></td>
               <% 4.times do |i| %>
                 <% choice = response&.answers&.where(question: question)&.first.try(:choice) %>
-                <td class="text-center"><%= form.radio_button question.id, i, { checked: (i == choice) }%></td>
+                <td class="text-center"><%= form.radio_button question.id, i, { checked: (i == choice), class: "question-radio" }%></td>
               <% end %>
             </tr>
             <% end %>
@@ -53,7 +53,7 @@
           <% end %>
           
           <% if pagination.next_page? %>
-            <%= form.submit "Next", class: "btn btn-outline-success"%> 
+            <%= form.submit "Next", class: "btn btn-outline-success", id: "next-button", disabled: true %> 
           <% else %>
             <button class="btn" disabled>Next</button>
           <% end %>
@@ -68,4 +68,35 @@
         <% end %>
       </div>
     </div>
+
+    <script>
+    document.addEventListener("turbo:load", function() {
+      const questions = <%= raw @questions.to_json %>;
+      const nextButton = document.getElementById("next-button");
+      
+      function checkAllAnswered() {
+        let allAnswered = true;
+  
+        questions.forEach(question => {
+          const radios = document.querySelectorAll(`input[name="survey_response[${question.id}]"]`);
+          console.log(`Checking radios for Question ID ${question.id}: Found ${radios.length} radio buttons`);
+           const isAnswered = Array.from(radios).some(radio => radio.checked);
+           console.log(`Question ID ${question.id} - Answered: ${isAnswered}`);
+  
+          if (!isAnswered) {
+            allAnswered = false;
+          }
+        });
+        console.log("All answered:", allAnswered);
+        nextButton.disabled = !allAnswered;
+      }
+  
+      document.querySelectorAll(".question-radio").forEach(radio => {
+        radio.addEventListener("change", checkAllAnswered);
+      });
+  
+      checkAllAnswered();
+
+    });
+  </script>
   <% end %>

@@ -16,8 +16,7 @@ require 'rails_helper'
 # rubocop:disable Metrics/BlockLength
 
 RSpec.describe SurveyResponsesHelper, type: :helper do
-  # create other models necessary for testing survey_responses_helper
-
+  # create survey_profile as a principal
   let(:survey_profile) do
     SurveyProfile.create!(
       user_id: 1,
@@ -29,18 +28,21 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
     )
   end
 
-  let(:survey_response) do
+  let(:survey_response1) do
     SurveyResponse.create!(
       profile_id: survey_profile.id,
       share_code: '123456'
     )
   end
+
   let(:survey_question) do
     SurveyQuestion.create!(
       text: 'Question',
       section: 1
     )
   end
+
+  # create survey_profile2 and survey_profile3 as supervisees and supervisor
   let(:survey_profile2) do
     SurveyProfile.create!(
       user_id: 2,
@@ -48,9 +50,10 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       last_name: 'Wick',
       campus_name: 'Main',
       district_name: 'District',
-      role: 'Teacher'
+      role: 'Supervisee'
     )
   end
+
   let(:survey_profile3) do
     SurveyProfile.create!(
       user_id: 3,
@@ -58,9 +61,10 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       last_name: 'Lennon',
       campus_name: 'Main',
       district_name: 'District',
-      role: 'Superintendent'
+      role: 'Supervisor'
     )
   end
+
   let(:survey_profile4) do
     SurveyProfile.create!(
       user_id: 4,
@@ -68,32 +72,36 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
       last_name: 'Lewis',
       campus_name: 'Main',
       district_name: 'District',
-      role: 'Teacher'
+      role: 'Supervisee'
     )
   end
+
   let(:survey_response2) do
     SurveyResponse.create!(
       profile_id: survey_profile2.id,
       share_code: '123456'
     )
   end
+
   let(:survey_response3) do
     SurveyResponse.create!(
       profile_id: survey_profile3.id,
       share_code: '123456'
     )
   end
+
   let(:survey_response4) do
     SurveyResponse.create!(
       profile_id: survey_profile4.id,
       share_code: '123456'
     )
   end
+
   let(:survey_answers) do
     SurveyAnswer.create!(
       choice: 4,
       question_id: survey_question.id,
-      response_id: survey_response.id
+      response_id: survey_response1.id
     )
     SurveyAnswer.create!(
       choice: 3,
@@ -115,100 +123,121 @@ RSpec.describe SurveyResponsesHelper, type: :helper do
   describe '#average_score' do
     it 'returns the average score of a survey response' do
       # returns average score of the survey response answers
-      expect(helper.average_score(survey_response)).to eq(survey_response.answers.average(:choice).to_f)
+      expect(helper.average_score(survey_response1)).to eq(survey_response1.answers.average(:choice).to_f)
+    end
+
+    it 'returns nil when response has no answers' do
+      expect(helper.average_score(survey_response1)).to eq(0.0)
     end
   end
 
   describe '#formatted_date' do
     it 'returns the formatted date of a survey response' do
-      expect(helper.formatted_date(survey_response)).to eq(survey_response.created_at.strftime('%B %d, %Y'))
+      expect(helper.formatted_date(survey_response1)).to eq(survey_response1.created_at.strftime('%B %d, %Y'))
     end
   end
 
   describe '#user_of_response' do
     it 'returns the user of a survey response' do
-      expect(helper.user_of_response(survey_response)).to eq(survey_response.profile_id)
+      expect(helper.user_of_response(survey_response1)).to eq(survey_response1.profile_id)
+    end
+
+    it 'returns nil if the survey response does not have a user' do
+      survey_response1.update(profile_id: nil)
+      expect(helper.user_of_response(survey_response1)).to eq(nil)
     end
   end
 
-  describe '#teacher_average_by_part' do
-    it 'returns a list of average responses for each question for each teacher survey response grouped by part' do
+  describe '#supervisee_average_by_part' do
+    it 'returns a list of average responses for each question for each supervisee survey response grouped by part' do
       survey_answers
 
       expected = [{ 1 => 2.0 }, {}, {}, {}]
 
-      expect(helper.teacher_average_by_part(survey_response)).to eq expected
+      expect(helper.supervisee_average_by_part(survey_response1)).to eq expected
     end
 
-    it 'returns a list of empty hashes when response has no corresponding teachers' do
+    it 'returns a list of empty hashes when response has no corresponding supervisees' do
       expected = [{}, {}, {}, {}]
-      expect(helper.teacher_average_by_part(survey_response)).to eq expected
+      expect(helper.supervisee_average_by_part(survey_response1)).to eq expected
     end
   end
 
-  describe '#average_of_teachers' do
-    it 'returns a list of average responses for each question for each teacher survey response' do
+  describe '#average_of_supervisees' do
+    it 'returns a list of average responses for each question for each supervisee survey response' do
       # returns average score of the survey response answers
       survey_answers
       averages = Array.new(97, nil)
       averages[1] = 2.0
-      expect(helper.average_of_teachers(survey_response)).to eq(averages)
+      expect(helper.average_of_supervisees(survey_response1)).to eq(averages)
     end
 
-    it 'return nil when no corresponding teachers' do
-      expect(helper.average_of_teachers(survey_response)).to eq(nil)
+    it 'return nil when no corresponding supervisees' do
+      expect(helper.average_of_supervisees(survey_response1)).to eq(nil)
     end
   end
 
-  describe '#find_teachers' do
-    it 'returns survey responses of teachers having same share code with principal' do
+  describe '#find_supervisees' do
+    it 'returns survey responses of supervisees having same share code with principal' do
       survey_answers
       ids = []
-      teachers_responses = helper.find_teachers(survey_response)
-      teachers_responses.each do |response|
+      supervisees_responses = helper.find_supervisees(survey_response1)
+      supervisees_responses.each do |response|
         ids.append(response.id)
       end
       expect(ids).to eq([2, 4])
     end
+
+    it 'returns an empty array if no supervisee responses exist' do
+      expect(helper.find_supervisees(survey_response1).pluck(:id)).to eq([])
+    end
   end
 
-  describe '#find_superintendent' do
-    it 'returns survey responses of superintendent having same share code with principal' do
+  describe '#find_supervisor' do
+    it 'returns survey responses of supervisor having same share code with principal' do
       survey_answers
-      expect(helper.find_superintendent(survey_response).id).to eq(3)
+      expect(helper.find_supervisor(survey_response1).id).to eq(3)
+    end
+
+    it 'returns nil if no supervisor response exists' do
+      survey_response3.destroy
+      expect(helper.find_supervisor(survey_response1)).to eq(nil)
     end
   end
 
   describe '#get_answer' do
     it 'returns the answer with certain id of response' do
       survey_answers
-      expect(helper.get_answer(survey_response, 1)).to eq(4)
+      expect(helper.get_answer(survey_response1, 1)).to eq(4)
     end
     it 'returns nil if the survey response not exist' do
       expect(helper.get_answer(nil, 1)).to eq(nil)
     end
     it 'returns nil if no answer certain id exists' do
-      expect(helper.get_answer(survey_response, 1)).to eq(nil)
+      expect(helper.get_answer(survey_response1, 1)).to eq(nil)
     end
   end
 
   describe '#get_part_difference' do
-    it 'returns a list the average difference in choices by part against the superintendent' do
+    it 'returns the average difference in choices by part compared to the supervisor' do
       survey_answers
-
-      expected = [0, 0, 0, 0]
-
-      other_response = helper.find_superintendent(survey_response)
-      expect(helper.get_part_difference(survey_response, other_response)).to eq expected
+      survey_response1.answers.reload
+      other_response = helper.find_supervisor(survey_response1)
+      expect(helper.get_part_difference(survey_response1, other_response)).to eq([2, 0, 0, 0])
     end
   end
 
-  describe '#get_teacher_part_difference' do
-    it 'returns a list the average difference in choices by part against the average teacher' do
+  describe '#get_supervisee_part_difference' do
+    it 'returns a list the average difference in choices by part against the average supervisee' do
       survey_answers
+      survey_response1.answers.reload
+      expected = [2, 0, 0, 0]
+      expect(helper.get_supervisee_part_difference(survey_response1)).to eq expected
+    end
 
-      expected = [0, 0, 0, 0]
-      expect(helper.get_teacher_part_difference(survey_response)).to eq expected
+    it 'returns 0 for parts with no supervisee answers' do
+      empty_response = SurveyResponse.create!(profile_id: survey_profile.id, share_code: '654321')
+      expect(helper.get_supervisee_part_difference(empty_response)).to eq([0, 0, 0, 0])
     end
   end
 end

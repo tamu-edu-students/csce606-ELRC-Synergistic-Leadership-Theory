@@ -4,8 +4,8 @@
 class SurveyProfile < ApplicationRecord
   enum role: {
     Principal: 0,
-    Teacher: 1,
-    Superintendent: 2
+    Supervisee: 1,
+    Supervisor: 2
   }
   has_many :responses,
            foreign_key: :profile_id,

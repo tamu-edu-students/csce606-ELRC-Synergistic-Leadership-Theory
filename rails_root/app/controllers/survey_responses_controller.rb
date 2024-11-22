@@ -24,9 +24,17 @@ class SurveyResponsesController < ApplicationController
   # GET /survey_responses/1 or /survey_responses/1.json
   def show
     return return_to_root 'You are not logged in.' if current_user_id.nil?
-    return return_to_root 'You cannot view this result.' if current_user_id != @survey_response.profile.user_id
+
+    return return_to_root 'You cannot view this result.' if !user_is_admin? && (current_user_id != @survey_response.profile.user_id)
 
     flash.keep(:warning)
+
+    respond_to do |format|
+      format.html
+      format.xlsx do
+        response.headers['Content-Disposition'] = "attachment; filename=survey_response_#{@survey_response.id}.xlsx"
+      end
+    end
   end
 
   def current_user_id
@@ -99,6 +107,17 @@ class SurveyResponsesController < ApplicationController
         format.json { render :show, status: :created, location: @survey_response }
       end
     end
+  end
+
+  def get_answer(response, question_id)
+    answer = response.answers.find_by(question_id: question_id)
+    answer&.choice
+  end
+  
+  def get_supervisee_average(question_id)
+    # Assuming you have logic to calculate the average of supervisees' answers for a given question.
+    supervisees_responses = SuperviseeResponse.where(question_id: question_id)
+    supervisees_responses.average(:choice).round if supervisees_responses.exists?
   end
 
   # PATCH/PUT /survey_responses/1 or /survey_responses/1.json
@@ -199,7 +218,7 @@ class SurveyResponsesController < ApplicationController
       ]
     end
 
-    if @survey_profile.role == 'Teacher'
+    if @survey_profile.role == 'Supervisee'
 
       @sections = [
         {
@@ -229,7 +248,7 @@ class SurveyResponsesController < ApplicationController
         }
       ]
     end
-    return unless @survey_profile.role == 'Superintendent'
+    return unless @survey_profile.role == 'Supervisor'
 
     @sections = [
       {

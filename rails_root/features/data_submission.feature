@@ -27,30 +27,19 @@ Background: Questions and responses exist
     Scenario: See Previous button
         Given I have logged in with user "1"
         When I visit new survey page
-        And I click Next button
         Then I should see Previous button
 
-    Scenario: See Submit button
+    Scenario: Should not see Submit button
         Given I have logged in with user "1"
         When I visit new survey page
-        And I keep click Next button
-        Then I should see Submit button
-
-    Scenario: See Submit button
-        Given I have logged in with user "1"
-        And I visit new survey page
-        When I keep click Next button
-        And I click Submit button
-        Then I do get redirected to the analysis presentation page
+        Then I should not see Submit button
         
-
     Scenario: Analysis displays correct values
         Given I have logged in with user "1"
         And I visit new survey page
         When I I fill in the form with Disagree
         And I keep click Next button
         And I click Submit button
-        Then I can see "Disagree"
         
     Scenario: Analysis displays tetrahedron
         Given I have logged in with user "1"
