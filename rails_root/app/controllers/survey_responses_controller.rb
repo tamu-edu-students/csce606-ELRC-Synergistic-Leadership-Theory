@@ -199,7 +199,7 @@ class SurveyResponsesController < ApplicationController
       ]
     end
 
-    if @survey_profile.role == 'Teacher'
+    if @survey_profile.role == 'Supervisee'
 
       @sections = [
         {
@@ -229,7 +229,7 @@ class SurveyResponsesController < ApplicationController
         }
       ]
     end
-    return unless @survey_profile.role == 'Superintendent'
+    return unless @survey_profile.role == 'Supervisor'
 
     @sections = [
       {

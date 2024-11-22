@@ -1,6 +1,7 @@
 # application_cable_spec.rb
 
 # frozen_string_literal: true
+#
 
 require 'rails_helper'
 

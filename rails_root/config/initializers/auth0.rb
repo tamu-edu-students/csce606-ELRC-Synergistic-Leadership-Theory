@@ -1,5 +1,5 @@
 # ./config/initializers/auth0.rb
-AUTH0_CONFIG = Rails.application.credentials[Rails.env.to_sym]
+AUTH0_CONFIG = Rails.application.credentials[Rails.env.to_sym] # Rails.env is set in config/environment.rb and can be 'development', 'test', or 'production'
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider(

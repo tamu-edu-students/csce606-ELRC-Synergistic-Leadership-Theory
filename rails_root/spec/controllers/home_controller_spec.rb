@@ -5,7 +5,7 @@ require 'rails_helper'
 
 RSpec.describe HomeController, type: :controller do
   before do
-    @inviter_profile = SurveyProfile.create!(user_id: '1', first_name: 'Gary', last_name: 'Chalmers', campus_name: 'Springfield Elementary', district_name: 'Springfield', role: 'Superintendent')
+    @inviter_profile = SurveyProfile.create!(user_id: '1', first_name: 'Gary', last_name: 'Chalmers', campus_name: 'Springfield Elementary', district_name: 'Springfield', role: 'Supervisor')
     invitee_profile = SurveyProfile.create!(user_id: '2', first_name: 'Seymour', last_name: 'Skinner', campus_name: 'Springfield Elementary', district_name: 'Springfield', role: 'Principal')
     parent_survey_response = SurveyResponse.create!(share_code: 'SHARECODE', profile_id: @inviter_profile.id)
 
