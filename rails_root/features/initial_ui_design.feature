@@ -37,5 +37,5 @@ Background: Questions and responses exist
         And user 1 responses to question "Are you ok?"
         When I am on the survey responses page of user 1
         Then I can see "Are you ok?"
-        And I can see "No I am not"
+        And I can see "Strongly Disagree"
         

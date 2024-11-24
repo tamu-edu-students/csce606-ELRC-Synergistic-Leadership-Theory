@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Survey Response #{@survey_response.id}") do |sheet|
+  # Add headers for columns
+  sheet.add_row ['Question', 'Response', "Supervisor's Response", "Supervisee's Response"]
+
+  # Define choices array for translating choice values into text
+  choices = ['Strongly Disagree', 'Disagree', 'Agree', 'Strongly Agree']
+
+  # Loop through each answer in the survey response and add rows to Excel
+  @survey_response.answers.includes(:question).each do |answer|
+    # Get supervisor and supervisee responses (assuming you have methods for this)
+    supervisor_choice = get_answer(@supervisor_response, answer.question.id) if @supervisor_response.present?
+    supervisee_choice = get_supervisee_average(answer.question.id) if @supervisee_average.present?
+
+    # Add row for each question with responses from user, supervisor, and supervisees
+    sheet.add_row [
+      answer.question.text,                          # Question text
+      choices[answer.choice],                        # User's response
+      supervisor_choice.nil? ? 'NE' : choices[supervisor_choice], # Supervisor's response or 'NE'
+      supervisee_choice.nil? ? 'NE' : choices[supervisee_choice] # Supervisee's response or 'NE'
+    ]
+  end
+end

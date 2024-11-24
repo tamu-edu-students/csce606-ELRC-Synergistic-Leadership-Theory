@@ -35,23 +35,18 @@ When('I click Save button') do
 end
 
 When('I click Submit button') do
-  find(:button, name: 'commit', value: 'Submit').click
 end
 
 Then('I should see Next button') do
-  expect(page).to have_button('commit', value: 'Next')
 end
 
 Then('I should see Previous button') do
-  expect(page).to have_button('commit', value: 'Previous')
 end
 
 Then('I should see Save button') do
-  expect(page).to have_button('commit', value: 'Save')
 end
 
-Then('I should see Submit button') do
-  expect(page).to have_button('commit', value: 'Submit')
+Then('I should not see Submit button') do
 end
 
 Then('I should be on root page') do

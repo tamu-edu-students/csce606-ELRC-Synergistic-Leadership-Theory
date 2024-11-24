@@ -44,12 +44,12 @@ jobs:
           COVERAGE=true bundle exec rspec
           COVERAGE=true bundle exec cucumber
 
-      # - name: Upload coverage report
-      #   if: '!cancelled()'
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: coverage
-      #     path: coverage
+      - name: Upload coverage report
+        if: '!cancelled()'
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage
 
       - name: Rubocop Report
         if: '!cancelled()'
@@ -66,7 +66,7 @@ jobs:
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: c7b2d5e19079e12445b300407e383294
+          gistID: ${{ secrets.GIST_ID }}
           filename: badge.json
           label: 'Rubocop'
           message: '${{ env.rubocop_offenses }} offenses'
